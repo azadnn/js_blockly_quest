@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,24 +7,20 @@
     <!-- Tailwind CSS for modern neon design -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Inter Font -->
-    <link 
-href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800
-&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- FontAwesome for cool icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-
-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Blockly Core and Blocks CDNs -->
-    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
-    <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
-    <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
-
     <!-- Ace Code Editor CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/ace.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/theme-
-monokai.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/mode-
-javascript.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/theme-monokai.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/mode-javascript.js"></script>
+
+    <!-- Decoupled Blockly Core, Blocks, Generators, and Localizations (Avoids double extension registry crash) -->
+    <script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
+    <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
+    <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
+    <script src="https://unpkg.com/blockly/msg/en.js"></script>
 
     <style>
         body {
@@ -81,8 +76,7 @@ javascript.js"></script>
         /* Grid overlay animations */
         .cyber-grid {
             background-size: 40px 40px;
-            background-image: linear-gradient(to right, rgba(30, 41, 59, 0.5) 1px, transparent 
-1px),
+            background-image: linear-gradient(to right, rgba(30, 41, 59, 0.5) 1px, transparent 1px),
                               linear-gradient(to bottom, rgba(30, 41, 59, 0.5) 1px, transparent 1px);
         }
     </style>
@@ -90,34 +84,27 @@ javascript.js"></script>
 <body class="min-h-screen flex flex-col justify-between cyber-grid">
 
     <!-- TOP NAVIGATION & STATUS BAR -->
-    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky 
-top-0 z-40 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center space-x-3">
-            <button id="btn-toggle-map" class="bg-indigo-600 hover:bg-indigo-500 text-white 
-p-2.5 rounded-xl transition duration-200 shadow-md">
+            <button id="btn-toggle-map" class="bg-indigo-600 hover:bg-indigo-500 text-white p-2.5 rounded-xl transition duration-200 shadow-md">
                 <i class="fa-solid fa-map"></i>
             </button>
             <div class="bg-gradient-to-tr from-cyan-500 to-indigo-500 p-2 rounded-xl">
                 <i class="fa-solid fa-user-astronaut text-xl text-white"></i>
             </div>
             <div>
-                <h1 class="text-lg font-black tracking-tight bg-gradient-to-r from-cyan-400 via-
-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                <h1 class="text-lg font-black tracking-tight bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
                     JS BLOCKLY QUEST
                 </h1>
-                <p class="text-[10px] text-slate-400 font-mono tracking-wider">Level Academy 
-[1 - 50]</p>
+                <p class="text-[10px] text-slate-400 font-mono tracking-wider">Level Academy [1 - 50]</p>
             </div>
         </div>
 
         <!-- Level Indicator Tracker -->
-        <div class="flex items-center bg-slate-950/80 border border-slate-800 rounded-full 
-px-4 py-1.5 space-x-2">
-            <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest" 
-id="current-chapter-title">Chapter 1: Basics</span>
+        <div class="flex items-center bg-slate-950/80 border border-slate-800 rounded-full px-4 py-1.5 space-x-2">
+            <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest" id="current-chapter-title">Chapter 1: Basics</span>
             <span class="text-slate-700">|</span>
-            <button id="btn-open-map" class="text-xs font-bold text-slate-300 hover:text-
-white transition flex items-center gap-1.5">
+            <button id="btn-open-map" class="text-xs font-bold text-slate-300 hover:text-white transition flex items-center gap-1.5">
                 <span id="level-display-num">Mission 1/50</span>
                 <i class="fa-solid fa-chevron-down text-[10px] text-indigo-400"></i>
             </button>
@@ -125,13 +112,10 @@ white transition flex items-center gap-1.5">
 
         <!-- Toolbar Utilities -->
         <div class="flex items-center space-x-2">
-            <button id="btn-mute" class="bg-slate-800 hover:bg-slate-700 text-slate-300 w-
-10 h-10 rounded-xl transition flex items-center justify-center border border-slate-700">
+            <button id="btn-mute" class="bg-slate-800 hover:bg-slate-700 text-slate-300 w-10 h-10 rounded-xl transition flex items-center justify-center border border-slate-700">
                 <i class="fa-solid fa-volume-high" id="mute-icon"></i>
             </button>
-            <button id="btn-reset-level" class="bg-slate-800 hover:bg-slate-700 text-slate-
-300 px-4 h-10 rounded-xl transition flex items-center space-x-2 text-xs border border-
-slate-700">
+            <button id="btn-reset-level" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 h-10 rounded-xl transition flex items-center space-x-2 text-xs border border-slate-700">
                 <i class="fa-solid fa-arrow-rotate-left"></i>
                 <span class="hidden md:inline">Reset Level</span>
             </button>
@@ -139,59 +123,44 @@ slate-700">
     </header>
 
     <!-- SLIDE OUT LEVEL MAP DRAWER -->
-    <div id="level-drawer" class="fixed inset-y-0 left-0 w-80 bg-slate-950 border-r border-
-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out 
-flex flex-col shadow-2xl">
-        <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-
-slate-900">
+    <div id="level-drawer" class="fixed inset-y-0 left-0 w-80 bg-slate-950 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col shadow-2xl">
+        <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-900">
             <div>
                 <h3 class="font-bold text-white text-md">Space Academy Map</h3>
                 <p class="text-xs text-indigo-400">50 Interactive Missions</p>
             </div>
-            <button id="btn-close-map" class="text-slate-400 hover:text-white transition p-
-1">
+            <button id="btn-close-map" class="text-slate-400 hover:text-white transition p-1">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
         </div>
         <!-- Scrollable levels list sorted by JS concepts -->
-        <div class="flex-grow overflow-y-auto p-4 space-y-4" id="drawer-chapters-
-container">
+        <div class="flex-grow overflow-y-auto p-4 space-y-4" id="drawer-chapters-container">
             <!-- Dynamically populated chapters & levels -->
         </div>
     </div>
     <!-- Drawer backdrop overlay -->
-    <div id="drawer-backdrop" class="fixed inset-0 bg-black/60 z-40 hidden transition-
-opacity duration-300"></div>
+    <div id="drawer-backdrop" class="fixed inset-0 bg-black/60 z-40 hidden transition-opacity duration-300"></div>
 
     <!-- MAIN APPLICATION GRID CONTAINER -->
-    <main class="flex-grow grid grid-cols-1 xl:grid-cols-12 gap-5 p-4 md:p-6 max-w-
-[1800px] w-full mx-auto">
+    <main class="flex-grow grid grid-cols-1 xl:grid-cols-12 gap-5 p-4 md:p-6 max-w-[1800px] w-full mx-auto">
         
         <!-- LEFT PANEL: Simulation Arena & Level Intel (4 Cols) -->
         <section class="xl:col-span-4 flex flex-col gap-5">
             <!-- Mission Briefing / Instructions Card -->
-            <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 
-rounded-2xl p-5 shadow-xl relative overflow-hidden">
-                <div class="absolute -right-12 -top-12 w-24 h-24 bg-indigo-500/10 rounded-full 
-blur-2xl"></div>
+            <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+                <div class="absolute -right-12 -top-12 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl"></div>
                 <div class="flex items-center space-x-2 mb-3">
-                    <span id="lesson-badge" class="bg-cyan-500/10 text-cyan-400 text-[10px] 
-font-bold px-2.5 py-1 rounded-md border border-cyan-500/20 uppercase tracking-
-wider">LEVEL 1</span>
-                    <span class="text-slate-500">�</span>
-                    <span id="lesson-concept" class="text-[10px] text-indigo-400 font-semibold 
-tracking-wide uppercase">Sequencing</span>
+                    <span id="lesson-badge" class="bg-cyan-500/10 text-cyan-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-cyan-500/20 uppercase tracking-wider">LEVEL 1</span>
+                    <span class="text-slate-500">•</span>
+                    <span id="lesson-concept" class="text-[10px] text-indigo-400 font-semibold tracking-wide uppercase">Sequencing</span>
                 </div>
-                <h2 id="lesson-title" class="text-lg font-bold text-white mb-2">Launch 
-Protocol</h2>
+                <h2 id="lesson-title" class="text-lg font-bold text-white mb-2">Launch Protocol</h2>
                 <p id="lesson-description" class="text-xs text-slate-300 leading-relaxed mb-4">
-                    Commander, welcome to your spacecraft navigator! Guide your starship to the 
-dimensional portal. Type actions into the text editor or connect blocks.
+                    Commander, welcome to your spacecraft navigator! Guide your starship to the dimensional portal. Type actions into the text editor or connect blocks.
                 </p>
                 <!-- API Helper Commands cheatsheet -->
                 <div class="bg-slate-950/60 rounded-xl border border-slate-800/80 p-3">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-
-2">Available Directives:</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Available Directives:</p>
                     <div class="flex flex-wrap gap-1.5" id="api-commands">
                         <!-- Render commands dynamically -->
                     </div>
@@ -199,92 +168,68 @@ dimensional portal. Type actions into the text editor or connect blocks.
             </div>
 
             <!-- Interactive Game Canvas Frame -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden 
-shadow-2xl flex flex-col relative">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col relative">
                 <!-- Canvas Status bar -->
-                <div class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-2.5 flex 
-justify-between items-center">
+                <div class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-2.5 flex justify-between items-center">
                     <div class="flex items-center space-x-2">
                         <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
-                        <span class="text-[10px] font-bold text-slate-300 uppercase tracking-
-widest">Simulator Feed</span>
+                        <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Simulator Feed</span>
                     </div>
-                    <span class="text-[10px] text-slate-500 font-mono" id="coordinates-
-feed">Pos: (0, 0)</span>
+                    <span class="text-[10px] text-slate-500 font-mono" id="coordinates-feed">Pos: (0, 0)</span>
                 </div>
 
                 <!-- Game Canvas container -->
-                <div class="relative aspect-square w-full bg-[#050510] flex items-center justify-
-center">
-                    <canvas id="game-canvas" class="block w-full h-full max-h-[420px] max-w-
-[420px] transition-transform duration-300"></canvas>
+                <div class="relative aspect-square w-full bg-[#050510] flex items-center justify-center">
+                    <canvas id="game-canvas" class="block w-full h-full max-h-[420px] max-w-[420px] transition-transform duration-300"></canvas>
                 </div>
 
                 <!-- Simulation Action Controls -->
                 <div class="bg-slate-950/80 border-t border-slate-800/80 p-3 flex gap-2">
-                    <button id="btn-run" class="flex-grow bg-gradient-to-r from-emerald-500 to-
-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-2.5 px-4 
-rounded-xl transition transform active:scale-95 text-sm shadow-lg shadow-emerald-
-500/20 flex items-center justify-center space-x-2">
+                    <button id="btn-run" class="flex-grow bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-2.5 px-4 rounded-xl transition transform active:scale-95 text-sm shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2">
                         <i class="fa-solid fa-play"></i>
                         <span>Run Script</span>
                     </button>
-                    <button id="btn-stop" class="bg-slate-800 hover:bg-slate-700 text-slate-300 
-font-bold py-2.5 px-4 rounded-xl transition border border-slate-700" disabled>
+                    <button id="btn-stop" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 px-4 rounded-xl transition border border-slate-700" disabled>
                         <i class="fa-solid fa-stop"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Combined Output Area with tabs (Console vs Terminal logs) -->
-            <div class="bg-slate-950 border border-slate-900 rounded-xl p-3 flex-grow flex 
-flex-col min-h-[160px]">
-                <div class="flex justify-between items-center mb-2 border-b border-slate-900 
-pb-1.5">
+            <div class="bg-slate-950 border border-slate-900 rounded-xl p-3 flex-grow flex flex-col min-h-[160px]">
+                <div class="flex justify-between items-center mb-2 border-b border-slate-900 pb-1.5">
                     <div class="flex space-x-2 text-[10px] font-bold uppercase tracking-wider">
-                        <button id="tab-terminal" class="text-cyan-400 border-b-2 border-cyan-400 
-pb-1">System Terminal</button>
+                        <button id="tab-terminal" class="text-cyan-400 border-b-2 border-cyan-400 pb-1">System Terminal</button>
                         <span class="text-slate-700">|</span>
-                        <button id="tab-console" class="text-slate-500 hover:text-slate-300 pb-
-1">JS Console Log</button>
+                        <button id="tab-console" class="text-slate-500 hover:text-slate-300 pb-1">JS Console Log</button>
                     </div>
-                    <button id="btn-clear-logs" class="text-[10px] text-slate-600 hover:text-slate-
-400 transition">Clear</button>
+                    <button id="btn-clear-logs" class="text-[10px] text-slate-600 hover:text-slate-400 transition">Clear</button>
                 </div>
                 
                 <!-- Terminal logs container -->
-                <div id="terminal-logs" class="font-mono text-xs text-slate-400 space-y-1 
-overflow-y-auto max-h-[120px] flex-grow">
+                <div id="terminal-logs" class="font-mono text-xs text-slate-400 space-y-1 overflow-y-auto max-h-[120px] flex-grow">
                     <div>&gt; Space Academy telemetry online.</div>
                 </div>
 
                 <!-- Console Output Container -->
-                <div id="console-logs" class="font-mono text-xs text-amber-400 space-y-1 
-overflow-y-auto max-h-[120px] flex-grow hidden">
-                    <div class="text-slate-600">&gt;&gt; console.log statements will print 
-here...</div>
+                <div id="console-logs" class="font-mono text-xs text-amber-400 space-y-1 overflow-y-auto max-h-[120px] flex-grow hidden">
+                    <div class="text-slate-600">&gt;&gt; console.log statements will print here...</div>
                 </div>
             </div>
         </section>
 
         <!-- RIGHT PANEL: Split-Screen Editor Workspace (8 Cols) -->
-        <section class="xl:col-span-8 flex flex-col md:grid md:grid-cols-2 gap-5 h-
-[calc(100vh-140px)] min-h-[550px] xl:min-h-0">
+        <section class="xl:col-span-8 flex flex-col md:grid md:grid-cols-2 gap-5 h-[calc(100vh-140px)] min-h-[550px] xl:min-h-0">
             
             <!-- Blockly Visual Workspace (Left Split) -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden 
-flex flex-col shadow-xl">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col shadow-xl">
                 <!-- Blockly Header -->
-                <div class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-3 flex items-
-center justify-between">
+                <div class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-3 flex items-center justify-between">
                     <div class="flex items-center space-x-2">
-                        <div class="w-3 h-3 rounded-full bg-cyan-400 shadow-md shadow-cyan-
-400/30"></div>
-                        <span class="text-xs font-bold text-slate-300 uppercase tracking-
-widest">Visual Blocks</span>
+                        <div class="w-3 h-3 rounded-full bg-cyan-400 shadow-md shadow-cyan-400/30"></div>
+                        <span class="text-xs font-bold text-slate-300 uppercase tracking-widest">Visual Blocks</span>
                     </div>
-                    <span class="text-[9px] bg-cyan-900/40 text-cyan-400 border border-cyan-
-800/50 px-2 py-0.5 rounded-md font-semibold font-mono">No-Code Link</span>
+                    <span class="text-[9px] bg-cyan-900/40 text-cyan-400 border border-cyan-800/50 px-2 py-0.5 rounded-md font-semibold font-mono">No-Code Link</span>
                 </div>
                 <!-- Blockly Editor Area -->
                 <div class="flex-grow relative h-full w-full" id="blockly-container">
@@ -293,23 +238,17 @@ widest">Visual Blocks</span>
             </div>
 
             <!-- Code Editor Workspace (Right Split) -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden 
-flex flex-col shadow-xl">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col shadow-xl">
                 <!-- Code Editor Header -->
-                <div class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-3 flex items-
-center justify-between">
+                <div class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-3 flex items-center justify-between">
                     <div class="flex items-center space-x-2">
-                        <div class="w-3 h-3 rounded-full bg-purple-500 shadow-md shadow-purple-
-500/30"></div>
-                        <span class="text-xs font-bold text-slate-300 uppercase tracking-
-widest">JavaScript Code</span>
+                        <div class="w-3 h-3 rounded-full bg-purple-500 shadow-md shadow-purple-500/30"></div>
+                        <span class="text-xs font-bold text-slate-300 uppercase tracking-widest">JavaScript Code</span>
                     </div>
                     <!-- Automatic Live Sync Mode Badge -->
                     <div class="flex items-center space-x-1.5">
-                        <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-
-ping"></span>
-                        <span class="text-[9px] text-amber-400 font-mono font-bold uppercase 
-tracking-wider">Live Compile</span>
+                        <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-ping"></span>
+                        <span class="text-[9px] text-amber-400 font-mono font-bold uppercase tracking-wider">Live Compile</span>
                     </div>
                 </div>
                 <!-- Ace Text Editor Area -->
@@ -322,53 +261,34 @@ tracking-wider">Live Compile</span>
     </main>
 
     <!-- FOOTER -->
-    <footer class="border-t border-slate-800/80 bg-slate-950/60 py-3 px-6 text-center 
-text-[10px] text-slate-500">
-        <p>� 2026 JS Blockly Quest � Learn JS Concepts Step-By-Step � Powered by Google 
-Blockly.</p>
+    <footer class="border-t border-slate-800/80 bg-slate-950/60 py-3 px-6 text-center text-[10px] text-slate-500">
+        <p>© 2026 JS Blockly Quest • Learn JS Concepts Step-By-Step • Powered by Google Blockly.</p>
     </footer>
 
     <!-- SUCCESS CONGRATS OVERLAY MODAL -->
-    <div id="success-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 
-flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl max-w-md w-full 
-mx-4 shadow-2xl relative overflow-hidden transform scale-95 transition-transform 
-duration-300">
+    <div id="success-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl max-w-md w-full mx-4 shadow-2xl relative overflow-hidden transform scale-95 transition-transform duration-300">
             <!-- Background particle elements -->
-            <div class="absolute -left-16 -top-16 w-36 h-36 bg-emerald-500/10 rounded-full 
-blur-2xl"></div>
-            <div class="absolute -right-16 -bottom-16 w-36 h-36 bg-cyan-500/10 rounded-full 
-blur-2xl"></div>
+            <div class="absolute -left-16 -top-16 w-36 h-36 bg-emerald-500/10 rounded-full blur-2xl"></div>
+            <div class="absolute -right-16 -bottom-16 w-36 h-36 bg-cyan-500/10 rounded-full blur-2xl"></div>
 
             <div class="text-center">
-                <div class="inline-flex bg-emerald-500/10 text-emerald-400 border border-
-emerald-500/20 p-4 rounded-2xl mb-4 text-4xl animate-bounce">
+                <div class="inline-flex bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 p-4 rounded-2xl mb-4 text-4xl animate-bounce">
                     <i class="fa-solid fa-graduation-cap"></i>
                 </div>
-                <h3 class="text-xl font-black text-white mb-2 tracking-tight uppercase" 
-id="modal-success-title">Mission Cleared!</h3>
-                <p class="text-xs text-slate-300 mb-6" id="modal-success-
-msg">Congratulations! You successfully compiled the script parameters for this 
-dimensional gateway transit.</p>
+                <h3 class="text-xl font-black text-white mb-2 tracking-tight uppercase" id="modal-success-title">Mission Cleared!</h3>
+                <p class="text-xs text-slate-300 mb-6" id="modal-success-msg">Congratulations! You successfully compiled the script parameters for this dimensional gateway transit.</p>
                 
-                <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-4 mb-
-6">
-                    <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-
-2 text-left">Compiled Output Preview:</h4>
-                    <pre id="modal-code-preview" class="text-xs font-mono text-cyan-400 text-
-left overflow-x-auto max-h-[120px] bg-slate-950 p-3 rounded-xl border border-slate-
-900"></pre>
+                <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-4 mb-6">
+                    <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 text-left">Compiled Output Preview:</h4>
+                    <pre id="modal-code-preview" class="text-xs font-mono text-cyan-400 text-left overflow-x-auto max-h-[120px] bg-slate-950 p-3 rounded-xl border border-slate-900"></pre>
                 </div>
 
                 <div class="flex gap-4">
-                    <button id="modal-btn-replay" class="flex-1 bg-slate-800 hover:bg-slate-700 
-text-slate-300 font-bold py-2.5 rounded-xl transition text-xs border border-slate-700">
+                    <button id="modal-btn-replay" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl transition text-xs border border-slate-700">
                         Stay & Review
                     </button>
-                    <button id="modal-btn-next" class="flex-1 bg-gradient-to-r from-cyan-500 to-
-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold py-2.5 
-rounded-xl transition transform hover:scale-102 shadow-lg shadow-indigo-500/25 flex 
-items-center justify-center space-x-1.5 text-xs">
+                    <button id="modal-btn-next" class="flex-1 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold py-2.5 rounded-xl transition transform hover:scale-102 shadow-lg shadow-indigo-500/25 flex items-center justify-center space-x-1.5 text-xs">
                         <span>Next Concept</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
@@ -424,8 +344,7 @@ items-center justify-center space-x-1.5 text-xs">
                         noteOsc.type = 'sine';
                         noteOsc.frequency.setValueAtTime(freq, now + idx * 0.06);
                         noteGain.gain.setValueAtTime(0.06, now + idx * 0.06);
-                        noteGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 
-0.2);
+                        noteGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.2);
                         
                         noteOsc.start(now + idx * 0.06);
                         noteOsc.stop(now + idx * 0.06 + 0.2);
@@ -459,6 +378,35 @@ items-center justify-center space-x-1.5 text-xs">
             }
         });
 
+        // Resilient XML Text Parser to cross-handle different Blockly version structures safely
+        function textToDomSafe(xmlText) {
+            try {
+                if (window.Blockly && window.Blockly.utils && window.Blockly.utils.xml && typeof window.Blockly.utils.xml.textToDom === 'function') {
+                    return window.Blockly.utils.xml.textToDom(xmlText);
+                } else if (window.Blockly && window.Blockly.Xml && typeof window.Blockly.Xml.textToDom === 'function') {
+                    return window.Blockly.Xml.textToDom(xmlText);
+                } else {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(xmlText, 'text/xml');
+                    return doc.documentElement;
+                }
+            } catch (err) {
+                console.error("XML Parsing Error: ", err);
+                const parser = new DOMParser();
+                const doc = parser.parseFromString('<xml></xml>', 'text/xml');
+                return doc.documentElement;
+            }
+        }
+
+        // Safe visual compilation extractor 
+        function generateCodeFromWorkspace(workspace) {
+            const generator = (window.javascript && window.javascript.javascriptGenerator) || window.Blockly.JavaScript;
+            if (generator) {
+                return generator.workspaceToCode(workspace);
+            }
+            return '';
+        }
+
         // --- 2. Custom Blockly Blocks Definitions for Advanced Concepts ---
         Blockly.Blocks['move_forward'] = {
             init: function() {
@@ -469,9 +417,6 @@ items-center justify-center space-x-1.5 text-xs">
                 this.setTooltip("Command spaceship to glide forward 1 grid quadrant.");
             }
         };
-        javascript.javascriptGenerator.forBlock['move_forward'] = function(block) {
-            return 'moveForward();\n';
-        };
 
         Blockly.Blocks['turn_left'] = {
             init: function() {
@@ -479,11 +424,8 @@ items-center justify-center space-x-1.5 text-xs">
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour(190);
-                this.setTooltip("Pivot 90 degrees Counter-Clockwise ?.");
+                this.setTooltip("Pivot 90 degrees Counter-Clockwise ↺.");
             }
-        };
-        javascript.javascriptGenerator.forBlock['turn_left'] = function(block) {
-            return 'turnLeft();\n';
         };
 
         Blockly.Blocks['turn_right'] = {
@@ -492,11 +434,8 @@ items-center justify-center space-x-1.5 text-xs">
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour(240);
-                this.setTooltip("Pivot 90 degrees Clockwise ?.");
+                this.setTooltip("Pivot 90 degrees Clockwise ↻.");
             }
-        };
-        javascript.javascriptGenerator.forBlock['turn_right'] = function(block) {
-            return 'turnRight();\n';
         };
 
         Blockly.Blocks['is_path_ahead'] = {
@@ -506,9 +445,6 @@ items-center justify-center space-x-1.5 text-xs">
                 this.setColour(330);
                 this.setTooltip("Scans forward navigation lanes. Returns true if path is passable.");
             }
-        };
-        javascript.javascriptGenerator.forBlock['is_path_ahead'] = function(block) {
-            return ['isPathAhead()', javascript.javascriptGenerator.ORDER_FUNCTION_CALL];
         };
 
         // Custom console.log block
@@ -524,11 +460,6 @@ items-center justify-center space-x-1.5 text-xs">
                 this.setColour(60);
                 this.setTooltip("Prints statements and diagnostics directly onto your console panel.");
             }
-        };
-        javascript.javascriptGenerator.forBlock['console_log'] = function(block) {
-            var value = javascript.javascriptGenerator.valueToCode(block, 'VALUE', 
-javascript.javascriptGenerator.ORDER_ATOMIC) || '"Space Academy"';
-            return 'console.log(' + value + ');\n';
         };
 
         // Custom declare let variable
@@ -546,12 +477,36 @@ javascript.javascriptGenerator.ORDER_ATOMIC) || '"Space Academy"';
                 this.setTooltip("Declares a new mutable block scope variable.");
             }
         };
-        javascript.javascriptGenerator.forBlock['declare_variable'] = function(block) {
-            var varName = block.getFieldValue('VAR_NAME');
-            var val = javascript.javascriptGenerator.valueToCode(block, 'VALUE', 
-javascript.javascriptGenerator.ORDER_ATOMIC) || '0';
-            return 'let ' + varName + ' = ' + val + ';\n';
-        };
+
+        // Dynamically bind custom generators with multi-version fallback orders
+        const activeGenerator = (window.javascript && window.javascript.javascriptGenerator) || window.Blockly.JavaScript;
+        const activeOrder = (window.javascript && window.javascript.Order) || (window.Blockly.JavaScript ? window.Blockly.JavaScript : {});
+        const ATOMIC_ORDER = activeOrder.ATOMIC !== undefined ? activeOrder.ATOMIC : 0;
+        const CALL_ORDER = activeOrder.FUNCTION_CALL !== undefined ? activeOrder.FUNCTION_CALL : 2;
+
+        if (activeGenerator) {
+            activeGenerator.forBlock['move_forward'] = function(block) {
+                return 'moveForward();\n';
+            };
+            activeGenerator.forBlock['turn_left'] = function(block) {
+                return 'turnLeft();\n';
+            };
+            activeGenerator.forBlock['turn_right'] = function(block) {
+                return 'turnRight();\n';
+            };
+            activeGenerator.forBlock['is_path_ahead'] = function(block) {
+                return ['isPathAhead()', CALL_ORDER];
+            };
+            activeGenerator.forBlock['console_log'] = function(block) {
+                var value = activeGenerator.valueToCode(block, 'VALUE', ATOMIC_ORDER) || '"Space Academy"';
+                return 'console.log(' + value + ');\n';
+            };
+            activeGenerator.forBlock['declare_variable'] = function(block) {
+                var varName = block.getFieldValue('VAR_NAME');
+                var val = activeGenerator.valueToCode(block, 'VALUE', ATOMIC_ORDER) || '0';
+                return 'let ' + varName + ' = ' + val + ';\n';
+            };
+        }
 
         // --- 3. The 50-Level Concept Database (Curriculum Layout Map) ---
         const CHAPTERS = [
@@ -613,16 +568,14 @@ javascript.javascriptGenerator.ORDER_ATOMIC) || '0';
                         grid[2] = [0, 0, 1, 1, 0, 0];
                         grid[3] = [0, 1, 1, 0, 0, 0];
                         startX = 1; startY = 3; goalX = 3; goalY = 2;
-                        defaultCode = 
-"moveForward();\nturnLeft();\nmoveForward();\nturnRight();\nmoveForward();";
+                        defaultCode = "moveForward();\nturnLeft();\nmoveForward();\nturnRight();\nmoveForward();";
                     } else if (i === 4) {
                         title = "U-Turn Navigation";
                         desc = "Reverse your direction entirely to locate the wormhole portal positioned directly behind you.";
                         grid[2] = [0, 1, 1, 1, 0, 0];
                         grid[3] = [0, 1, 0, 1, 0, 0];
                         startX = 1; startY = 2; goalX = 3; goalY = 3;
-                        defaultCode = 
-"moveForward();\nturnRight();\nmoveForward();\nturnRight();\nmoveForward();";
+                        defaultCode = "moveForward();\nturnRight();\nmoveForward();\nturnRight();\nmoveForward();";
                     } else {
                         title = "Zigzag Escape Route";
                         desc = "Execute consecutive small alternating directional turns to clear the hazardous asteroids.";
@@ -630,8 +583,7 @@ javascript.javascriptGenerator.ORDER_ATOMIC) || '0';
                         grid[3] = [0, 0, 1, 1, 0, 0];
                         grid[4] = [0, 1, 1, 0, 0, 0];
                         startX = 1; startY = 4; goalX = 4; goalY = 2;
-                        defaultCode = 
-"moveForward();\nturnLeft();\nmoveForward();\nturnRight();\nmoveForward();\nturnLeft();\nmoveForward();";
+                        defaultCode = "moveForward();\nturnLeft();\nmoveForward();\nturnRight();\nmoveForward();\nturnLeft();\nmoveForward();";
                     }
                     api = [
                         { code: "moveForward();", desc: "Advance spaceship 1 space." },
@@ -683,8 +635,7 @@ javascript.javascriptGenerator.ORDER_ATOMIC) || '0';
 
                 } else if (i >= 11 && i <= 15) {
                     concept = "Data Types";
-                    blocks = ['move_forward', 'declare_variable', 'text', 'logic_boolean', 
-'math_number'];
+                    blocks = ['move_forward', 'declare_variable', 'text', 'logic_boolean', 'math_number'];
                     if (i === 11) {
                         title = "String Channels";
                         desc = "Learn about String values encapsulated in single or double quotation marks.";
@@ -725,8 +676,7 @@ javascript.javascriptGenerator.ORDER_ATOMIC) || '0';
 
                 } else if (i >= 16 && i <= 20) {
                     concept = "Operators";
-                    blocks = ['move_forward', 'declare_variable', 'math_arithmetic', 
-'math_number'];
+                    blocks = ['move_forward', 'declare_variable', 'math_arithmetic', 'math_number'];
                     if (i === 16) {
                         title = "Arithmetic Sums";
                         desc = "Calculate movements using addition (+) operators inside your scripts.";
@@ -969,8 +919,7 @@ javascript.javascriptGenerator.ORDER_ATOMIC) || '0';
 
                 } else if (i >= 46 && i <= 50) {
                     concept = "Functions";
-                    blocks = ['move_forward', 'procedures_defnoreturn', 
-'procedures_callnoreturn'];
+                    blocks = ['move_forward', 'procedures_defnoreturn', 'procedures_callnoreturn'];
                     if (i === 46) {
                         title = "Modularizing Functions";
                         desc = "Declare reusable sub-routines using 'function' scopes to organize navigation algorithms.";
@@ -1066,16 +1015,12 @@ javascript.javascriptGenerator.ORDER_ATOMIC) || '0';
                 } else if (current.includes('console.log')) {
                     let logMatch = current.match(/console\.log\((.*)\)/);
                     let loggedVal = logMatch ? logMatch[1] : '"Space Academy"';
-                    currentBlock = `<block type="console_log"><value name="VALUE"><block 
-type="text"><field name="TEXT">${loggedVal.replace(/['"]/g, 
-'')}</field></block></value>`;
+                    currentBlock = `<block type="console_log"><value name="VALUE"><block type="text"><field name="TEXT">${loggedVal.replace(/['"]/g, '')}</field></block></value>`;
                 } else if (current.startsWith('let') && current.includes('=')) {
                     let varParts = current.substring(4).split('=');
                     let varName = varParts[0].trim();
                     let val = varParts[1].replace(';', '').trim();
-                    currentBlock = `<block type="declare_variable"><field 
-name="VAR_NAME">${varName}</field><value name="VALUE"><block 
-type="math_number"><field name="NUM">${val}</field></block></value>`;
+                    currentBlock = `<block type="declare_variable"><field name="VAR_NAME">${varName}</field><value name="VALUE"><block type="math_number"><field name="NUM">${val}</field></block></value>`;
                 } else if (current.startsWith('for') && current.includes('{')) {
                     let iterations = 3;
                     let countMatch = current.match(/<\s*(\d+)/);
@@ -1083,9 +1028,7 @@ type="math_number"><field name="NUM">${val}</field></block></value>`;
                         iterations = parseInt(countMatch[1]);
                     }
                     
-                    currentBlock = `<block type="controls_repeat_ext"><value 
-name="TIMES"><block type="math_number"><field 
-name="NUM">${iterations}</field></block></value><statement name="DO">`;
+                    currentBlock = `<block type="controls_repeat_ext"><value name="TIMES"><block type="math_number"><field name="NUM">${iterations}</field></block></value><statement name="DO">`;
                     
                     let body = [];
                     let depth = 1;
@@ -1101,8 +1044,7 @@ name="NUM">${iterations}</field></block></value><statement name="DO">`;
                     currentBlock += '</statement>';
                     rest = rest.slice(cursor);
                 } else if (current.startsWith('if') && current.includes('{')) {
-                    currentBlock = `<block type="controls_if"><value name="IF0"><block 
-type="is_path_ahead"></block></value><statement name="DO0">`;
+                    currentBlock = `<block type="controls_if"><value name="IF0"><block type="is_path_ahead"></block></value><statement name="DO0">`;
                     
                     let body = [];
                     let depth = 1;
@@ -1154,8 +1096,7 @@ type="is_path_ahead"></block></value><statement name="DO0">`;
                     event.type === Blockly.Events.BLOCK_CREATE) {
                     
                     isSyncing = true;
-                    let code = 
-javascript.javascriptGenerator.workspaceToCode(blocklyWorkspace);
+                    let code = generateCodeFromWorkspace(blocklyWorkspace);
                     aceEditor.setValue(code, -1);
                     isSyncing = false;
                 }
@@ -1172,7 +1113,7 @@ javascript.javascriptGenerator.workspaceToCode(blocklyWorkspace);
                     
                     try {
                         blocklyWorkspace.clear();
-                        let dom = Blockly.Xml.textToDom(xmlStr);
+                        let dom = textToDomSafe(xmlStr);
                         Blockly.Xml.domToWorkspace(dom, blocklyWorkspace);
                     } catch (e) {
                         // Suppress incomplete block sync syntax warnings
@@ -1264,7 +1205,7 @@ javascript.javascriptGenerator.workspaceToCode(blocklyWorkspace);
             let initialXml = translateJsToBlocklyXml(activeLevel.defaultCode);
             try {
                 blocklyWorkspace.clear();
-                let dom = Blockly.Xml.textToDom(initialXml);
+                let dom = textToDomSafe(initialXml);
                 Blockly.Xml.domToWorkspace(dom, blocklyWorkspace);
             } catch (e) {
                 console.error(e);
@@ -1526,8 +1467,7 @@ javascript.javascriptGenerator.workspaceToCode(blocklyWorkspace);
             // Capture custom console.log statements to the virtual panel
             const customConsole = {
                 log: function(...args) {
-                    let text = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : 
-arg).join(' ');
+                    let text = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(' ');
                     printConsoleLog(text);
                 }
             };
@@ -1535,8 +1475,7 @@ arg).join(' ');
             try {
                 // Compile and isolate code within structured parameters
                 let safeCode = jsCode;
-                const scopeRunner = new Function('moveForward', 'turnLeft', 'turnRight', 
-'isPathAhead', 'console', `
+                const scopeRunner = new Function('moveForward', 'turnLeft', 'turnRight', 'isPathAhead', 'console', `
                     try {
                         ${safeCode}
                     } catch(e) {
@@ -1561,8 +1500,7 @@ arg).join(' ');
             let stepDuration = 18; // animation length frames
             let currentFrame = 0;
 
-            logTerminal(`Executing directive [${executionPointer + 
-1}/${commandQueue.length}]: ${cmd.action.toUpperCase()}`);
+            logTerminal(`Executing directive [${executionPointer + 1}/${commandQueue.length}]: ${cmd.action.toUpperCase()}`);
 
             function animateTransition() {
                 if (currentFrame >= stepDuration) {
@@ -1608,8 +1546,10 @@ arg).join(' ');
                     spacecraft.drawAngle = startAngle + (target - startAngle) * t;
                 }
 
-                document.getElementById('coordinates-feed').textContent = `Pos: 
-(${Math.round(spacecraft.drawX)}, ${Math.round(spacecraft.drawY)})`;
+                const coordFeed = document.getElementById('coordinates-feed');
+                if (coordFeed) {
+                    coordFeed.textContent = `Pos: (${Math.round(spacecraft.drawX)}, ${Math.round(spacecraft.drawY)})`;
+                }
                 requestAnimationFrame(animateTransition);
             }
 
@@ -1619,16 +1559,13 @@ arg).join(' ');
         function finalizeSimulation() {
             let activeLevel = LEVELS[currentLevelIndex];
             
-            if (spacecraft.gridX === activeLevel.goalX && spacecraft.gridY === 
-activeLevel.goalY) {
+            if (spacecraft.gridX === activeLevel.goalX && spacecraft.gridY === activeLevel.goalY) {
                 playSound('win');
-                logTerminal(`SUCCESS: Transited Warp Zone Sector ${activeLevel.number} 
-safely!`, "success");
+                logTerminal(`SUCCESS: Transited Warp Zone Sector ${activeLevel.number} safely!`, "success");
                 setTimeout(showSuccessModal, 500);
             } else {
                 playSound('crash');
-                logTerminal(`COORDINATE MISALIGNMENT: Flight completed, but warp 
-terminal is at (${activeLevel.goalX}, ${activeLevel.goalY}).`, "warning");
+                logTerminal(`COORDINATE MISALIGNMENT: Flight completed, but warp terminal is at (${activeLevel.goalX}, ${activeLevel.goalY}).`, "warning");
                 abortSimulation();
             }
         }
@@ -1639,7 +1576,15 @@ terminal is at (${activeLevel.goalX}, ${activeLevel.goalY}).`, "warning");
             document.getElementById('btn-stop').disabled = true;
             document.getElementById('btn-run').classList.remove('opacity-50');
             
-            blocklyWorkspace.setEnabled(true);
+            // Safe fallback check to prevent Workspace.setEnabled is not a function TypeErrors
+            if (blocklyWorkspace) {
+                if (typeof blocklyWorkspace.setIsReadOnly === 'function') {
+                    blocklyWorkspace.setIsReadOnly(false);
+                }
+            }
+            // Remove blocking CSS overlays
+            document.getElementById('blockly-container').classList.remove('opacity-60', 'pointer-events-none');
+            
             aceEditor.setReadOnly(false);
         }
 
@@ -1683,20 +1628,15 @@ terminal is at (${activeLevel.goalX}, ${activeLevel.goalY}).`, "warning");
             let activeLevel = LEVELS[currentLevelIndex];
 
             // Highlight and title calculations
-            let matchedChapter = CHAPTERS.find(ch => activeLevel.number >= ch.start && 
-activeLevel.number <= ch.end);
-            document.getElementById('current-chapter-title').textContent = matchedChapter 
-? matchedChapter.title : "Space Academy";
-            document.getElementById('level-display-num').textContent = `Mission 
-${activeLevel.number} / 50`;
+            let matchedChapter = CHAPTERS.find(ch => activeLevel.number >= ch.start && activeLevel.number <= ch.end);
+            document.getElementById('current-chapter-title').textContent = matchedChapter ? matchedChapter.title : "Space Academy";
+            document.getElementById('level-display-num').textContent = `Mission ${activeLevel.number} / 50`;
 
             // Reset description parameters
-            document.getElementById('lesson-badge').textContent = `LEVEL 
-${activeLevel.number}`;
+            document.getElementById('lesson-badge').textContent = `LEVEL ${activeLevel.number}`;
             document.getElementById('lesson-concept').textContent = activeLevel.concept;
             document.getElementById('lesson-title').textContent = activeLevel.title;
-            document.getElementById('lesson-description').textContent = 
-activeLevel.description;
+            document.getElementById('lesson-description').textContent = activeLevel.description;
 
             // Render Commands cheatsheet
             const apiContainer = document.getElementById('api-commands');
@@ -1723,18 +1663,24 @@ activeLevel.description;
             spacecraft.drawAngle = getDirAngle(activeLevel.startDir);
             spacecraft.trailEnergy = 0;
 
-            document.getElementById('coordinates-feed').textContent = `Pos: 
-(${spacecraft.gridX}, ${spacecraft.gridY})`;
+            const coordFeed = document.getElementById('coordinates-feed');
+            if (coordFeed) {
+                coordFeed.textContent = `Pos: (${spacecraft.gridX}, ${spacecraft.gridY})`;
+            }
 
             // Clear Log Panel
-            document.getElementById('terminal-logs').innerHTML = `<div>&gt; Telemetry 
-loaded. Mission ${activeLevel.number} Online.</div>`;
-            document.getElementById('console-logs').innerHTML = `<div class="text-slate-
-600">&gt;&gt; console.log statements will print here...</div>`;
+            const terminalLogs = document.getElementById('terminal-logs');
+            if (terminalLogs) {
+                terminalLogs.innerHTML = `<div>&gt; Telemetry online. Loaded Sector ${activeLevel.number}: ${activeLevel.title}</div>`;
+            }
+            const consoleLogs = document.getElementById('console-logs');
+            if (consoleLogs) {
+                consoleLogs.innerHTML = '<div class="text-slate-600">&gt;&gt; console.log outputs printed here...</div>';
+            }
 
-            // Reset workspace configs
-            updateLevelWorkspaces();
+            // Reload sidebar maps and options
             populateChapterMap();
+            updateLevelWorkspaces();
         }
 
         // Draw dynamic chapter maps into the drawer panel
@@ -1748,8 +1694,7 @@ loaded. Mission ${activeLevel.number} Online.</div>`;
                 
                 let head = document.createElement('div');
                 head.className = "bg-slate-900 px-3 py-2 font-bold text-xs text-indigo-400 flex justify-between items-center";
-                head.innerHTML = `<span>${ch.title}</span> <span class="text-[9px] text-slate-
-500">Lvls ${ch.start}-${ch.end}</span>`;
+                head.innerHTML = `<span>${ch.title}</span> <span class="text-[9px] text-slate-500">Lvls ${ch.start}-${ch.end}</span>`;
                 section.appendChild(head);
 
                 let body = document.createElement('div');
@@ -1797,8 +1742,7 @@ loaded. Mission ${activeLevel.number} Online.</div>`;
             backdrop.classList.add('hidden');
         }
 
-        document.getElementById('btn-toggle-map').addEventListener('click', 
-openDrawer);
+        document.getElementById('btn-toggle-map').addEventListener('click', openDrawer);
         document.getElementById('btn-open-map').addEventListener('click', openDrawer);
         document.getElementById('btn-close-map').addEventListener('click', closeDrawer);
         backdrop.addEventListener('click', closeDrawer);
@@ -1861,7 +1805,14 @@ openDrawer);
             document.getElementById('btn-stop').disabled = false;
             document.getElementById('btn-run').classList.add('opacity-50');
 
-            blocklyWorkspace.setEnabled(false);
+            // Apply read-only mode to Blockly workspace safely with standard API and CSS wrappers
+            if (blocklyWorkspace) {
+                if (typeof blocklyWorkspace.setIsReadOnly === 'function') {
+                    blocklyWorkspace.setIsReadOnly(true);
+                }
+            }
+            document.getElementById('blockly-container').classList.add('opacity-60', 'pointer-events-none');
+            
             aceEditor.setReadOnly(true);
 
             let activeLevel = LEVELS[currentLevelIndex];
@@ -1873,16 +1824,14 @@ openDrawer);
             spacecraft.drawAngle = getDirAngle(activeLevel.startDir);
 
             executionPointer = 0;
-            logTerminal("SUCCESS: Flight trajectory calculated. Engaging hyper-drives...", 
-"success");
+            logTerminal("SUCCESS: Flight trajectory calculated. Engaging hyper-drives...", "success");
             
             setTimeout(executeStepByStepQueue, 300);
         });
 
         document.getElementById('btn-stop').addEventListener('click', () => {
             playSound('click');
-            logTerminal("Emergency navigation overrides triggered. Re-docking rocket.", 
-"warning");
+            logTerminal("Emergency navigation overrides triggered. Re-docking rocket.", "warning");
             abortSimulation();
             
             let activeLevel = LEVELS[currentLevelIndex];
