@@ -1211,6 +1211,9 @@
                 console.error(e);
             }
             isSyncing = false;
+
+            setTimeout(()=>{aceEditor.setValue("", -1)}, 500)
+            
         }
 
         // --- 6. Physics Game Simulator Arena (Canvas Renderer) ---
