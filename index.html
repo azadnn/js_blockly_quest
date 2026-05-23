@@ -144,28 +144,60 @@
     <!-- MAIN APPLICATION GRID CONTAINER -->
     <main class="flex-grow grid grid-cols-1 xl:grid-cols-12 gap-5 p-4 md:p-6 max-w-[1800px] w-full mx-auto">
         
-        <!-- LEFT PANEL: Simulation Arena & Level Intel (4 Cols) -->
-        <section class="xl:col-span-4 flex flex-col gap-5">
-            <!-- Mission Briefing / Instructions Card -->
-            <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden">
-                <div class="absolute -right-12 -top-12 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl"></div>
-                <div class="flex items-center space-x-2 mb-3">
-                    <span id="lesson-badge" class="bg-cyan-500/10 text-cyan-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-cyan-500/20 uppercase tracking-wider">LEVEL 1</span>
-                    <span class="text-slate-500">•</span>
-                    <span id="lesson-concept" class="text-[10px] text-indigo-400 font-semibold tracking-wide uppercase">Sequencing</span>
-                </div>
-                <h2 id="lesson-title" class="text-lg font-bold text-white mb-2">Launch Protocol</h2>
-                <p id="lesson-description" class="text-xs text-slate-300 leading-relaxed mb-4">
-                    Commander, welcome to your spacecraft navigator! Guide your starship to the dimensional portal. Type actions into the text editor or connect blocks.
-                </p>
-                <!-- API Helper Commands cheatsheet -->
-                <div class="bg-slate-950/60 rounded-xl border border-slate-800/80 p-3">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Available Directives:</p>
-                    <div class="flex flex-wrap gap-1.5" id="api-commands">
-                        <!-- Render commands dynamically -->
+        <!-- LEFT PANEL: Simulation Arena & Level Intel (8 Cols) -->
+        <section class="xl:col-span-6 flex flex-col md:grid md:grid-cols-2 gap-5">
+
+            <div class="xl:col-span-1 flex flex-col md:grid md:grid-cols-1 gap-5">
+                <!-- Combined Output Area with tabs (Console vs Terminal logs vs Debugger) -->
+                <div class="bg-slate-950 border border-slate-900 rounded-xl p-3 flex-grow flex flex-col min-h-[160px]">
+                    <div class="flex justify-between items-center mb-2 border-b border-slate-900 pb-1.5">
+                        <div class="flex space-x-2 text-[10px] font-bold uppercase tracking-wider">
+                            <button id="tab-terminal" class="text-cyan-400 border-b-2 border-cyan-400 pb-1">System Terminal</button>
+                            <span class="text-slate-700">|</span>
+                            <button id="tab-console" class="text-slate-500 hover:text-slate-300 pb-1">JS Console Log</button>
+                            <span class="text-slate-700">|</span>
+                            <button id="tab-debugger" class="text-slate-500 hover:text-slate-300 pb-1">Variable Inspector</button>
+                        </div>
+                        <button id="btn-clear-logs" class="text-[10px] text-slate-600 hover:text-slate-400 transition">Clear</button>
+                    </div>
+                    
+                    <!-- Terminal logs container -->
+                    <div id="terminal-logs" class="font-mono text-xs text-slate-400 space-y-1 overflow-y-auto max-h-[120px] flex-grow">
+                        <div>&gt; Space Academy telemetry online.</div>
+                    </div>
+
+                    <!-- Console Output Container -->
+                    <div id="console-logs" class="font-mono text-xs text-amber-400 space-y-1 overflow-y-auto max-h-[120px] flex-grow hidden">
+                        <div class="text-slate-600">&gt;&gt; console.log statements will print here...</div>
+                    </div>
+
+                    <!-- Debugger Output Container -->
+                    <div id="debugger-inspector" class="font-mono text-xs text-cyan-400 space-y-1 overflow-y-auto max-h-[120px] flex-grow hidden">
+                        <div class="text-slate-600">&gt;&gt; Step execution to inspect runtime variables...</div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Mission Briefing / Instructions Card -->
+                <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-12 -top-12 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl"></div>
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span id="lesson-badge" class="bg-cyan-500/10 text-cyan-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-cyan-500/20 uppercase tracking-wider">LEVEL 1</span>
+                        <span class="text-slate-500">•</span>
+                        <span id="lesson-concept" class="text-[10px] text-indigo-400 font-semibold tracking-wide uppercase">Sequencing</span>
+                    </div>
+                    <h2 id="lesson-title" class="text-lg font-bold text-white mb-2">Launch Protocol</h2>
+                    <p id="lesson-description" class="text-xs text-slate-300 leading-relaxed mb-4">
+                        Commander, welcome to your spacecraft navigator! Guide your starship to the dimensional portal. Type actions into the text editor or connect blocks.
+                    </p>
+                    <!-- API Helper Commands cheatsheet -->
+                    <div class="bg-slate-950/60 rounded-xl border border-slate-800/80 p-3">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Available Directives:</p>
+                        <div class="flex flex-wrap gap-1.5" id="api-commands">
+                            <!-- Render commands dynamically -->
+                        </div>
+                    </div>
+                </div>  
+            </div> 
 
             <!-- Interactive Game Canvas Frame -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col relative">
@@ -183,61 +215,35 @@
                     <canvas id="game-canvas" class="block w-full h-full max-h-[420px] max-w-[420px] transition-transform duration-300"></canvas>
                 </div>
 
+                <!-- Debug Task Alert Banner -->
+                <div id="debug-task-banner" class="bg-amber-950/40 border border-amber-900/50 p-2.5 rounded-xl mb-2 text-[11px] text-amber-300 hidden">
+                    <i class="fa-solid fa-bug text-amber-400 mr-1.5"></i> <span id="debug-task-text"></span>
+                </div>
+
                 <!-- Simulation Action Controls -->
                 <div class="bg-slate-950/80 border-t border-slate-800/80 p-3 flex gap-2">
                     <button id="btn-run" class="flex-grow bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-2.5 px-4 rounded-xl transition transform active:scale-95 text-sm shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2">
                         <i class="fa-solid fa-play"></i>
                         <span>Run Script</span>
                     </button>
+                    <button id="btn-step" class="flex-grow bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold py-2.5 px-4 rounded-xl transition transform active:scale-95 text-sm shadow-lg shadow-amber-500/20 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-forward-step"></i>
+                        <span>Step Code</span>
+                    </button>                    
                     <button id="btn-stop" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 px-4 rounded-xl transition border border-slate-700" disabled>
                         <i class="fa-solid fa-stop"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Combined Output Area with tabs (Console vs Terminal logs) -->
-            <div class="bg-slate-950 border border-slate-900 rounded-xl p-3 flex-grow flex flex-col min-h-[160px]">
-                <div class="flex justify-between items-center mb-2 border-b border-slate-900 pb-1.5">
-                    <div class="flex space-x-2 text-[10px] font-bold uppercase tracking-wider">
-                        <button id="tab-terminal" class="text-cyan-400 border-b-2 border-cyan-400 pb-1">System Terminal</button>
-                        <span class="text-slate-700">|</span>
-                        <button id="tab-console" class="text-slate-500 hover:text-slate-300 pb-1">JS Console Log</button>
-                    </div>
-                    <button id="btn-clear-logs" class="text-[10px] text-slate-600 hover:text-slate-400 transition">Clear</button>
-                </div>
-                
-                <!-- Terminal logs container -->
-                <div id="terminal-logs" class="font-mono text-xs text-slate-400 space-y-1 overflow-y-auto max-h-[120px] flex-grow">
-                    <div>&gt; Space Academy telemetry online.</div>
-                </div>
+         
 
-                <!-- Console Output Container -->
-                <div id="console-logs" class="font-mono text-xs text-amber-400 space-y-1 overflow-y-auto max-h-[120px] flex-grow hidden">
-                    <div class="text-slate-600">&gt;&gt; console.log statements will print here...</div>
-                </div>
-            </div>
         </section>
 
         <!-- RIGHT PANEL: Split-Screen Editor Workspace (8 Cols) -->
-        <section class="xl:col-span-8 flex flex-col md:grid md:grid-cols-2 gap-5 h-[calc(100vh-140px)] min-h-[550px] xl:min-h-0">
+        <section class="xl:col-span-6 flex flex-col md:grid md:grid-cols-2 gap-5 h-[calc(100vh-140px)] min-h-[550px] xl:min-h-0">
             
-            <!-- Blockly Visual Workspace (Left Split) -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col shadow-xl">
-                <!-- Blockly Header -->
-                <div class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-3 flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                        <div class="w-3 h-3 rounded-full bg-cyan-400 shadow-md shadow-cyan-400/30"></div>
-                        <span class="text-xs font-bold text-slate-300 uppercase tracking-widest">Visual Blocks</span>
-                    </div>
-                    <span class="text-[9px] bg-cyan-900/40 text-cyan-400 border border-cyan-800/50 px-2 py-0.5 rounded-md font-semibold font-mono">No-Code Link</span>
-                </div>
-                <!-- Blockly Editor Area -->
-                <div class="flex-grow relative h-full w-full" id="blockly-container">
-                    <div id="blocklyDiv" class="absolute inset-0"></div>
-                </div>
-            </div>
-
-            <!-- Code Editor Workspace (Right Split) -->
+            <!-- Code Editor Workspace (Left Split) -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col shadow-xl">
                 <!-- Code Editor Header -->
                 <div class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-3 flex items-center justify-between">
@@ -256,6 +262,22 @@
                     <div id="editor" class="absolute inset-0 text-xs font-mono"></div>
                 </div>
             </div>
+
+            <!-- Blockly Visual Workspace (Right Split) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col shadow-xl">
+                <!-- Blockly Header -->
+                <div class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-3 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-cyan-400 shadow-md shadow-cyan-400/30"></div>
+                        <span class="text-xs font-bold text-slate-300 uppercase tracking-widest">Visual Blocks</span>
+                    </div>
+                    <span class="text-[9px] bg-cyan-900/40 text-cyan-400 border border-cyan-800/50 px-2 py-0.5 rounded-md font-semibold font-mono">No-Code Link</span>
+                </div>
+                <!-- Blockly Editor Area -->
+                <div class="flex-grow relative h-full w-full" id="blockly-container">
+                    <div id="blocklyDiv" class="absolute inset-0"></div>
+                </div>
+            </div>            
 
         </section>
     </main>
@@ -418,6 +440,21 @@
             }
         };
 
+        Blockly.Blocks['jump'] = {
+            init: function() {
+                this.appendValueInput("VALUE")
+                    //.setCheck("Number") // Ensures only number-returning blocks can connect
+                    .appendField("jump(");
+                this.appendDummyInput()
+                    .appendField(");");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour(160);
+                this.setTooltip("Command spaceship to jump over a specific number of grid quadrants.");
+            }
+        };
+
         Blockly.Blocks['turn_left'] = {
             init: function() {
                 this.appendDummyInput().appendField("turnLeft();");
@@ -478,6 +515,22 @@
             }
         };
 
+        // Custom declare const variable
+        Blockly.Blocks['declare_const'] = {
+            init: function() {
+                this.appendValueInput("VALUE")
+                    .setCheck(null)
+                    .appendField("const")
+                    .appendField(new Blockly.FieldTextInput("steps"), "VAR_NAME")
+                    .appendField("=");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour(295);
+                this.setTooltip("Declares a new immutable block scope const.");
+            }
+        };        
+
         // Dynamically bind custom generators with multi-version fallback orders
         const activeGenerator = (window.javascript && window.javascript.javascriptGenerator) || window.Blockly.JavaScript;
         const activeOrder = (window.javascript && window.javascript.Order) || (window.Blockly.JavaScript ? window.Blockly.JavaScript : {});
@@ -488,6 +541,15 @@
             activeGenerator.forBlock['move_forward'] = function(block) {
                 return 'moveForward();\n';
             };
+            activeGenerator.forBlock['jump'] = function(block) {
+                // Fetch the block connected to the "VALUE" input socket
+                // Fallback to '1' if the socket is left empty
+                var value_steps = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC) || '1';
+                
+                // Wrap the value in Math.max to enforce a minimum runtime value of 1
+                var code = 'jump(Math.max(1, ' + value_steps + '));\n';
+                return code;
+            };       
             activeGenerator.forBlock['turn_left'] = function(block) {
                 return 'turnLeft();\n';
             };
@@ -506,6 +568,11 @@
                 var val = activeGenerator.valueToCode(block, 'VALUE', ATOMIC_ORDER) || '0';
                 return 'let ' + varName + ' = ' + val + ';\n';
             };
+            activeGenerator.forBlock['declare_const'] = function(block) {
+                var varName = block.getFieldValue('VAR_NAME');
+                var val = activeGenerator.valueToCode(block, 'VALUE', ATOMIC_ORDER) || '0';
+                return 'const ' + varName + ' = ' + val + ';\n';
+            };            
         }
 
         // --- 3. The 50-Level Concept Database (Curriculum Layout Map) ---
@@ -523,7 +590,7 @@
         ];
 
         // Let's generate 50 fully structured levels mapping progressively to teaching concepts.
-        // Grid size is 6x6. 0=void space, 1=pathway.
+        // Grid size is 9x9. 0=void space, 1=pathway.
         const LEVELS = [];
 
         function buildFullAcademyCurriculum() {
@@ -535,15 +602,19 @@
                 let blocks = ['move_forward'];
                 let api = [{ code: "moveForward();", desc: "Advance 1 cell." }];
                 let grid = [
-                    [0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0]
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0],                    
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0]
                 ];
                 let startX = 1, startY = 3, startDir = 1, goalX = 4, goalY = 3;
                 let defaultCode = "moveForward();";
+                let debugTask = null; // Holds the bug hunting parameters if active
 
                 // Map chapters
                 if (i >= 1 && i <= 5) {
@@ -551,38 +622,51 @@
                     blocks = ['move_forward', 'turn_left', 'turn_right'];
                     if (i === 1) {
                         title = "Ignition Launch";
-                        desc = "Welcome Cadet. Move your rocket ship in a straight path to the dimensional vortex portal. Type moveForward() 3 times or connect the blocks.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
+                        desc = "Welcome Cadet. Move your rocket ship in a straight path to the dimensional vortex portal. Type moveForward() 3 times.";
+                        grid[3] = [0, 1, 1, 1, 1, 1, 1, 0, 0];
                         startX = 1; goalX = 4;
                         defaultCode = "moveForward();\nmoveForward();\nmoveForward();";
+                        // Debug task assignment
+                        debugTask = {
+                            instruction: "BUG HUNT: The rocket overshoots or paths blind! Fix the code sequence.",
+                            buggyCode: "moveForward();\nmoveForward();\nmoveForward();\nmoveForward();"
+                        };
                     } else if (i === 2) {
                         title = "Course Core Turn";
-                        desc = "You must change directions! Combine turns (turnRight) and movements to match the path pattern.";
-                        grid[2] = [0, 0, 0, 1, 0, 0];
-                        grid[3] = [0, 1, 1, 1, 0, 0];
-                        startX = 1; startY = 3; goalX = 3; goalY = 2;
+                        desc = "You must change directions! Step through the code to see the effect.";
+                        grid[2] = [0, 0, 1, 1, 1, 1, 0, 0, 0];
+                        grid[3] = [0, 1, 1, 1, 0, 0, 0, 0, 0];
+                        startX = 1; startY = 3; goalX = 4; goalY = 2;
                         defaultCode = "moveForward();\nturnLeft();\nmoveForward();";
+                        debugTask = {
+                            instruction: "BUG HUNT: The navigator turned the wrong direction! Swap it.",
+                            buggyCode: "moveForward();\nturnLeft();\nmoveForward();\nturnRight();\nmoveForward();\nturnLeft();\nmoveForward();\nturnLeft();\nmoveForward();"
+                        };
                     } else if (i === 3) {
                         title = "Orbital S-Curve";
                         desc = "Navigate the ship along the solar stream line by combining left and right rotations.";
-                        grid[2] = [0, 0, 1, 1, 0, 0];
-                        grid[3] = [0, 1, 1, 0, 0, 0];
-                        startX = 1; startY = 3; goalX = 3; goalY = 2;
+                        grid[3] = [0, 0, 1, 1, 1, 1, 1, 1, 0];
+                        grid[4] = [0, 1, 1, 0, 0, 0, 0, 1, 0];
+                        grid[5] = [0, 0, 0, 1, 1, 1, 1, 1, 0];
+                        grid[6] = [0, 1, 1, 1, 0, 0, 0, 0, 0];                        
+                        startX = 2; startY = 6; goalX = 6; goalY = 3;
                         defaultCode = "moveForward();\nturnLeft();\nmoveForward();\nturnRight();\nmoveForward();";
                     } else if (i === 4) {
                         title = "U-Turn Navigation";
                         desc = "Reverse your direction entirely to locate the wormhole portal positioned directly behind you.";
-                        grid[2] = [0, 1, 1, 1, 0, 0];
-                        grid[3] = [0, 1, 0, 1, 0, 0];
-                        startX = 1; startY = 2; goalX = 3; goalY = 3;
+                        grid[3] = [1, 1, 1, 1, 1, 1, 1, 0, 0];
+                        grid[4] = [0, 0, 1, 1, 0, 0, 1, 0, 0];
+                        grid[5] = [0, 0, 1, 1, 1, 0, 1, 0, 0];
+                        startX = 6; startY = 5; goalX = 4; goalY = 5;
                         defaultCode = "moveForward();\nturnRight();\nmoveForward();\nturnRight();\nmoveForward();";
                     } else {
                         title = "Zigzag Escape Route";
                         desc = "Execute consecutive small alternating directional turns to clear the hazardous asteroids.";
-                        grid[2] = [0, 0, 0, 1, 1, 0];
-                        grid[3] = [0, 0, 1, 1, 0, 0];
-                        grid[4] = [0, 1, 1, 0, 0, 0];
-                        startX = 1; startY = 4; goalX = 4; goalY = 2;
+                        grid[3] = [0, 0, 1, 1, 1, 1, 1, 0, 0];
+                        grid[4] = [0, 1, 1, 0, 0, 0, 1, 0, 0];
+                        grid[5] = [0, 0, 0, 1, 1, 1, 1, 0, 0];
+                        grid[6] = [0, 1, 1, 1, 0, 0, 0, 0, 0];                        
+                        startX = 2; startY = 6; goalX = 6; goalY = 3;
                         defaultCode = "moveForward();\nturnLeft();\nmoveForward();\nturnRight();\nmoveForward();\nturnLeft();\nmoveForward();";
                     }
                     api = [
@@ -593,13 +677,17 @@
 
                 } else if (i >= 6 && i <= 10) {
                     concept = "Variables";
-                    blocks = ['move_forward', 'declare_variable', 'variables_get', 'math_number'];
+                    blocks = ['move_forward', 'jump', 'declare_variable', 'declare_const', 'variables_get', 'math_number', 'turn_left', 'turn_right'];
                     if (i === 6) {
                         title = "Variable Definitions";
-                        desc = "Declare an integer variable called 'steps' and pass it in to specify the distance to go forward.";
+                        desc = "Declare an integer variable called 'steps' and pass it in to specify the distance to jump forward.";
                         grid[3] = [0, 1, 1, 1, 1, 0];
                         startX = 1; goalX = 4;
-                        defaultCode = "let steps = 3;\nmoveForward();\nmoveForward();\nmoveForward();";
+                        defaultCode = "let steps = 5;\njump(steps);\nmoveForward();\nmoveForward();";
+                        debugTask = {
+                            instruction: "BUG HUNT: The rocket overshoots or paths blind! Fix the code sequence.",
+                            buggyCode: "let steps = 2;\njump(steps);\nturnRight();\nmoveForward();"
+                        };                        
                     } else if (i === 7) {
                         title = "Dynamic Step-Counters";
                         desc = "Declare variables to count operations. Set let jumps = 2 to control step calculations.";
@@ -613,6 +701,10 @@
                         grid[3] = [0, 1, 1, 0, 0, 0];
                         startX = 1; startY = 3; goalX = 4; goalY = 2;
                         defaultCode = "let dist = 1;\nmoveForward();\nturnLeft();\ndist = 2;\nmoveForward();\nmoveForward();";
+                        debugTask = {
+                            instruction: "BUG HUNT: The navigator turned the wrong direction! Swap it.",
+                            buggyCode: "let dist = 2;\njump(dist);\nturnLeft();\ndist = 3;\nmoveForward();\njump(dist);"
+                        };                        
                     } else if (i === 9) {
                         title = "Scope Space Constants";
                         desc = "Use 'const' declarations for values that will never alter on your flight parameters.";
@@ -630,7 +722,8 @@
                     api = [
                         { code: "let steps = 3;", desc: "Declare a standard variable." },
                         { code: "const MAX = 4;", desc: "Declare a read-only constant value." },
-                        { code: "moveForward();", desc: "Advance." }
+                        { code: "jump(5);", desc: "Advance over a number of grids." },
+                        
                     ];
 
                 } else if (i >= 11 && i <= 15) {
@@ -973,7 +1066,8 @@
                     startDir: startDir,
                     goalX: goalX,
                     goalY: goalY,
-                    defaultCode: defaultCode
+                    defaultCode: defaultCode,
+                    debugTask: debugTask
                 });
             }
         }
@@ -983,6 +1077,7 @@
         // Global State System
         let currentLevelIndex = 0;
         let isRunningSimulation = false;
+        let isSteppingSimulation = false;
         let blocklyWorkspace = null;
         let aceEditor = null;
         let isSyncing = false;
@@ -993,6 +1088,7 @@
             let lines = jsCode
                 .replace(/\{/g, '{\n')
                 .replace(/\}/g, '\n}\n')
+                .replace(/\;/g, ';\n')
                 .split('\n')
                 .map(l => l.trim())
                 .filter(l => l.length > 0 && !l.startsWith('//'));
@@ -1008,6 +1104,10 @@
 
                 if (current.includes('moveForward()')) {
                     currentBlock = '<block type="move_forward">';
+                } else if (current.includes('jump(')) {
+                    let jumpMatch = current.match(/jump\((.*)\)/);
+                    let jumpVal = jumpMatch ? jumpMatch[1] : '0';
+                    currentBlock = `<block type="jump"><value name="VALUE"><block type="variables_get"><field name="VAR">${jumpVal}</field></block></value>`;         
                 } else if (current.includes('turnLeft()')) {
                     currentBlock = '<block type="turn_left">';
                 } else if (current.includes('turnRight()')) {
@@ -1016,11 +1116,15 @@
                     let logMatch = current.match(/console\.log\((.*)\)/);
                     let loggedVal = logMatch ? logMatch[1] : '"Space Academy"';
                     currentBlock = `<block type="console_log"><value name="VALUE"><block type="text"><field name="TEXT">${loggedVal.replace(/['"]/g, '')}</field></block></value>`;
-                } else if (current.startsWith('let') && current.includes('=')) {
+                } else if ((current.startsWith('let ') || current.startsWith('const ')) && current.includes('=')) {
                     let varParts = current.substring(4).split('=');
                     let varName = varParts[0].trim();
                     let val = varParts[1].replace(';', '').trim();
-                    currentBlock = `<block type="declare_variable"><field name="VAR_NAME">${varName}</field><value name="VALUE"><block type="math_number"><field name="NUM">${val}</field></block></value>`;
+                    if (current.startsWith('let ')) {
+                        currentBlock = `<block type="declare_variable"><field name="VAR_NAME">${varName}</field><value name="VALUE"><block type="math_number"><field name="NUM">${val}</field></block></value>`;
+                    } else {
+                        currentBlock = `<block type="declare_const"><field name="VAR_NAME">${varName}</field><value name="VALUE"><block type="math_number"><field name="NUM">${val}</field></block></value>`;
+                    }
                 } else if (current.startsWith('for') && current.includes('{')) {
                     let iterations = 3;
                     let countMatch = current.match(/<\s*(\d+)/);
@@ -1128,6 +1232,16 @@
             if (allowedBlocks.includes('move_forward')) {
                 xml += '<block type="move_forward"></block>';
             }
+            if (allowedBlocks.includes('jump')) {
+                xml += `
+                <block type="jump">
+                    <value name="VALUE">
+                        <block type="math_number">
+                            <field name="NUM">5</field>
+                        </block>
+                    </value>
+                </block>`;                
+            }            
             if (allowedBlocks.includes('turn_left')) {
                 xml += '<block type="turn_left"></block>';
             }
@@ -1170,6 +1284,16 @@
                     </value>
                 </block>`;
             }
+            if (allowedBlocks.includes('declare_const')) {
+                xml += `
+                <block type="declare_const">
+                    <value name="VALUE">
+                        <block type="math_number">
+                            <field name="NUM">1</field>
+                        </block>
+                    </value>
+                </block>`;
+            }            
             xml += '</xml>';
             return xml;
         }
@@ -1201,8 +1325,10 @@
             });
 
             isSyncing = true;
-            aceEditor.setValue(activeLevel.defaultCode, -1);
-            let initialXml = translateJsToBlocklyXml(activeLevel.defaultCode);
+            //aceEditor.setValue(activeLevel.defaultCode, -1);
+            //let initialXml = translateJsToBlocklyXml(activeLevel.defaultCode);
+            aceEditor.setValue('', -1);
+            let initialXml = translateJsToBlocklyXml('');            
             try {
                 blocklyWorkspace.clear();
                 let dom = textToDomSafe(initialXml);
@@ -1212,7 +1338,7 @@
             }
             isSyncing = false;
 
-            setTimeout(()=>{aceEditor.setValue("", -1)}, 500)
+            // setTimeout(()=>{aceEditor.setValue("", -1)}, 300)
             
         }
 
@@ -1283,7 +1409,7 @@
 
                     if (tile === 1) {
                         ctx.strokeStyle = "rgba(129, 140, 248, 0.15)";
-                        ctx.lineWidth = 1;
+                        ctx.lineWidth = 4;
                         ctx.strokeRect(tx, ty, cellSize, cellSize);
 
                         ctx.fillStyle = "rgba(99, 102, 241, 0.04)";
@@ -1295,7 +1421,7 @@
                     } else {
                         ctx.fillStyle = "#0F111E";
                         ctx.strokeStyle = "#16192B";
-                        ctx.lineWidth = 0.5;
+                        ctx.lineWidth = 1;
                         ctx.strokeRect(tx, ty, cellSize, cellSize);
                         
                         ctx.fillStyle = "rgba(30, 41, 59, 0.4)";
@@ -1403,8 +1529,11 @@
         }
 
         function isTileWalkable(x, y) {
-            let activeLevel = LEVELS[currentLevelIndex];
-            if (x < 0 || x >= 6 || y < 0 || y >= 6) return false;
+            let activeLevel = LEVELS[currentLevelIndex]
+            let grid = activeLevel.grid;
+            let rows = grid.length;
+            let cols = grid[0].length;
+            if (x < 0 || x >= cols || y < 0 || y >= rows) return false;
             return activeLevel.grid[y][x] === 1;
         }
 
@@ -1415,6 +1544,9 @@
             activeVirtualPos.x = activeLevel.startX;
             activeVirtualPos.y = activeLevel.startY;
             activeVirtualPos.dir = activeLevel.startDir;
+
+            // Local tracking scope matching interpreter executions
+            let localVariables = {};
 
             const moveForward = () => {
                 let moveOffset = getFacingOffset(activeVirtualPos.dir);
@@ -1430,9 +1562,16 @@
                     fromY: originY,
                     toX: activeVirtualPos.x,
                     toY: activeVirtualPos.y,
-                    dir: activeVirtualPos.dir
+                    dir: activeVirtualPos.dir,
+      variablesSnapshot: { ...localVariables, shipX: activeVirtualPos.x, shipY: activeVirtualPos.y, facing: activeVirtualPos.dir }
+   
                 });
             };
+
+            const jump = (num) => {
+                for (let i=0; i<num; i++) 
+                    moveForward()
+            }            
 
             const turnLeft = () => {
                 let oldDir = activeVirtualPos.dir;
@@ -1443,7 +1582,9 @@
                     toDir: activeVirtualPos.dir,
                     targetAngle: getDirAngle(activeVirtualPos.dir),
                     x: activeVirtualPos.x,
-                    y: activeVirtualPos.y
+                    y: activeVirtualPos.y,
+      variablesSnapshot: { ...localVariables, shipX: activeVirtualPos.x, shipY: activeVirtualPos.y, facing: activeVirtualPos.dir }
+   
                 });
             };
 
@@ -1456,7 +1597,9 @@
                     toDir: activeVirtualPos.dir,
                     targetAngle: getDirAngle(activeVirtualPos.dir),
                     x: activeVirtualPos.x,
-                    y: activeVirtualPos.y
+                    y: activeVirtualPos.y,
+      variablesSnapshot: { ...localVariables, shipX: activeVirtualPos.x, shipY: activeVirtualPos.y, facing: activeVirtualPos.dir }
+  
                 });
             };
 
@@ -1476,17 +1619,24 @@
             };
 
             try {
-                // Compile and isolate code within structured parameters
-                let safeCode = jsCode;
-                const scopeRunner = new Function('moveForward', 'turnLeft', 'turnRight', 'isPathAhead', 'console', `
+                // Regex parsing interceptor to extract local variable mutations out of plaintext scripts dynamically
+                let parsedCode = jsCode;
+                // Intercepts let modifications
+                parsedCode = parsedCode.replace(/(let|const)\s+(\w+)\s*=\s*(.+);/g, (match, type, name, val) => {
+                return `${match}\nupdateVariableSnapshot('${name}', ${val});`;
+                });
+
+                const updateVariableSnapshot = (name, value) => {
+                localVariables[name] = value;
+                };
+
+                let scopeRunner = new Function('moveForward', 'jump', 'turnLeft', 'turnRight', 'isPathAhead', 'console', 'updateVariableSnapshot', `
                     try {
-                        ${safeCode}
-                    } catch(e) {
-                        throw e;
-                    }
-                `);
+                        ${parsedCode}
+                    } catch(e) { throw e; }
+                    `);
                 
-                scopeRunner(moveForward, turnLeft, turnRight, isPathAhead, customConsole);
+                scopeRunner(moveForward, jump, turnLeft, turnRight, isPathAhead, customConsole, updateVariableSnapshot);
                 return { success: true };
             } catch (err) {
                 return { success: false, error: err.message };
@@ -1494,12 +1644,17 @@
         }
 
         function executeStepByStepQueue() {
+            if (!isRunningSimulation) {
+                commandQueue.length = 0; 
+                return;
+            }
             if (executionPointer >= commandQueue.length) {
                 finalizeSimulation();
                 return;
             }
 
             let cmd = commandQueue[executionPointer];
+            updateDebuggerUI(cmd.variablesSnapshot); // Updates layout views at every processing frame
             let stepDuration = 18; // animation length frames
             let currentFrame = 0;
 
@@ -1526,7 +1681,16 @@
                     }
 
                     executionPointer++;
-                    setTimeout(executeStepByStepQueue, 100);
+                    if (isSteppingSimulation) {
+                        if (executionPointer >= commandQueue.length) {
+                            finalizeSimulation();
+                            
+                        }                        
+                        document.getElementById('btn-step').disabled = false;
+                        document.getElementById('btn-step').classList.remove('opacity-50');
+                    } else {
+                        setTimeout(executeStepByStepQueue, 400);
+                    } 
                     return;
                 }
 
@@ -1549,15 +1713,37 @@
                     spacecraft.drawAngle = startAngle + (target - startAngle) * t;
                 }
 
+                /*
                 const coordFeed = document.getElementById('coordinates-feed');
                 if (coordFeed) {
                     coordFeed.textContent = `Pos: (${Math.round(spacecraft.drawX)}, ${Math.round(spacecraft.drawY)})`;
                 }
+                */
                 requestAnimationFrame(animateTransition);
             }
 
             animateTransition();
         }
+
+        function updateDebuggerUI(snapshot) {
+            const inspector = document.getElementById('debugger-inspector');
+            if (!snapshot || Object.keys(snapshot).length === 0) {
+                inspector.innerHTML = '<div class="text-slate-500">&gt;&gt; No active scoped frames detected.</div>';
+                return;
+            }
+            
+            let html = '<div class="text-indigo-400 font-bold mb-1">[FRAME METRICS]:</div>';
+            for (let key in snapshot) {
+                html += `<div class="flex justify-between border-b border-slate-900/60 py-0.5">
+                        <span class="text-slate-400">let ${key}</span>
+                        <span class="text-emerald-400 font-mono">${JSON.stringify(snapshot[key])}</span>
+                        </div>`;
+            }
+            inspector.innerHTML = html;
+        }
+
+
+
 
         function finalizeSimulation() {
             let activeLevel = LEVELS[currentLevelIndex];
@@ -1569,15 +1755,20 @@
             } else {
                 playSound('crash');
                 logTerminal(`COORDINATE MISALIGNMENT: Flight completed, but warp terminal is at (${activeLevel.goalX}, ${activeLevel.goalY}).`, "warning");
+                logTerminal(`FAILURE: Mission failed, try again!!.`, "error");
                 abortSimulation();
             }
         }
 
         function abortSimulation() {
             isRunningSimulation = false;
+            isSteppingSimulation = false;
+            
             document.getElementById('btn-run').disabled = false;
-            document.getElementById('btn-stop').disabled = true;
+            document.getElementById('btn-step').disabled = false;
+            // document.getElementById('btn-stop').disabled = true;
             document.getElementById('btn-run').classList.remove('opacity-50');
+            document.getElementById('btn-step').classList.remove('opacity-50');
             
             // Safe fallback check to prevent Workspace.setEnabled is not a function TypeErrors
             if (blocklyWorkspace) {
@@ -1629,6 +1820,21 @@
             playSound('click');
             currentLevelIndex = index;
             let activeLevel = LEVELS[currentLevelIndex];
+
+            // Logic to load Bug Hunting Mode UI components
+            const taskBanner = document.getElementById('debug-task-banner');
+            const taskText = document.getElementById('debug-task-text');
+            
+            if (activeLevel.debugTask) {
+                taskBanner.classList.remove('hidden');
+                taskText.textContent = activeLevel.debugTask.instruction;
+                // Set code viewport content to the broken configuration to test debugging limits
+                setTimeout(() => {
+                aceEditor.setValue(activeLevel.debugTask.buggyCode, -1);
+                }, 400);
+            } else {
+                taskBanner.classList.add('hidden');
+            }
 
             // Highlight and title calculations
             let matchedChapter = CHAPTERS.find(ch => activeLevel.number >= ch.start && activeLevel.number <= ch.end);
@@ -1755,27 +1961,46 @@
         const tabConsole = document.getElementById('tab-console');
         const terminalBox = document.getElementById('terminal-logs');
         const consoleBox = document.getElementById('console-logs');
+        // --- INTERFACE CONTROL LINK FOR DEBUG VIEWS ---
+        const tabDebugger = document.getElementById('tab-debugger');
+        const debuggerBox = document.getElementById('debugger-inspector');
+
+        tabDebugger.addEventListener('click', () => {
+        playSound('click');
+        tabDebugger.className = "text-cyan-400 border-b-2 border-cyan-400 pb-1";
+        tabTerminal.className = "text-slate-500 hover:text-slate-300 pb-1";
+        tabConsole.className = "text-slate-500 hover:text-slate-300 pb-1";
+        debuggerBox.classList.remove('hidden');
+        terminalBox.classList.add('hidden');
+        consoleBox.classList.add('hidden');
+        });
+
 
         tabTerminal.addEventListener('click', () => {
             playSound('click');
             tabTerminal.className = "text-cyan-400 border-b-2 border-cyan-400 pb-1";
             tabConsole.className = "text-slate-500 hover:text-slate-300 pb-1";
+            tabDebugger.className = "text-slate-500 hover:text-slate-300 pb-1";
             terminalBox.classList.remove('hidden');
             consoleBox.classList.add('hidden');
+            debuggerBox.classList.add('hidden');
         });
 
         tabConsole.addEventListener('click', () => {
             playSound('click');
             tabConsole.className = "text-amber-400 border-b-2 border-amber-400 pb-1";
             tabTerminal.className = "text-slate-500 hover:text-slate-300 pb-1";
+            tabDebugger.className = "text-slate-500 hover:text-slate-300 pb-1";
             consoleBox.classList.remove('hidden');
             terminalBox.classList.add('hidden');
+            debuggerBox.classList.add('hidden');
         });
 
         document.getElementById('btn-clear-logs').addEventListener('click', () => {
             playSound('click');
             terminalBox.innerHTML = '<div>&gt; Telemetry clear.</div>';
             consoleBox.innerHTML = '<div class="text-slate-600">&gt;&gt; console.log cleared.</div>';
+            debuggerBox.innerHTML = '<div class="text-slate-600">&gt;&gt; debug log cleared.</div>';
         });
 
         // Simulation Triggers
@@ -1804,9 +2029,13 @@
 
             // Lock input actions
             isRunningSimulation = true;
+            isSteppingSimulation = false;
             document.getElementById('btn-run').disabled = true;
+            document.getElementById('btn-step').disabled = true;
             document.getElementById('btn-stop').disabled = false;
             document.getElementById('btn-run').classList.add('opacity-50');
+            document.getElementById('btn-step').classList.add('opacity-50');
+
 
             // Apply read-only mode to Blockly workspace safely with standard API and CSS wrappers
             if (blocklyWorkspace) {
@@ -1831,6 +2060,69 @@
             
             setTimeout(executeStepByStepQueue, 300);
         });
+
+        document.getElementById('btn-step').addEventListener('click', () => {
+            playSound('click');
+            if (isRunningSimulation && !isSteppingSimulation) return;
+            if (isRunningSimulation && isSteppingSimulation) {
+                document.getElementById('btn-step').disabled = true;
+                document.getElementById('btn-step').classList.add('opacity-50');
+                setTimeout(executeStepByStepQueue, 300);
+                return; 
+            }
+
+            let jsCode = aceEditor.getValue();
+            
+            // Clear consoles before running new compilation execution
+            document.getElementById('console-logs').innerHTML = '';
+
+            let compileResult = parseTrajectoryPlan(jsCode);
+
+            if (!compileResult.success) {
+                playSound('crash');
+                logTerminal(`COMPILE ERROR: ${compileResult.error}`, "error");
+                printConsoleLog(`Error: ${compileResult.error}`);
+                return;
+            }
+
+            if (commandQueue.length === 0) {
+                logTerminal("LOG WARNING: Script executed successfully, but no movements were registered. Try adding move directives!", "warning");
+                return;
+            }
+
+            // Lock input actions
+            isRunningSimulation = true;
+            isSteppingSimulation = true;
+            document.getElementById('btn-run').disabled = true;
+            document.getElementById('btn-step').disabled = true;
+            document.getElementById('btn-stop').disabled = false;
+            document.getElementById('btn-run').classList.add('opacity-50');
+            document.getElementById('btn-step').classList.add('opacity-50');
+
+
+            // Apply read-only mode to Blockly workspace safely with standard API and CSS wrappers
+            if (blocklyWorkspace) {
+                if (typeof blocklyWorkspace.setIsReadOnly === 'function') {
+                    blocklyWorkspace.setIsReadOnly(true);
+                }
+            }
+            document.getElementById('blockly-container').classList.add('opacity-60', 'pointer-events-none');
+            
+            aceEditor.setReadOnly(true);
+
+            let activeLevel = LEVELS[currentLevelIndex];
+            spacecraft.gridX = activeLevel.startX;
+            spacecraft.gridY = activeLevel.startY;
+            spacecraft.drawX = activeLevel.startX;
+            spacecraft.drawY = activeLevel.startY;
+            spacecraft.dir = activeLevel.startDir;
+            spacecraft.drawAngle = getDirAngle(activeLevel.startDir);
+
+            executionPointer = 0;
+            logTerminal("SUCCESS: Flight trajectory calculated. Engaging hyper-drives...", "success");
+            
+            setTimeout(executeStepByStepQueue, 300);
+        });        
 
         document.getElementById('btn-stop').addEventListener('click', () => {
             playSound('click');
