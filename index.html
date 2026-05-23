@@ -521,7 +521,7 @@
                 this.appendValueInput("VALUE")
                     .setCheck(null)
                     .appendField("const")
-                    .appendField(new Blockly.FieldTextInput("steps"), "VAR_NAME")
+                    .appendField(new Blockly.FieldTextInput("ROLL"), "VAR_NAME")
                     .appendField("=");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
@@ -681,8 +681,11 @@
                     if (i === 6) {
                         title = "Variable Definitions";
                         desc = "Declare an integer variable called 'steps' and pass it in to specify the distance to jump forward.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
+                        grid[4] = [0, 1, 1, 1, 1, 1, 1, 0, 0];
+                        grid[5] = [0, 1, 1, 0, 0, 1, 1, 0, 0];
+                        grid[6] = [0, 0, 0, 0, 0, 1, 1, 0, 0];
+                        grid[7] = [0, 1, 1, 1, 1, 1, 0, 0, 0];   
+                        startX = 1; startY = 7; goalX = 2; goalY = 5;
                         defaultCode = "let steps = 5;\njump(steps);\nmoveForward();\nmoveForward();";
                         debugTask = {
                             instruction: "BUG HUNT: The rocket overshoots or paths blind! Fix the code sequence.",
@@ -1289,7 +1292,7 @@
                 <block type="declare_const">
                     <value name="VALUE">
                         <block type="math_number">
-                            <field name="NUM">1</field>
+                            <field name="NUM">3</field>
                         </block>
                     </value>
                 </block>`;
@@ -1571,6 +1574,13 @@
             const jump = (num) => {
                 for (let i=0; i<num; i++) 
                     moveForward()
+                const lastMove = commandQueue.pop();
+                let firstMove = null;
+                for (let i=0; i<num-1; i++) 
+                    firstMove = commandQueue.pop();
+                lastMove.fromX = firstMove.fromX;
+                lastMove.fromY = firstMove.fromY;
+                commandQueue.push(lastMove);
             }            
 
             const turnLeft = () => {
