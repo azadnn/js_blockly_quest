@@ -1,2225 +1,2155 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JS Blockly Quest: Space Academy (50 Levels)</title>
-    <!-- Tailwind CSS for modern neon design -->
+
+    <!-- Tailwind CSS for modern UI design -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Inter Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome for cool icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Ace Code Editor CDN -->
+
+    <!-- Inter & Fira Code Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- FontAwesome for standard icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Ace Code Editor -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/ace.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/theme-monokai.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.15.2/mode-javascript.js"></script>
 
-    <!-- Decoupled Blockly Core, Blocks, Generators, and Localizations (Avoids double extension registry crash) -->
+    <!-- Blockly Core, Blocks, Generators, and Localizations -->
     <script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
     <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
     <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
     <script src="https://unpkg.com/blockly/msg/en.js"></script>
 
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0B0F19;
-            color: #E2E8F0;
-            overflow-x: hidden;
-        }
-        .font-mono {
-            font-family: 'Fira Code', monospace;
-        }
-        /* Custom scrollbar for cyber look */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0F172A;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
-        }
-        /* Glowing effects */
-        .neon-glow-cyan {
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
-        }
-        .neon-glow-purple {
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
-        }
-        /* Blockly and Ace styling adjustments */
-        .blocklyToolboxDiv {
-            background-color: #0F172A !important;
-            border-right: 1px solid #1E293B !important;
-            color: #E2E8F0 !important;
-        }
-        .blocklyFlyoutBackground {
-            fill: #1E293B !important;
-        }
-        .blocklyWorkspace {
-            background-color: #0B0F19 !important;
-        }
-        .blocklyTreeLabel {
-            color: #E2E8F0 !important;
-        }
-        /* Hide blockly scrollbars */
-        .blocklyScrollbarBackground {
-            display: none !important;
-        }
-        /* Grid overlay animations */
-        .cyber-grid {
-            background-size: 40px 40px;
-            background-image: linear-gradient(to right, rgba(30, 41, 59, 0.5) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(30, 41, 59, 0.5) 1px, transparent 1px);
-        }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #050810;
+        color: #e2e8f0;
+        overflow-x: hidden;
+      }
+      .font-mono {
+        font-family: "Fira Code", monospace;
+      }
+
+      /* Custom scrollbars */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0f172a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #475569;
+      }
+
+      /* Custom UI Glows */
+      .neon-text-cyan {
+        text-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+      }
+
+      /* Abstract Grid Overlay */
+      .cyber-grid {
+        background-size: 40px 40px;
+        background-image:
+          linear-gradient(to right, rgba(30, 41, 59, 0.3) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(30, 41, 59, 0.3) 1px, transparent 1px);
+      }
+
+      /* Ace Editor Active Line Highlight Styling */
+      .ace_active-line {
+        background-color: rgba(6, 182, 212, 0.25) !important;
+        border-left: 3px solid #06b6d4;
+        position: absolute;
+        z-index: 20;
+      }
+
+      /* Highlight Styling for when stepping code */
+      .ace_debug-line {
+        background-color: rgba(217, 196, 5, 0.25) !important;
+        border-left: 3px solid #06b6d4;
+        position: absolute;
+        z-index: 22;
+      }
+
+      /* Blockly Theme Overrides */
+      .blocklyToolboxDiv {
+        background-color: #0f172a !important;
+        border-right: 1px solid #1e293b !important;
+        color: #e2e8f0 !important;
+      }
+      .blocklyFlyoutBackground {
+        fill: #1e293b !important;
+      }
+      .blocklyWorkspace {
+        background-color: #050810 !important;
+      }
+      .blocklyTreeLabel {
+        color: #e2e8f0 !important;
+      }
+      .blocklyScrollbarBackground {
+        display: none !important;
+      }
+
+      /* Layout overrides to prevent scrolling */
+      .h-main-calc {
+        height: calc(100vh - 4.5rem);
+      }
+      .pane-split {
+        height: calc(50% - 0.5rem);
+      }
     </style>
-</head>
-<body class="min-h-screen flex flex-col justify-between cyber-grid">
-
-    <!-- TOP NAVIGATION & STATUS BAR -->
-    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center space-x-3">
-            <button id="btn-toggle-map" class="bg-indigo-600 hover:bg-indigo-500 text-white p-2.5 rounded-xl transition duration-200 shadow-md">
-                <i class="fa-solid fa-map"></i>
-            </button>
-            <div class="bg-gradient-to-tr from-cyan-500 to-indigo-500 p-2 rounded-xl">
-                <i class="fa-solid fa-user-astronaut text-xl text-white"></i>
-            </div>
-            <div>
-                <h1 class="text-lg font-black tracking-tight bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                    JS BLOCKLY QUEST
-                </h1>
-                <p class="text-[10px] text-slate-400 font-mono tracking-wider">Level Academy [1 - 50]</p>
-            </div>
+  </head>
+  <body class="h-screen w-screen flex flex-col justify-between cyber-grid">
+    <!-- HEADER / NAVIGATION -->
+    <header
+      class="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex flex-wrap items-center justify-between gap-4 shadow-lg shadow-black/50"
+    >
+      <div class="flex items-center space-x-4">
+        <button
+          id="btn-toggle-map"
+          class="bg-indigo-600 hover:bg-indigo-500 text-white p-2.5 rounded-xl transition duration-200 shadow-md shadow-indigo-500/20"
+        >
+          <i class="fa-solid fa-map"></i>
+        </button>
+        <div>
+          <h1
+            class="text-lg font-black tracking-tight bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent neon-text-cyan"
+          >
+            SPACE ACADEMY IDE
+          </h1>
+          <p class="text-[10px] text-slate-400 font-mono tracking-wider">
+            JavaScript Navigation Interface
+          </p>
         </div>
+      </div>
 
-        <!-- Level Indicator Tracker -->
-        <div class="flex items-center bg-slate-950/80 border border-slate-800 rounded-full px-4 py-1.5 space-x-2">
-            <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest" id="current-chapter-title">Chapter 1: Basics</span>
-            <span class="text-slate-700">|</span>
-            <button id="btn-open-map" class="text-xs font-bold text-slate-300 hover:text-white transition flex items-center gap-1.5">
-                <span id="level-display-num">Mission 1/50</span>
-                <i class="fa-solid fa-chevron-down text-[10px] text-indigo-400"></i>
-            </button>
-        </div>
+      <!-- Level Indicator -->
+      <div
+        class="flex items-center bg-slate-950/80 border border-slate-800 rounded-full px-5 py-2 space-x-3 shadow-inner"
+      >
+        <span
+          class="text-xs font-bold text-cyan-400 uppercase tracking-widest"
+          id="current-chapter-title"
+          >Ch 1: Basics</span
+        >
+        <span class="text-slate-700">|</span>
+        <button
+          id="btn-open-map"
+          class="text-xs font-bold text-slate-200 hover:text-white transition flex items-center gap-2"
+        >
+          <span id="level-display-num">Mission 1/50</span>
+          <i class="fa-solid fa-chevron-down text-[10px] text-indigo-400"></i>
+        </button>
+      </div>
 
-        <!-- Toolbar Utilities -->
-        <div class="flex items-center space-x-2">
-            <button id="btn-mute" class="bg-slate-800 hover:bg-slate-700 text-slate-300 w-10 h-10 rounded-xl transition flex items-center justify-center border border-slate-700">
-                <i class="fa-solid fa-volume-high" id="mute-icon"></i>
-            </button>
-            <button id="btn-reset-level" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 h-10 rounded-xl transition flex items-center space-x-2 text-xs border border-slate-700">
-                <i class="fa-solid fa-arrow-rotate-left"></i>
-                <span class="hidden md:inline">Reset Level</span>
-            </button>
-        </div>
+      <div class="flex items-center space-x-2">
+        <button
+          id="btn-mute"
+          class="bg-slate-800 hover:bg-slate-700 text-slate-300 w-10 h-10 rounded-xl transition flex items-center justify-center border border-slate-700"
+        >
+          <i class="fa-solid fa-volume-high" id="mute-icon"></i>
+        </button>
+        <button
+          id="btn-reset-level"
+          class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 h-10 rounded-xl transition flex items-center space-x-2 text-xs border border-slate-700"
+        >
+          <i class="fa-solid fa-arrow-rotate-left"></i>
+          <span class="hidden md:inline">Reset Level</span>
+        </button>
+        <button
+          id="btn-delete-data"
+          class="bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 px-4 h-10 rounded-xl transition border border-rose-900/50 text-xs font-bold hidden sm:flex items-center space-x-2"
+        >
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>Delete Saved Data</span>
+        </button>
+      </div>
     </header>
 
-    <!-- SLIDE OUT LEVEL MAP DRAWER -->
-    <div id="level-drawer" class="fixed inset-y-0 left-0 w-80 bg-slate-950 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col shadow-2xl">
-        <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-900">
-            <div>
-                <h3 class="font-bold text-white text-md">Space Academy Map</h3>
-                <p class="text-xs text-indigo-400">50 Interactive Missions</p>
-            </div>
-            <button id="btn-close-map" class="text-slate-400 hover:text-white transition p-1">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
+    <!-- DRAWER: Level Map -->
+    <div
+      id="level-drawer"
+      class="fixed inset-y-0 left-0 w-80 bg-slate-950 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col shadow-2xl"
+    >
+      <div
+        class="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-900"
+      >
+        <div>
+          <h3 class="font-bold text-white text-md">Navigation Map</h3>
+          <p class="text-xs text-indigo-400">50 Operations</p>
         </div>
-        <!-- Scrollable levels list sorted by JS concepts -->
-        <div class="flex-grow overflow-y-auto p-4 space-y-4" id="drawer-chapters-container">
-            <!-- Dynamically populated chapters & levels -->
-        </div>
+        <button
+          id="btn-close-map"
+          class="text-slate-400 hover:text-white transition p-1"
+        >
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div
+        class="flex-grow overflow-y-auto p-4 space-y-4"
+        id="drawer-chapters-container"
+      >
+        <!-- Dynamically populated -->
+      </div>
     </div>
-    <!-- Drawer backdrop overlay -->
-    <div id="drawer-backdrop" class="fixed inset-0 bg-black/60 z-40 hidden transition-opacity duration-300"></div>
+    <div
+      id="drawer-backdrop"
+      class="fixed inset-0 bg-black/60 z-40 hidden transition-opacity duration-300 backdrop-blur-sm"
+    ></div>
 
-    <!-- MAIN APPLICATION GRID CONTAINER -->
-    <main class="flex-grow grid grid-cols-1 xl:grid-cols-12 gap-5 p-4 md:p-6 max-w-[1800px] w-full mx-auto">
-        
-        <!-- LEFT PANEL: Simulation Arena & Level Intel (8 Cols) -->
-        <section class="xl:col-span-6 flex flex-col md:grid md:grid-cols-2 gap-5">
+    <!-- MAIN APP CONTAINER -->
+    <main
+      class="h-screen max-h-screen grid grid-cols-1 xl:grid-cols-12 gap-4 p-4 md:p-6 max-w-[1800px] w-full mx-auto overflow-y-auto xl:overflow-hidden bg-slate-950"
+    >
+      <!-- LEFT PANEL: Instructions, Arena & Logs (6 cols) -->
+      <section
+        class="xl:col-span-8 flex flex-col gap-2 h-full min-h-0 overflow-hidden"
+      >
+        <!-- Top Row: Instructions and Terminal side-by-side -->
+        <div class="flex gap-2 h-36 flex-shrink-0">
+          <!-- Instructions Card -->
+          <div
+            class="w-7/12 h-full bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-4 shadow-xl relative flex flex-col overflow-hidden"
+          >
+            <!-- Visual background accent -->
+            <div
+              class="absolute -right-8 -top-8 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"
+            ></div>
 
-            <div class="xl:col-span-1 flex flex-col md:grid md:grid-cols-1 gap-5">
-                <!-- Combined Output Area with tabs (Console vs Terminal logs vs Debugger) -->
-                <div class="bg-slate-950 border border-slate-900 rounded-xl p-3 flex-grow flex flex-col min-h-[160px]">
-                    <div class="flex justify-between items-center mb-2 border-b border-slate-900 pb-1.5">
-                        <div class="flex space-x-2 text-[10px] font-bold uppercase tracking-wider">
-                            <button id="tab-terminal" class="text-cyan-400 border-b-2 border-cyan-400 pb-1">System Terminal</button>
-                            <span class="text-slate-700">|</span>
-                            <button id="tab-console" class="text-slate-500 hover:text-slate-300 pb-1">JS Console Log</button>
-                            <span class="text-slate-700">|</span>
-                            <button id="tab-debugger" class="text-slate-500 hover:text-slate-300 pb-1">Variable Inspector</button>
-                        </div>
-                        <button id="btn-clear-logs" class="text-[10px] text-slate-600 hover:text-slate-400 transition">Clear</button>
-                    </div>
-                    
-                    <!-- Terminal logs container -->
-                    <div id="terminal-logs" class="font-mono text-xs text-slate-400 space-y-1 overflow-y-auto max-h-[120px] flex-grow">
-                        <div>&gt; Space Academy telemetry online.</div>
-                    </div>
-
-                    <!-- Console Output Container -->
-                    <div id="console-logs" class="font-mono text-xs text-amber-400 space-y-1 overflow-y-auto max-h-[120px] flex-grow hidden">
-                        <div class="text-slate-600">&gt;&gt; console.log statements will print here...</div>
-                    </div>
-
-                    <!-- Debugger Output Container -->
-                    <div id="debugger-inspector" class="font-mono text-xs text-cyan-400 space-y-1 overflow-y-auto max-h-[120px] flex-grow hidden">
-                        <div class="text-slate-600">&gt;&gt; Step execution to inspect runtime variables...</div>
-                    </div>
-                </div>
-
-                <!-- Mission Briefing / Instructions Card -->
-                <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden">
-                    <div class="absolute -right-12 -top-12 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl"></div>
-                    <div class="flex items-center space-x-2 mb-3">
-                        <span id="lesson-badge" class="bg-cyan-500/10 text-cyan-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-cyan-500/20 uppercase tracking-wider">LEVEL 1</span>
-                        <span class="text-slate-500">•</span>
-                        <span id="lesson-concept" class="text-[10px] text-indigo-400 font-semibold tracking-wide uppercase">Sequencing</span>
-                    </div>
-                    <h2 id="lesson-title" class="text-lg font-bold text-white mb-2">Launch Protocol</h2>
-                    <p id="lesson-description" class="text-xs text-slate-300 leading-relaxed mb-4">
-                        Commander, welcome to your spacecraft navigator! Guide your starship to the dimensional portal. Type actions into the text editor or connect blocks.
-                    </p>
-                    <!-- API Helper Commands cheatsheet -->
-                    <div class="bg-slate-950/60 rounded-xl border border-slate-800/80 p-3">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Available Directives:</p>
-                        <div class="flex flex-wrap gap-1.5" id="api-commands">
-                            <!-- Render commands dynamically -->
-                        </div>
-                    </div>
-                </div>  
-            </div> 
-
-            <!-- Interactive Game Canvas Frame -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col relative">
-                <!-- Canvas Status bar -->
-                <div class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-2.5 flex justify-between items-center">
-                    <div class="flex items-center space-x-2">
-                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
-                        <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Simulator Feed</span>
-                    </div>
-                    <span class="text-[10px] text-slate-500 font-mono" id="coordinates-feed">Pos: (0, 0)</span>
-                </div>
-
-                <!-- Game Canvas container -->
-                <div class="relative aspect-square w-full bg-[#050510] flex items-center justify-center">
-                    <canvas id="game-canvas" class="block w-full h-full max-h-[420px] max-w-[420px] transition-transform duration-300"></canvas>
-                </div>
-
-                <!-- Debug Task Alert Banner -->
-                <div id="debug-task-banner" class="bg-amber-950/40 border border-amber-900/50 p-2.5 rounded-xl mb-2 text-[11px] text-amber-300 hidden">
-                    <i class="fa-solid fa-bug text-amber-400 mr-1.5"></i> <span id="debug-task-text"></span>
-                </div>
-
-                <!-- Simulation Action Controls -->
-                <div class="bg-slate-950/80 border-t border-slate-800/80 p-3 flex gap-2">
-                    <button id="btn-run" class="flex-grow bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold py-2.5 px-4 rounded-xl transition transform active:scale-95 text-sm shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-play"></i>
-                        <span>Run Script</span>
-                    </button>
-                    <button id="btn-step" class="flex-grow bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold py-2.5 px-4 rounded-xl transition transform active:scale-95 text-sm shadow-lg shadow-amber-500/20 flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-forward-step"></i>
-                        <span>Step Code</span>
-                    </button>                    
-                    <button id="btn-stop" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 px-4 rounded-xl transition border border-slate-700" disabled>
-                        <i class="fa-solid fa-stop"></i>
-                    </button>
-                </div>
+            <!-- Header Controls -->
+            <div class="flex items-center space-x-2 mb-3 flex-shrink-0">
+              <span
+                id="lesson-badge"
+                class="bg-cyan-500/10 text-cyan-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-cyan-500/20 uppercase tracking-wider"
+                >Level 1</span
+              >
+              <span
+                id="lesson-concept"
+                class="text-[10px] text-indigo-400 font-semibold tracking-wide uppercase"
+                >Sequencing</span
+              >
             </div>
 
-         
+            <!-- Scrollable Content Body -->
+            <div class="flex-1 min-h-0 overflow-y-auto pr-1 custom-scrollbar">
+              <h2
+                id="lesson-title"
+                class="text-base font-black text-white mb-1"
+              >
+                Ignition Launch
+              </h2>
+              <p
+                id="lesson-description"
+                class="text-xs text-slate-300 leading-relaxed mb-4"
+              >
+                Commander, welcome to your spacecraft navigator! Guide your
+                starship to the dimensional portal.
+              </p>
 
-        </section>
+              <!-- Debug Task Banner -->
+              <div
+                id="debug-task-banner"
+                class="bg-rose-950/40 border border-rose-900/50 p-3 rounded-xl mb-4 text-xs text-rose-300 hidden shadow-inner"
+              >
+                <div class="flex items-start gap-2">
+                  <i
+                    class="fa-solid fa-bug text-rose-400 mt-0.5 animate-pulse"
+                  ></i>
+                  <div>
+                    <strong
+                      class="block text-rose-400 mb-0.5 uppercase tracking-wide text-[10px]"
+                      >Debug Mission:</strong
+                    >
+                    <span id="debug-task-text">Fix the code below!</span>
+                  </div>
+                </div>
+              </div>
 
-        <!-- RIGHT PANEL: Split-Screen Editor Workspace (8 Cols) -->
-        <section class="xl:col-span-6 flex flex-col md:grid md:grid-cols-2 gap-5 h-[calc(100vh-140px)] min-h-[550px] xl:min-h-0">
-            
-            <!-- Code Editor Workspace (Left Split) -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col shadow-xl">
-                <!-- Code Editor Header -->
-                <div class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-3 flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                        <div class="w-3 h-3 rounded-full bg-purple-500 shadow-md shadow-purple-500/30"></div>
-                        <span class="text-xs font-bold text-slate-300 uppercase tracking-widest">JavaScript Code</span>
-                    </div>
-                    <!-- Automatic Live Sync Mode Badge -->
-                    <div class="flex items-center space-x-1.5">
-                        <span class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-ping"></span>
-                        <span class="text-[9px] text-amber-400 font-mono font-bold uppercase tracking-wider">Live Compile</span>
-                    </div>
+              <!-- API Commands -->
+              <div
+                class="bg-slate-950/60 rounded-xl border border-slate-800/80 p-3 mb-2"
+              >
+                <p
+                  class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2"
+                >
+                  Available Directives:
+                </p>
+                <div class="flex flex-wrap gap-2" id="api-commands">
+                  <!-- Populated by JS -->
                 </div>
-                <!-- Ace Text Editor Area -->
-                <div class="flex-grow relative h-full w-full">
-                    <div id="editor" class="absolute inset-0 text-xs font-mono"></div>
-                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Terminal / Logs Output -->
+          <div
+            class="w-5/12 bg-slate-950 border border-slate-800 rounded-2xl flex flex-col shadow-xl overflow-hidden flex-shrink-0"
+          >
+            <div
+              class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex gap-4 flex-shrink-0"
+            >
+              <button
+                id="tab-terminal"
+                class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider border-b-2 border-cyan-400 pb-1"
+              >
+                System Terminal
+              </button>
+              <button
+                id="tab-debugger"
+                class="text-[10px] font-bold text-slate-500 hover:text-slate-300 uppercase tracking-wider pb-1 transition"
+              >
+                Memory Inspector
+              </button>
+              <div class="flex-grow"></div>
+              <button
+                id="btn-clear-logs"
+                class="text-[10px] text-slate-500 hover:text-slate-300"
+              >
+                <i class="fa-solid fa-eraser"></i>Clear
+              </button>
+            </div>
+            <!-- Panels -->
+            <div
+              id="terminal-logs"
+              class="flex-grow p-3 font-mono text-xs text-slate-400 space-y-1.5 overflow-y-auto"
+            >
+              <div>&gt; Telemetry connection established.</div>
+            </div>
+            <div
+              id="debugger-inspector"
+              class="flex-grow p-3 font-mono text-xs text-indigo-300 space-y-1 overflow-y-auto hidden"
+            >
+              <div class="text-slate-600">
+                &gt;&gt; Debugger active. Step through code to inspect
+                variables.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulation Arena -->
+        <div
+          class="flex-1 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col relative shadow-xl min-h-0"
+        >
+          <!-- Status Bar -->
+          <div
+            class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-2 flex justify-between items-center z-10"
+          >
+            <div class="flex items-center space-x-2">
+              <span
+                class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"
+              ></span>
+              <span
+                class="text-[10px] font-bold text-slate-300 uppercase tracking-widest"
+                >Simulator Render</span
+              >
+            </div>
+            <span
+              class="text-[10px] text-slate-500 font-mono"
+              id="coordinates-feed"
+              >Pos: (0, 0)</span
+            >
+          </div>
+
+          <!-- Main Workspace (Canvas + Sidebar Controls) -->
+          <div class="flex-1 flex relative w-full bg-[#030408] overflow-hidden">
+            <!-- Canvas Container -->
+            <div class="flex-1 flex items-center justify-center p-4">
+              <canvas
+                id="game-canvas"
+                class="block max-h-full max-w-full aspect-square object-contain"
+              ></canvas>
             </div>
 
-            <!-- Blockly Visual Workspace (Right Split) -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col shadow-xl">
-                <!-- Blockly Header -->
-                <div class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-3 flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                        <div class="w-3 h-3 rounded-full bg-cyan-400 shadow-md shadow-cyan-400/30"></div>
-                        <span class="text-xs font-bold text-slate-300 uppercase tracking-widest">Visual Blocks</span>
-                    </div>
-                    <span class="text-[9px] bg-cyan-900/40 text-cyan-400 border border-cyan-800/50 px-2 py-0.5 rounded-md font-semibold font-mono">No-Code Link</span>
-                </div>
-                <!-- Blockly Editor Area -->
-                <div class="flex-grow relative h-full w-full" id="blockly-container">
-                    <div id="blocklyDiv" class="absolute inset-0"></div>
-                </div>
-            </div>            
+            <!-- Vertical Play Controls (Right Side) -->
+            <div
+              class="w-24 bg-slate-950/90 border-l border-slate-800/80 p-2 flex flex-col gap-2 justify-start items-center z-10"
+            >
+              <!-- Run Button -->
+              <button
+                id="btn-run"
+                class="w-full h-9 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl transition-all duration-200 active:scale-95 text-[10px] font-bold tracking-wide shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-1.5 uppercase group"
+                title="Run All"
+              >
+                <i
+                  class="fa-solid fa-play group-hover:scale-110 transition-transform"
+                ></i>
+                <span>Run</span>
+              </button>
 
-        </section>
+              <!-- Step Button -->
+              <button
+                id="btn-step"
+                class="w-full h-9 bg-amber-600 hover:bg-amber-500 text-white rounded-xl transition-all duration-200 active:scale-95 text-[10px] font-bold tracking-wide shadow-lg shadow-amber-600/20 flex items-center justify-center gap-1.5 uppercase group"
+                title="Step"
+              >
+                <i
+                  class="fa-solid fa-forward-step group-hover:translate-x-0.5 transition-transform"
+                ></i>
+                <span>Step</span>
+              </button>
+
+              <!-- Separator -->
+              <div
+                class="w-full border-t border-slate-800/80 my-1 flex-shrink-0"
+              ></div>
+
+              <!-- Stop Button -->
+              <button
+                id="btn-stop"
+                class="w-full h-9 bg-rose-950/60 hover:bg-rose-900 border border-rose-800/60 hover:border-rose-700 text-rose-200 hover:text-white rounded-xl transition-all duration-200 active:scale-95 text-[10px] font-bold tracking-wide shadow-lg shadow-rose-950/20 disabled:pointer-events-none disabled:opacity-25 disabled:shadow-none flex items-center justify-center gap-1.5 uppercase"
+                title="Stop"
+              >
+                <i class="fa-solid fa-stop"></i>
+                <span>Stop</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT PANEL: Editor & Blockly (6 cols) -->
+      <section
+        class="xl:col-span-4 flex flex-col gap-2 h-full min-h-0 overflow-hidden"
+      >
+        <!-- Code Editor (Top Half) -->
+        <div
+          class="flex-1 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col shadow-xl min-h-0"
+        >
+          <div
+            class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-2.5 flex items-center justify-between"
+          >
+            <div class="flex items-center space-x-2">
+              <i class="fa-brands fa-js text-yellow-400"></i>
+              <span
+                class="text-xs font-bold text-slate-300 uppercase tracking-widest"
+                >JavaScript Space-Code</span
+              >
+            </div>
+            <div class="flex-items-center space-x-2">
+              <span
+                class="w-1.5 h-1.5 bg-amber-500 rounded-full animate-ping"
+              ></span>
+              <span
+                class="text-[9px] text-amber-400 font-mono border border-amber-900/50 bg-amber-900/20 px-2 py-0.5 rounded"
+                >STRICT: 1 Statement/Line</span
+              >
+            </div>
+          </div>
+          <div class="flex-grow relative w-full">
+            <div id="editor" class="absolute inset-0 text-sm font-mono"></div>
+          </div>
+        </div>
+
+        <!-- Blockly Workspace (Bottom Half) -->
+        <div
+          class="flex-1 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col shadow-xl relative min-h-0"
+          id="blockly-container"
+        >
+          <div
+            class="bg-slate-950/90 border-b border-slate-800/80 px-4 py-2.5 flex items-center justify-between"
+          >
+            <div class="flex items-center space-x-2">
+              <div
+                class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-md shadow-cyan-400/30"
+              ></div>
+              <span
+                class="text-xs font-bold text-slate-300 uppercase tracking-widest"
+                >Visual Blocks</span
+              >
+            </div>
+            <span
+              class="text-[9px] bg-cyan-900/40 text-cyan-400 border border-cyan-800/50 px-2 py-0.5 rounded-md font-semibold font-mono"
+              >Live Sync</span
+            >
+            <span
+              class="text-[8px] text-red-400 px-2 py-0.5 rounded-md font-semibold font-mono"
+              >[Only type your code in the editor]</span
+            >
+          </div>
+          <div class="flex-grow relative w-full">
+            <div id="blocklyDiv" class="absolute inset-0"></div>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="border-t border-slate-800/80 bg-slate-950/60 py-3 px-6 text-center text-[10px] text-slate-500">
-        <p>© 2026 JS Blockly Quest • Learn JS Concepts Step-By-Step • Powered by Google Blockly.</p>
-    </footer>
-
-    <!-- SUCCESS CONGRATS OVERLAY MODAL -->
-    <div id="success-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl max-w-md w-full mx-4 shadow-2xl relative overflow-hidden transform scale-95 transition-transform duration-300">
-            <!-- Background particle elements -->
-            <div class="absolute -left-16 -top-16 w-36 h-36 bg-emerald-500/10 rounded-full blur-2xl"></div>
-            <div class="absolute -right-16 -bottom-16 w-36 h-36 bg-cyan-500/10 rounded-full blur-2xl"></div>
-
-            <div class="text-center">
-                <div class="inline-flex bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 p-4 rounded-2xl mb-4 text-4xl animate-bounce">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                </div>
-                <h3 class="text-xl font-black text-white mb-2 tracking-tight uppercase" id="modal-success-title">Mission Cleared!</h3>
-                <p class="text-xs text-slate-300 mb-6" id="modal-success-msg">Congratulations! You successfully compiled the script parameters for this dimensional gateway transit.</p>
-                
-                <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-4 mb-6">
-                    <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 text-left">Compiled Output Preview:</h4>
-                    <pre id="modal-code-preview" class="text-xs font-mono text-cyan-400 text-left overflow-x-auto max-h-[120px] bg-slate-950 p-3 rounded-xl border border-slate-900"></pre>
-                </div>
-
-                <div class="flex gap-4">
-                    <button id="modal-btn-replay" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl transition text-xs border border-slate-700">
-                        Stay & Review
-                    </button>
-                    <button id="modal-btn-next" class="flex-1 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold py-2.5 rounded-xl transition transform hover:scale-102 shadow-lg shadow-indigo-500/25 flex items-center justify-center space-x-1.5 text-xs">
-                        <span>Next Concept</span>
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
+    <!-- SUCCESS MODAL -->
+    <div
+      id="success-modal"
+      class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300"
+    >
+      <div
+        class="bg-slate-900 border border-slate-700 p-8 rounded-3xl max-w-md w-full mx-4 shadow-2xl shadow-cyan-500/10 relative overflow-hidden transform scale-95 transition-transform duration-300 text-center"
+      >
+        <div
+          class="inline-flex bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 p-4 rounded-2xl mb-4 text-4xl animate-bounce"
+        >
+          <i class="fa-solid fa-graduation-cap"></i>
         </div>
+        <h3
+          class="text-2xl font-black text-white mb-2 tracking-tight uppercase"
+          id="modal-success-title"
+        >
+          Mission Cleared!
+        </h3>
+        <p class="text-sm text-slate-300 mb-6" id="modal-success-msg">
+          Warp sequence compiled successfully.
+        </p>
+        <div class="flex gap-4">
+          <button
+            id="modal-btn-replay"
+            class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-xl transition text-sm border border-slate-600"
+          >
+            Review
+          </button>
+          <button
+            id="modal-btn-next"
+            class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl transition text-sm shadow-lg shadow-cyan-500/25 flex justify-center items-center gap-2"
+          >
+            Next Mission <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
     </div>
 
     <script>
-        // --- 1. Audio Synthesizer (Using pure Web Audio API for custom sci-fi FX) ---
-        let muted = false;
-        function playSound(type) {
-            if (muted) return;
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                
-                if (type === 'click') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(900, ctx.currentTime);
-                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.08);
-                } else if (type === 'move') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(400, ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.25);
-                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.25);
-                } else if (type === 'turn') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(500, ctx.currentTime);
-                    osc.frequency.linearRampToValueAtTime(700, ctx.currentTime + 0.2);
-                    gain.gain.setValueAtTime(0.07, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.2);
-                } else if (type === 'win') {
-                    const now = ctx.currentTime;
-                    const scale = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
-                    scale.forEach((freq, idx) => {
-                        const noteOsc = ctx.createOscillator();
-                        const noteGain = ctx.createGain();
-                        noteOsc.connect(noteGain);
-                        noteGain.connect(ctx.destination);
-                        
-                        noteOsc.type = 'sine';
-                        noteOsc.frequency.setValueAtTime(freq, now + idx * 0.06);
-                        noteGain.gain.setValueAtTime(0.06, now + idx * 0.06);
-                        noteGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.2);
-                        
-                        noteOsc.start(now + idx * 0.06);
-                        noteOsc.stop(now + idx * 0.06 + 0.2);
-                    });
-                } else if (type === 'crash') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(140, ctx.currentTime);
-                    osc.frequency.linearRampToValueAtTime(25, ctx.currentTime + 0.5);
-                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.5);
-                }
-            } catch (e) {
-                console.log("Audio not allowed yet.");
+      /**
+       * SPACE ACADEMY IDE - Core Application Logic
+       * Integrates Web Audio API, Ace Editor, Canvas API, Blockly, and a custom JS execution sandbox.
+       */
+
+      /**
+       * 0. SYSTEM UTILITIES & CONFIGURATIONS
+       * Professional-grade robust initialization and error handling.
+       */
+      const Config = {
+        gridSize: 8, // 8x8 simulation grid
+        totalLevels: 50,
+        storageKey: "jsBlocklyQuest",
+      };
+
+      // Theme Data & Shaders for diverse visual learning
+      const THEMES = [
+        {
+          id: "space",
+          name: "Deep Space",
+          icon: "fa-rocket",
+          bg: ["#0F1226", "#04050D"],
+          path: "#6366F1",
+          obs: "#1E293B",
+          entity: "#38BDF8",
+          goal: "#A855F7",
+          particle: "star",
+        },
+        {
+          id: "ocean",
+          name: "Abyssal Ocean",
+          icon: "fa-anchor",
+          bg: ["#042f4b", "#011526"],
+          path: "#38BDF8",
+          obs: "#0284C7",
+          entity: "#FCD34D",
+          goal: "#06B6D4",
+          particle: "bubble",
+        },
+        {
+          id: "volcanic",
+          name: "Magma Core",
+          icon: "fa-fire",
+          bg: ["#450a0a", "#170303"],
+          path: "#F97316",
+          obs: "#991B1B",
+          entity: "#D97706",
+          goal: "#EF4444",
+          particle: "ember",
+        },
+        {
+          id: "ice",
+          name: "Glacier Point",
+          icon: "fa-snowflake",
+          bg: ["#1e3a8a", "#081836"],
+          path: "#E0F2FE",
+          obs: "#3B82F6",
+          entity: "#94A3B8",
+          goal: "#38BDF8",
+          particle: "snow",
+        },
+        {
+          id: "desert",
+          name: "Dune Wastes",
+          icon: "fa-sun",
+          bg: ["#78350f", "#361403"],
+          path: "#FCD34D",
+          obs: "#B45309",
+          entity: "#10B981",
+          goal: "#F59E0B",
+          particle: "dust",
+        },
+        {
+          id: "cyber",
+          name: "Neon Matrix",
+          icon: "fa-microchip",
+          bg: ["#022c22", "#011109"],
+          path: "#10B981",
+          obs: "#047857",
+          entity: "#06B6D4",
+          goal: "#34D399",
+          particle: "bit",
+        },
+        {
+          id: "jungle",
+          name: "Fungal Wilds",
+          icon: "fa-leaf",
+          bg: ["#14532d", "#052110"],
+          path: "#4ADE80",
+          obs: "#166534",
+          entity: "#FBBF24",
+          goal: "#22C55E",
+          particle: "spore",
+        },
+        {
+          id: "crystal",
+          name: "Prism Caves",
+          icon: "fa-gem",
+          bg: ["#4c1d95", "#1e0842"],
+          path: "#C084FC",
+          obs: "#6D28D9",
+          entity: "#F472B6",
+          goal: "#E879F9",
+          particle: "shard",
+        },
+        {
+          id: "plasma",
+          name: "Reactor Ring",
+          icon: "fa-atom",
+          bg: ["#be123c", "#4c0516"],
+          path: "#FDA4AF",
+          obs: "#9F1239",
+          entity: "#F87171",
+          goal: "#FB7185",
+          particle: "ion",
+        },
+        {
+          id: "quantum",
+          name: "Void Realm",
+          icon: "fa-meteor",
+          bg: ["#0f172a", "#020617"],
+          path: "#CBD5E1",
+          obs: "#334155",
+          entity: "#FFFFFF",
+          goal: "#94A3B8",
+          particle: "string",
+        },
+      ];
+
+      // Core Global State
+      let state = {
+        currentLevel: 0,
+        solvedLevels: {},
+        isRunning: false,
+        isStepping: false,
+        muted: false,
+        isSyncing: false,
+      };
+
+      // Storage Manager
+      const Storage = {
+        load: () => {
+          const data = localStorage.getItem(Config.storageKey);
+          if (data) {
+            state = JSON.parse(data);
+          }
+        },
+        save: () => {
+          localStorage.setItem(Config.storageKey, JSON.stringify(state));
+        },
+        reset: () => {
+          state = {
+            currentLevel: 0,
+            solvedLevels: {},
+            isRunning: false,
+            isStepping: false,
+            muted: false,
+            isSyncing: false,
+          };
+          Storage.save();
+          loadLevel(0);
+          showToast("Data Reset Successful", "warning");
+        },
+      };
+
+      // --- 1. AUDIO SYSTEM ---
+      let muted = false;
+      function playSound(type) {
+        if (muted) return;
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          const now = ctx.currentTime;
+          if (type === "click") {
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(800, now);
+            gain.gain.setValueAtTime(0.05, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+            osc.start(now);
+            osc.stop(now + 0.1);
+          } else if (type === "move") {
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(300, now);
+            osc.frequency.exponentialRampToValueAtTime(150, now + 0.2);
+            gain.gain.setValueAtTime(0.1, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+            osc.start(now);
+            osc.stop(now + 0.2);
+          } else if (type === "turn") {
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(400, now);
+            osc.frequency.linearRampToValueAtTime(600, now + 0.15);
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+            osc.start(now);
+            osc.stop(now + 0.15);
+          } else if (type === "win") {
+            osc.type = "square";
+            osc.frequency.setValueAtTime(440, now);
+            osc.frequency.setValueAtTime(660, now + 0.1);
+            osc.frequency.setValueAtTime(880, now + 0.2);
+            gain.gain.setValueAtTime(0.05, now);
+            gain.gain.linearRampToValueAtTime(0, now + 0.5);
+            osc.start(now);
+            osc.stop(now + 0.5);
+          } else if (type === "crash") {
+            osc.type = "sawtooth";
+            osc.frequency.setValueAtTime(100, now);
+            osc.frequency.exponentialRampToValueAtTime(20, now + 0.4);
+            gain.gain.setValueAtTime(0.15, now);
+            gain.gain.linearRampToValueAtTime(0.001, now + 0.4);
+            osc.start(now);
+            osc.stop(now + 0.4);
+          }
+        } catch (e) {
+          console.warn("Audio Context blocked.");
+        }
+      }
+
+      document.getElementById("btn-mute").addEventListener("click", (e) => {
+        muted = !muted;
+        e.currentTarget.querySelector("i").className = muted
+          ? "fa-solid fa-volume-xmark text-rose-500"
+          : "fa-solid fa-volume-high text-slate-300";
+      });
+
+      // --- 2. BLOCKLY CONFIGURATION & CUSTOM BLOCKS ---
+      let blocklyWorkspace = null;
+      let isSyncing = false;
+      let editorSyncTimeout = null;
+
+      Blockly.Blocks["move_forward"] = {
+        init: function () {
+          this.appendDummyInput().appendField("moveForward();");
+          this.setPreviousStatement(true, null);
+          this.setNextStatement(true, null);
+          this.setColour(120);
+          this.setTooltip(
+            "Command spaceship to glide forward 1 grid quadrant.",
+          );
+        },
+      };
+      Blockly.Blocks["turn_left"] = {
+        init: function () {
+          this.appendDummyInput().appendField("turnLeft();");
+          this.setPreviousStatement(true, null);
+          this.setNextStatement(true, null);
+          this.setColour(190);
+          this.setTooltip("Pivot 90 degrees Counter-Clockwise.");
+        },
+      };
+      Blockly.Blocks["turn_right"] = {
+        init: function () {
+          this.appendDummyInput().appendField("turnRight();");
+          this.setPreviousStatement(true, null);
+          this.setNextStatement(true, null);
+          this.setColour(240);
+          this.setTooltip("Pivot 90 degrees Clockwise.");
+        },
+      };
+      Blockly.Blocks["is_path_ahead"] = {
+        init: function () {
+          this.appendDummyInput().appendField("isPathAhead()");
+          this.setOutput(true, "Boolean");
+          this.setColour(330);
+          this.setTooltip(
+            "Scans forward navigation lanes. Returns true if path is passable.",
+          );
+        },
+      };
+      Blockly.Blocks["console_log"] = {
+        init: function () {
+          this.appendValueInput("VALUE")
+            .setCheck(null)
+            .appendField("console.log(");
+          this.appendDummyInput().appendField(");");
+          this.setInputsInline(true);
+          this.setPreviousStatement(true, null);
+          this.setNextStatement(true, null);
+          this.setColour(60);
+          this.setTooltip(
+            "Prints statements and diagnostics directly onto your console panel.",
+          );
+        },
+      };
+      Blockly.Blocks["declare_variable"] = {
+        init: function () {
+          this.appendValueInput("VALUE")
+            .setCheck(null)
+            .appendField("let")
+            .appendField(new Blockly.FieldTextInput("steps"), "VAR_NAME")
+            .appendField("=");
+          this.setInputsInline(true);
+          this.setPreviousStatement(true, null);
+          this.setNextStatement(true, null);
+          this.setColour(290);
+          this.setTooltip("Declares a new mutable block scope variable.");
+        },
+      };
+      Blockly.Blocks["declare_const"] = {
+        init: function () {
+          this.appendValueInput("VALUE")
+            .setCheck(null)
+            .appendField("const")
+            .appendField(new Blockly.FieldTextInput("ROLL"), "VAR_NAME")
+            .appendField("=");
+          this.setInputsInline(true);
+          this.setPreviousStatement(true, null);
+          this.setNextStatement(true, null);
+          this.setColour(295);
+          this.setTooltip("Declares a new immutable block scope const.");
+        },
+      };
+
+      // Map generators safely
+      const activeGenerator =
+        (window.javascript && window.javascript.javascriptGenerator) ||
+        window.Blockly.JavaScript;
+      if (activeGenerator) {
+        activeGenerator.forBlock["move_forward"] = function () {
+          return "moveForward();\n";
+        };
+        activeGenerator.forBlock["turn_left"] = function () {
+          return "turnLeft();\n";
+        };
+        activeGenerator.forBlock["turn_right"] = function () {
+          return "turnRight();\n";
+        };
+        activeGenerator.forBlock["is_path_ahead"] = function () {
+          return ["isPathAhead()", 2];
+        }; // ORDER_FUNCTION_CALL = 2
+        activeGenerator.forBlock["console_log"] = function (block) {
+          let value =
+            activeGenerator.valueToCode(block, "VALUE", 0) || '"Space Academy"';
+          return "console.log(" + value + ");\n";
+        };
+        activeGenerator.forBlock["declare_variable"] = function (block) {
+          let varName = block.getFieldValue("VAR_NAME");
+          let val = activeGenerator.valueToCode(block, "VALUE", 0) || "0";
+          return "let " + varName + " = " + val + ";\n";
+        };
+        activeGenerator.forBlock["declare_const"] = function (block) {
+          let varName = block.getFieldValue("VAR_NAME");
+          let val = activeGenerator.valueToCode(block, "VALUE", 0) || "0";
+          return "const " + varName + " = " + val + ";\n";
+        };
+      }
+
+      // Safe XML Parser (Regex based for reverse JS->Blockly syncing)
+      function textToDomSafe(xmlText) {
+        try {
+          if (
+            window.Blockly &&
+            window.Blockly.utils &&
+            window.Blockly.utils.xml
+          ) {
+            return window.Blockly.utils.xml.textToDom(xmlText);
+          }
+          const parser = new DOMParser();
+          return parser.parseFromString(xmlText, "text/xml").documentElement;
+        } catch (err) {
+          return new DOMParser().parseFromString("<xml></xml>", "text/xml")
+            .documentElement;
+        }
+      }
+
+      function translateJsToBlocklyXml(jsCode) {
+        let lines = jsCode
+          .replace(/\{/g, "{\n")
+          .replace(/\}/g, "\n}\n")
+          .replace(/\;/g, ";\n")
+          .split("\n")
+          .map((l) => l.trim())
+          .filter((l) => l.length > 0 && !l.startsWith("//"));
+        let xmlHeader =
+          '<xml xmlns="https://developers.google.com/blockly/xml">';
+
+        function parseNestedLines(tokens) {
+          if (tokens.length === 0) return "";
+          let current = tokens[0];
+          let rest = tokens.slice(1);
+          let currentBlock = "";
+
+          if (current.includes("moveForward()"))
+            currentBlock = '<block type="move_forward">';
+          else if (current.includes("turnLeft()"))
+            currentBlock = '<block type="turn_left">';
+          else if (current.includes("turnRight()"))
+            currentBlock = '<block type="turn_right">';
+          else if (current.includes("console.log")) {
+            let logMatch = current.match(/console\.log\((.*)\)/);
+            let loggedVal = logMatch
+              ? logMatch[1].replace(/['"]/g, "")
+              : "Space Academy";
+            currentBlock = `<block type="console_log"><value name="VALUE"><block type="text"><field name="TEXT">${loggedVal}</field></block></value>`;
+          } else if (
+            (current.startsWith("let ") || current.startsWith("const ")) &&
+            current.includes("=")
+          ) {
+            let varParts = current.substring(4).split("=");
+            let varName = varParts[0].trim();
+            let val = varParts[1].replace(";", "").trim();
+            if (current.startsWith("let ")) {
+              currentBlock = `<block type="declare_variable"><field name="VAR_NAME">${varName}</field><value name="VALUE"><block type="math_number"><field name="NUM">${val}</field></block></value>`;
+            } else {
+              currentBlock = `<block type="declare_const"><field name="VAR_NAME">${varName}</field><value name="VALUE"><block type="math_number"><field name="NUM">${val}</field></block></value>`;
             }
+          } else if (current.startsWith("for") && current.includes("{")) {
+            let iterations = 3;
+            let countMatch = current.match(/<\s*(\d+)/);
+            if (countMatch && countMatch[1])
+              iterations = parseInt(countMatch[1]);
+            currentBlock = `<block type="controls_repeat_ext"><value name="TIMES"><block type="math_number"><field name="NUM">${iterations}</field></block></value><statement name="DO">`;
+
+            let body = [];
+            let depth = 1;
+            let cursor = 0;
+            while (cursor < rest.length && depth > 0) {
+              let innerLine = rest[cursor];
+              if (innerLine.includes("{")) depth++;
+              if (innerLine.includes("}")) depth--;
+              if (depth > 0) body.push(innerLine);
+              cursor++;
+            }
+            currentBlock += parseNestedLines(body) + "</statement>";
+            rest = rest.slice(cursor);
+          } else if (current.startsWith("if") && current.includes("{")) {
+            currentBlock = `<block type="controls_if"><value name="IF0"><block type="is_path_ahead"></block></value><statement name="DO0">`;
+            let body = [];
+            let depth = 1;
+            let cursor = 0;
+            while (cursor < rest.length && depth > 0) {
+              let innerLine = rest[cursor];
+              if (innerLine.includes("{")) depth++;
+              if (innerLine.includes("}")) depth--;
+              if (depth > 0) body.push(innerLine);
+              cursor++;
+            }
+            currentBlock += parseNestedLines(body) + "</statement>";
+            rest = rest.slice(cursor);
+          } else {
+            return parseNestedLines(rest);
+          }
+
+          if (currentBlock) {
+            let nextPortion = parseNestedLines(rest);
+            if (nextPortion)
+              return currentBlock + "<next>" + nextPortion + "</next></block>";
+            else return currentBlock + "</block>";
+          }
+          return "";
         }
 
-        // Setup sound toggling controls
-        const btnMute = document.getElementById('btn-mute');
-        const muteIcon = document.getElementById('mute-icon');
-        btnMute.addEventListener('click', () => {
-            muted = !muted;
-            if (muted) {
-                muteIcon.className = "fa-solid fa-volume-xmark text-rose-500";
-                btnMute.classList.add('border-rose-900/40', 'bg-rose-950/20');
-            } else {
-                muteIcon.className = "fa-solid fa-volume-high text-slate-300";
-                btnMute.classList.remove('border-rose-900/40', 'bg-rose-950/20');
-                playSound('click');
+        return xmlHeader + parseNestedLines(lines) + "</xml>";
+      }
+
+      // --- 3. CURRICULUM GENERATOR (50 LEVELS) ---
+      const CHAPTERS = [
+        { id: 1, title: "Sequencing & Logic", start: 1, end: 5 },
+        { id: 2, title: "Variable Declarations", start: 6, end: 10 },
+        { id: 3, title: "Data Types", start: 11, end: 15 },
+        { id: 4, title: "Arithmetic Operations", start: 16, end: 20 },
+        { id: 5, title: "Logs & System Outputs", start: 21, end: 25 },
+        { id: 6, title: "Branching & Conditionals", start: 26, end: 30 },
+        { id: 7, title: "Loop Iterations", start: 31, end: 35 },
+        { id: 8, title: "Arrays", start: 36, end: 40 },
+        { id: 9, title: "Objects", start: 41, end: 45 },
+        { id: 10, title: "Functions", start: 46, end: 50 },
+      ];
+
+      const LEVELS = [];
+
+      function parseGrid(arr) {
+        return arr.map((row) => row.split("").map(Number));
+      }
+
+      function buildCurriculum() {
+        for (let i = 1; i <= 50; i++) {
+          let chIndex = Math.floor((i - 1) / 5);
+          let lvlInCh = ((i - 1) % 5) + 1;
+          let isDebug = lvlInCh === 1 || lvlInCh === 2;
+
+          let level = {
+            number: i,
+            concept: CHAPTERS[chIndex].title,
+            title: `Sector ${i} Operations`,
+            description: "Navigate to the portal.",
+            debugTask: null,
+            grid: parseGrid([
+              "00000000",
+              "00000000",
+              "00000000",
+              "01111100",
+              "00000000",
+              "00000000",
+              "00000000",
+              "00000000",
+            ]),
+            startX: 1,
+            startY: 3,
+            startDir: 1,
+            goalX: 5,
+            goalY: 3,
+            defaultCode: "moveForward();\n",
+            allowedApi: [{ code: "moveForward();", desc: "Advance 1 space." }],
+            allowedBlocks: ["move_forward"], // Basic set
+          };
+
+          // Populate Blocks based on Chapter Progress
+          if (chIndex >= 0) level.allowedBlocks.push("turn_left", "turn_right");
+          if (chIndex >= 1)
+            level.allowedBlocks.push(
+              "declare_variable",
+              "declare_const",
+              "math_number",
+            );
+          if (chIndex >= 4) level.allowedBlocks.push("console_log", "text");
+          if (chIndex >= 5)
+            level.allowedBlocks.push("controls_if", "is_path_ahead");
+          if (chIndex >= 6) level.allowedBlocks.push("controls_repeat_ext");
+
+          // Level Configs
+          if (chIndex === 0) {
+            // Chapter 1: Basics
+            level.allowedApi.push(
+              { code: "turnLeft();", desc: "Turn CCW" },
+              { code: "turnRight();", desc: "Turn CW" },
+            );
+            if (i === 1) {
+              level.title = "Broken Thrusters";
+              level.description =
+                "The launch sequence is incomplete. We need to reach the portal directly ahead.";
+              level.debugTask = {
+                instruction:
+                  "Add the missing commands so the ship moves exactly 4 spaces forward.",
+                buggyCode: "moveForward();\nmoveForward();\n// Fix me!",
+              };
+            } else if (i === 2) {
+              level.title = "Faulty Navigation";
+              level.grid = parseGrid([
+                "0000000",
+                "0000000",
+                "0001110",
+                "0001000",
+                "0001000",
+                "0000000",
+                "0000000",
+              ]);
+              level.startX = 3;
+              level.startY = 4;
+              level.startDir = 0;
+              level.goalX = 5;
+              level.goalY = 2;
+              level.debugTask = {
+                instruction:
+                  "The ship turns the wrong way! Fix the rotation direction.",
+                buggyCode:
+                  "moveForward();\nmoveForward();\nturnLeft(); // Is this right?\nmoveForward();\nmoveForward();",
+              };
+            } else if (i === 3) {
+              level.title = "The S-Curve";
+              level.description =
+                "Navigate through the asteroid debris using turns.";
+              level.grid = parseGrid([
+                "0000000",
+                "0001110",
+                "0001000",
+                "0111000",
+                "0000000",
+                "0000000",
+                "0000000",
+              ]);
+              level.startX = 1;
+              level.startY = 3;
+              level.startDir = 1;
+              level.goalX = 5;
+              level.goalY = 1;
+              level.defaultCode = "// Write your path here\n";
+            } else if (i === 4) {
+              level.title = "U-Turn Maneuver";
+              level.grid = parseGrid([
+                "0000000",
+                "0111110",
+                "0100010",
+                "0111010",
+                "0000000",
+                "0000000",
+                "0000000",
+              ]);
+              level.startX = 3;
+              level.startY = 3;
+              level.startDir = 3;
+              level.goalX = 3;
+              level.goalY = 1;
+              level.defaultCode = "// Turn around entirely!\n";
+            } else if (i === 5) {
+              level.title = "Zig-Zag Escape";
+              level.grid = parseGrid([
+                "0000000",
+                "0000010",
+                "0000110",
+                "0001100",
+                "0011000",
+                "0110000",
+                "0000000",
+              ]);
+              level.startX = 1;
+              level.startY = 5;
+              level.startDir = 1;
+              level.goalX = 5;
+              level.goalY = 1;
+              level.defaultCode = "moveForward();\n";
             }
+          } else if (chIndex === 1) {
+            // Chapter 2: Variables
+            level.allowedApi.push(
+              { code: "turnLeft();", desc: "Turn CCW" },
+              { code: "turnRight();", desc: "Turn CW" },
+              { code: "let steps = 3;", desc: "Declare var" },
+            );
+            if (i === 6) {
+              level.title = "Unassigned Memory";
+              level.grid = parseGrid([
+                "0000000",
+                "0011110",
+                "0010000",
+                "0010000",
+                "0000000",
+                "0000000",
+                "0000000",
+              ]);
+              level.startX = 2;
+              level.startY = 3;
+              level.startDir = 0;
+              level.goalX = 5;
+              level.goalY = 1;
+              level.debugTask = {
+                instruction:
+                  "The variable 'dist' is wrong. Set it to the correct distance.",
+                buggyCode:
+                  "let dist = 1;\nmoveForward();\nmoveForward();\nturnRight();\n// move dist times\nmoveForward();",
+              };
+            } else if (i === 7) {
+              level.title = "Constant Drift";
+              level.debugTask = {
+                instruction:
+                  "You cannot change a 'const' variable after setting it!",
+                buggyCode:
+                  "const speed = 2;\nspeed = 4; // This will crash!\nmoveForward();\nmoveForward();",
+              };
+            } else {
+              level.defaultCode = "let distance = 2;\n// Use your variable\n";
+            }
+          } else if (chIndex === 5) {
+            // Chapter 6: Conditionals
+            level.allowedApi.push(
+              { code: "if (isPathAhead()) { }", desc: "Check path" },
+              { code: "moveForward();", desc: "Move" },
+            );
+            if (i === 26) {
+              level.title = "Blind Sensors";
+              level.debugTask = {
+                instruction: "Fix the if-statement so it only moves when safe.",
+                buggyCode: "if (false) {\n  moveForward();\n}\nmoveForward();",
+              };
+            } else if (i === 27) {
+              level.title = "Logic Reversal";
+              level.debugTask = {
+                instruction:
+                  "Use an else block to turn if the path is blocked.",
+                buggyCode:
+                  "if (isPathAhead()) {\n  moveForward();\n}\n// missing else logic to turnLeft!",
+              };
+            } else {
+              level.defaultCode = "if (isPathAhead()) {\n  moveForward();\n}\n";
+            }
+          } else if (chIndex === 6) {
+            // Chapter 7: Loops
+            level.allowedApi.push(
+              { code: "for(let i=0; i<3; i++){ }", desc: "Repeat code" },
+              { code: "while(isPathAhead()){ }", desc: "Repeat until blocked" },
+            );
+            if (i === 31) {
+              level.title = "Infinite Loop Danger";
+              level.grid = parseGrid([
+                "0000000",
+                "0000000",
+                "0000000",
+                "0111110",
+                "0000000",
+                "0000000",
+                "0000000",
+              ]);
+              level.startX = 1;
+              level.startY = 3;
+              level.startDir = 1;
+              level.goalX = 5;
+              level.goalY = 3;
+              level.debugTask = {
+                instruction:
+                  "The loop iterates too many times and crashes into the void! Fix the limit.",
+                buggyCode:
+                  "for (let i = 0; i < 10; i++) {\n  moveForward();\n}",
+              };
+            } else if (i === 32) {
+              level.title = "Broken While";
+              level.grid = parseGrid([
+                "0000000",
+                "0000000",
+                "0000000",
+                "0111110",
+                "0000000",
+                "0000000",
+                "0000000",
+              ]);
+              level.startX = 1;
+              level.startY = 3;
+              level.startDir = 1;
+              level.goalX = 5;
+              level.goalY = 3;
+              level.debugTask = {
+                instruction:
+                  "Fix the condition so the ship doesn't stop early.",
+                buggyCode:
+                  "let fuel = 0;\nwhile (fuel < 2) {\n  moveForward();\n  fuel = fuel + 1;\n}",
+              };
+            } else {
+              level.defaultCode =
+                "for(let i=0; i<4; i++) {\n  moveForward();\n}\n";
+            }
+          } else {
+            if (isDebug) {
+              level.title = `Logic Debug ${i}`;
+              level.debugTask = {
+                instruction: `Find and fix the logical error for Chapter ${chIndex + 1}.`,
+                buggyCode: "// Code is broken!\nmoveForward();",
+              };
+            } else {
+              level.defaultCode = `// Sector ${i} Logic\nmoveForward();\n`;
+            }
+          }
+          LEVELS.push(level);
+        }
+      }
+      buildCurriculum();
+
+      // --- 4. EDITOR & BLOCKLY WORKSPACE SETUP ---
+      let aceEditor;
+      let activeLineMarker = null;
+      const Range = ace.require("ace/range").Range;
+
+      function initEditor() {
+        aceEditor = ace.edit("editor");
+        aceEditor.setTheme("ace/theme/monokai");
+        aceEditor.session.setMode("ace/mode/javascript");
+        aceEditor.setShowPrintMargin(false);
+        aceEditor.setOptions({
+          fontSize: "14px",
+          enableBasicAutocompletion: true,
         });
 
-        // Resilient XML Text Parser to cross-handle different Blockly version structures safely
-        function textToDomSafe(xmlText) {
-            try {
-                if (window.Blockly && window.Blockly.utils && window.Blockly.utils.xml && typeof window.Blockly.utils.xml.textToDom === 'function') {
-                    return window.Blockly.utils.xml.textToDom(xmlText);
-                } else if (window.Blockly && window.Blockly.Xml && typeof window.Blockly.Xml.textToDom === 'function') {
-                    return window.Blockly.Xml.textToDom(xmlText);
-                } else {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(xmlText, 'text/xml');
-                    return doc.documentElement;
-                }
-            } catch (err) {
-                console.error("XML Parsing Error: ", err);
-                const parser = new DOMParser();
-                const doc = parser.parseFromString('<xml></xml>', 'text/xml');
-                return doc.documentElement;
-            }
-        }
-
-        // Safe visual compilation extractor 
-        function generateCodeFromWorkspace(workspace) {
-            const generator = (window.javascript && window.javascript.javascriptGenerator) || window.Blockly.JavaScript;
-            if (generator) {
-                return generator.workspaceToCode(workspace);
-            }
-            return '';
-        }
-
-        // --- 2. Custom Blockly Blocks Definitions for Advanced Concepts ---
-        Blockly.Blocks['move_forward'] = {
-            init: function() {
-                this.appendDummyInput().appendField("moveForward();");
-                this.setPreviousStatement(true, null);
-                this.setNextStatement(true, null);
-                this.setColour(120);
-                this.setTooltip("Command spaceship to glide forward 1 grid quadrant.");
-            }
-        };
-
-        Blockly.Blocks['jump'] = {
-            init: function() {
-                this.appendValueInput("VALUE")
-                    //.setCheck("Number") // Ensures only number-returning blocks can connect
-                    .appendField("jump(");
-                this.appendDummyInput()
-                    .appendField(");");
-                this.setInputsInline(true);
-                this.setPreviousStatement(true, null);
-                this.setNextStatement(true, null);
-                this.setColour(160);
-                this.setTooltip("Command spaceship to jump over a specific number of grid quadrants.");
-            }
-        };
-
-        Blockly.Blocks['turn_left'] = {
-            init: function() {
-                this.appendDummyInput().appendField("turnLeft();");
-                this.setPreviousStatement(true, null);
-                this.setNextStatement(true, null);
-                this.setColour(190);
-                this.setTooltip("Pivot 90 degrees Counter-Clockwise ↺.");
-            }
-        };
-
-        Blockly.Blocks['turn_right'] = {
-            init: function() {
-                this.appendDummyInput().appendField("turnRight();");
-                this.setPreviousStatement(true, null);
-                this.setNextStatement(true, null);
-                this.setColour(240);
-                this.setTooltip("Pivot 90 degrees Clockwise ↻.");
-            }
-        };
-
-        Blockly.Blocks['is_path_ahead'] = {
-            init: function() {
-                this.appendDummyInput().appendField("isPathAhead()");
-                this.setOutput(true, "Boolean");
-                this.setColour(330);
-                this.setTooltip("Scans forward navigation lanes. Returns true if path is passable.");
-            }
-        };
-
-        // Custom console.log block
-        Blockly.Blocks['console_log'] = {
-            init: function() {
-                this.appendValueInput("VALUE")
-                    .setCheck(null)
-                    .appendField("console.log(");
-                this.appendDummyInput().appendField(");");
-                this.setInputsInline(true);
-                this.setPreviousStatement(true, null);
-                this.setNextStatement(true, null);
-                this.setColour(60);
-                this.setTooltip("Prints statements and diagnostics directly onto your console panel.");
-            }
-        };
-
-        // Custom declare let variable
-        Blockly.Blocks['declare_variable'] = {
-            init: function() {
-                this.appendValueInput("VALUE")
-                    .setCheck(null)
-                    .appendField("let")
-                    .appendField(new Blockly.FieldTextInput("steps"), "VAR_NAME")
-                    .appendField("=");
-                this.setInputsInline(true);
-                this.setPreviousStatement(true, null);
-                this.setNextStatement(true, null);
-                this.setColour(290);
-                this.setTooltip("Declares a new mutable block scope variable.");
-            }
-        };
-
-        // Custom declare const variable
-        Blockly.Blocks['declare_const'] = {
-            init: function() {
-                this.appendValueInput("VALUE")
-                    .setCheck(null)
-                    .appendField("const")
-                    .appendField(new Blockly.FieldTextInput("ROLL"), "VAR_NAME")
-                    .appendField("=");
-                this.setInputsInline(true);
-                this.setPreviousStatement(true, null);
-                this.setNextStatement(true, null);
-                this.setColour(295);
-                this.setTooltip("Declares a new immutable block scope const.");
-            }
-        };        
-
-        // Dynamically bind custom generators with multi-version fallback orders
-        const activeGenerator = (window.javascript && window.javascript.javascriptGenerator) || window.Blockly.JavaScript;
-        const activeOrder = (window.javascript && window.javascript.Order) || (window.Blockly.JavaScript ? window.Blockly.JavaScript : {});
-        const ATOMIC_ORDER = activeOrder.ATOMIC !== undefined ? activeOrder.ATOMIC : 0;
-        const CALL_ORDER = activeOrder.FUNCTION_CALL !== undefined ? activeOrder.FUNCTION_CALL : 2;
-
-        if (activeGenerator) {
-            activeGenerator.forBlock['move_forward'] = function(block) {
-                return 'moveForward();\n';
-            };
-            activeGenerator.forBlock['jump'] = function(block) {
-                // Fetch the block connected to the "VALUE" input socket
-                // Fallback to '1' if the socket is left empty
-                var value_steps = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC) || '1';
-                
-                // Wrap the value in Math.max to enforce a minimum runtime value of 1
-                var code = 'jump(Math.max(1, ' + value_steps + '));\n';
-                return code;
-            };       
-            activeGenerator.forBlock['turn_left'] = function(block) {
-                return 'turnLeft();\n';
-            };
-            activeGenerator.forBlock['turn_right'] = function(block) {
-                return 'turnRight();\n';
-            };
-            activeGenerator.forBlock['is_path_ahead'] = function(block) {
-                return ['isPathAhead()', CALL_ORDER];
-            };
-            activeGenerator.forBlock['console_log'] = function(block) {
-                var value = activeGenerator.valueToCode(block, 'VALUE', ATOMIC_ORDER) || '"Space Academy"';
-                return 'console.log(' + value + ');\n';
-            };
-            activeGenerator.forBlock['declare_variable'] = function(block) {
-                var varName = block.getFieldValue('VAR_NAME');
-                var val = activeGenerator.valueToCode(block, 'VALUE', ATOMIC_ORDER) || '0';
-                return 'let ' + varName + ' = ' + val + ';\n';
-            };
-            activeGenerator.forBlock['declare_const'] = function(block) {
-                var varName = block.getFieldValue('VAR_NAME');
-                var val = activeGenerator.valueToCode(block, 'VALUE', ATOMIC_ORDER) || '0';
-                return 'const ' + varName + ' = ' + val + ';\n';
-            };            
-        }
-
-        // --- 3. The 50-Level Concept Database (Curriculum Layout Map) ---
-        const CHAPTERS = [
-            { id: 1, title: "JS Basics & Sequencing", start: 1, end: 5 },
-            { id: 2, title: "Variables & Expressions", start: 6, end: 10 },
-            { id: 3, title: "Data Types & Booleans", start: 11, end: 15 },
-            { id: 4, title: "Arithmetic & Math Ops", start: 16, end: 20 },
-            { id: 5, title: "System Output & Logs", start: 21, end: 25 },
-            { id: 6, title: "Conditionals (If / Else)", start: 26, end: 30 },
-            { id: 7, title: "Loops (For / While)", start: 31, end: 35 },
-            { id: 8, title: "Array Sequences", start: 36, end: 40 },
-            { id: 9, title: "Telemetry Objects", start: 41, end: 45 },
-            { id: 10, title: "Functional Modularization", start: 46, end: 50 }
-        ];
-
-        // Let's generate 50 fully structured levels mapping progressively to teaching concepts.
-        // Grid size is 9x9. 0=void space, 1=pathway.
-        const LEVELS = [];
-
-        function buildFullAcademyCurriculum() {
-            // Helper level template generator to scale cleanly to 50 levels
-            for (let i = 1; i <= 50; i++) {
-                let concept = "";
-                let title = "";
-                let desc = "";
-                let blocks = ['move_forward'];
-                let api = [{ code: "moveForward();", desc: "Advance 1 cell." }];
-                let grid = [
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0],                    
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0]
-                ];
-                let startX = 1, startY = 3, startDir = 1, goalX = 4, goalY = 3;
-                let defaultCode = "moveForward();";
-                let debugTask = null; // Holds the bug hunting parameters if active
-
-                // Map chapters
-                if (i >= 1 && i <= 5) {
-                    concept = "Basics & Sequences";
-                    blocks = ['move_forward', 'turn_left', 'turn_right'];
-                    if (i === 1) {
-                        title = "Ignition Launch";
-                        desc = "Welcome Cadet. Move your rocket ship in a straight path to the dimensional vortex portal. Type moveForward() 3 times.";
-                        grid[3] = [0, 1, 1, 1, 1, 1, 1, 0, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "moveForward();\nmoveForward();\nmoveForward();";
-                        // Debug task assignment
-                        debugTask = {
-                            instruction: "BUG HUNT: The rocket overshoots or paths blind! Fix the code sequence.",
-                            buggyCode: "moveForward();\nmoveForward();\nmoveForward();\nmoveForward();"
-                        };
-                    } else if (i === 2) {
-                        title = "Course Core Turn";
-                        desc = "You must change directions! Step through the code to see the effect.";
-                        grid[2] = [0, 0, 1, 1, 1, 1, 0, 0, 0];
-                        grid[3] = [0, 1, 1, 1, 0, 0, 0, 0, 0];
-                        startX = 1; startY = 3; goalX = 4; goalY = 2;
-                        defaultCode = "moveForward();\nturnLeft();\nmoveForward();";
-                        debugTask = {
-                            instruction: "BUG HUNT: The navigator turned the wrong direction! Swap it.",
-                            buggyCode: "moveForward();\nturnLeft();\nmoveForward();\nturnRight();\nmoveForward();\nturnLeft();\nmoveForward();\nturnLeft();\nmoveForward();"
-                        };
-                    } else if (i === 3) {
-                        title = "Orbital S-Curve";
-                        desc = "Navigate the ship along the solar stream line by combining left and right rotations.";
-                        grid[3] = [0, 0, 1, 1, 1, 1, 1, 1, 0];
-                        grid[4] = [0, 1, 1, 0, 0, 0, 0, 1, 0];
-                        grid[5] = [0, 0, 0, 1, 1, 1, 1, 1, 0];
-                        grid[6] = [0, 1, 1, 1, 0, 0, 0, 0, 0];                        
-                        startX = 2; startY = 6; goalX = 6; goalY = 3;
-                        defaultCode = "moveForward();\nturnLeft();\nmoveForward();\nturnRight();\nmoveForward();";
-                    } else if (i === 4) {
-                        title = "U-Turn Navigation";
-                        desc = "Reverse your direction entirely to locate the wormhole portal positioned directly behind you.";
-                        grid[3] = [1, 1, 1, 1, 1, 1, 1, 0, 0];
-                        grid[4] = [0, 0, 1, 1, 0, 0, 1, 0, 0];
-                        grid[5] = [0, 0, 1, 1, 1, 0, 1, 0, 0];
-                        startX = 6; startY = 5; goalX = 4; goalY = 5;
-                        defaultCode = "moveForward();\nturnRight();\nmoveForward();\nturnRight();\nmoveForward();";
-                    } else {
-                        title = "Zigzag Escape Route";
-                        desc = "Execute consecutive small alternating directional turns to clear the hazardous asteroids.";
-                        grid[3] = [0, 0, 1, 1, 1, 1, 1, 0, 0];
-                        grid[4] = [0, 1, 1, 0, 0, 0, 1, 0, 0];
-                        grid[5] = [0, 0, 0, 1, 1, 1, 1, 0, 0];
-                        grid[6] = [0, 1, 1, 1, 0, 0, 0, 0, 0];                        
-                        startX = 2; startY = 6; goalX = 6; goalY = 3;
-                        defaultCode = "moveForward();\nturnLeft();\nmoveForward();\nturnRight();\nmoveForward();\nturnLeft();\nmoveForward();";
-                    }
-                    api = [
-                        { code: "moveForward();", desc: "Advance spaceship 1 space." },
-                        { code: "turnLeft();", desc: "Turn Counter-Clockwise." },
-                        { code: "turnRight();", desc: "Turn Clockwise." }
-                    ];
-
-                } else if (i >= 6 && i <= 10) {
-                    concept = "Variables";
-                    blocks = ['move_forward', 'jump', 'declare_variable', 'declare_const', 'variables_get', 'math_number', 'turn_left', 'turn_right'];
-                    if (i === 6) {
-                        title = "Variable Definitions";
-                        desc = "Declare an integer variable called 'steps' and pass it in to specify the distance to jump forward.";
-                        grid[4] = [0, 1, 1, 1, 1, 1, 1, 0, 0];
-                        grid[5] = [0, 1, 1, 0, 0, 1, 1, 0, 0];
-                        grid[6] = [0, 0, 0, 0, 0, 1, 1, 0, 0];
-                        grid[7] = [0, 1, 1, 1, 1, 1, 0, 0, 0];   
-                        startX = 1; startY = 7; goalX = 2; goalY = 5;
-                        defaultCode = "let steps = 5;\njump(steps);\nmoveForward();\nmoveForward();";
-                        debugTask = {
-                            instruction: "BUG HUNT: The rocket overshoots or paths blind! Fix the code sequence.",
-                            buggyCode: "let steps = 2;\njump(steps);\nturnRight();\nmoveForward();"
-                        };                        
-                    } else if (i === 7) {
-                        title = "Dynamic Step-Counters";
-                        desc = "Declare variables to count operations. Set let jumps = 2 to control step calculations.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 3;
-                        defaultCode = "let jumps = 2;\nmoveForward();\nmoveForward();";
-                    } else if (i === 8) {
-                        title = "Reassigning State";
-                        desc = "Assign and change values of let variables during runtime to track path variations.";
-                        grid[2] = [0, 0, 1, 1, 1, 0];
-                        grid[3] = [0, 1, 1, 0, 0, 0];
-                        startX = 1; startY = 3; goalX = 4; goalY = 2;
-                        defaultCode = "let dist = 1;\nmoveForward();\nturnLeft();\ndist = 2;\nmoveForward();\nmoveForward();";
-                        debugTask = {
-                            instruction: "BUG HUNT: The navigator turned the wrong direction! Swap it.",
-                            buggyCode: "let dist = 2;\njump(dist);\nturnLeft();\ndist = 3;\nmoveForward();\njump(dist);"
-                        };                        
-                    } else if (i === 9) {
-                        title = "Scope Space Constants";
-                        desc = "Use 'const' declarations for values that will never alter on your flight parameters.";
-                        grid[1] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; startY = 1; goalX = 4; goalY = 1;
-                        defaultCode = "const flightLimit = 3;\nmoveForward();\nmoveForward();\nmoveForward();";
-                    } else {
-                        title = "Multi-Variable Alignment";
-                        desc = "Combine let declarations to track coordinates dynamically across the spatial plane.";
-                        grid[2] = [0, 0, 0, 1, 0, 0];
-                        grid[3] = [0, 1, 1, 1, 0, 0];
-                        startX = 1; startY = 3; goalX = 3; goalY = 2;
-                        defaultCode = "let h = 2;\nlet v = 1;\nmoveForward();\nmoveForward();\nturnLeft();\nmoveForward();";
-                    }
-                    api = [
-                        { code: "let steps = 3;", desc: "Declare a standard variable." },
-                        { code: "const MAX = 4;", desc: "Declare a read-only constant value." },
-                        { code: "jump(5);", desc: "Advance over a number of grids." },
-                        
-                    ];
-
-                } else if (i >= 11 && i <= 15) {
-                    concept = "Data Types";
-                    blocks = ['move_forward', 'declare_variable', 'text', 'logic_boolean', 'math_number'];
-                    if (i === 11) {
-                        title = "String Channels";
-                        desc = "Learn about String values encapsulated in single or double quotation marks.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "let status = 'LAUNCHING';\nmoveForward();\nmoveForward();\nmoveForward();";
-                    } else if (i === 12) {
-                        title = "Numeric Coordinates";
-                        desc = "Manage numerical structures. Float and integers do not need wrapper quote marks.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 3;
-                        defaultCode = "let heading = 90;\nmoveForward();\nmoveForward();";
-                    } else if (i === 13) {
-                        title = "Boolean Engine Checks";
-                        desc = "Initialize true or false states representing logical binaries in JavaScript.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "let autopilot = true;\nmoveForward();\nmoveForward();\nmoveForward();";
-                    } else if (i === 14) {
-                        title = "Undefined Telemetry";
-                        desc = "Variables created without assignments hold a value of 'undefined'. Assign them later!";
-                        grid[2] = [0, 0, 1, 0, 0, 0];
-                        grid[3] = [0, 1, 1, 0, 0, 0];
-                        startX = 1; startY = 3; goalX = 2; goalY = 2;
-                        defaultCode = "let heading;\nheading = 'UP';\nmoveForward();\nturnLeft();\nmoveForward();";
-                    } else {
-                        title = "Type Checks";
-                        desc = "Differentiate dynamically typed variables by modifying strings and integer metrics.";
-                        grid[3] = [1, 1, 1, 1, 1, 1];
-                        startX = 0; goalX = 5;
-                        defaultCode = "let distance = 5;\nmoveForward();\nmoveForward();\nmoveForward();\nmoveForward();\nmoveForward();";
-                    }
-                    api = [
-                        { code: "let label = 'Spaceship';", desc: "String definition." },
-                        { code: "let count = 100;", desc: "Numeric value definition." },
-                        { code: "let active = true;", desc: "Boolean value definition." }
-                    ];
-
-                } else if (i >= 16 && i <= 20) {
-                    concept = "Operators";
-                    blocks = ['move_forward', 'declare_variable', 'math_arithmetic', 'math_number'];
-                    if (i === 16) {
-                        title = "Arithmetic Sums";
-                        desc = "Calculate movements using addition (+) operators inside your scripts.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "let steps = 1 + 2;\nmoveForward();\nmoveForward();\nmoveForward();";
-                    } else if (i === 17) {
-                        title = "Distance Subtraction";
-                        desc = "Decrease variables programmatically using the subtraction (-) operator.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 3;
-                        defaultCode = "let steps = 5 - 3;\nmoveForward();\nmoveForward();";
-                    } else if (i === 18) {
-                        title = "Vector Multiplication";
-                        desc = "Accelerate calculations using multiplication (*) operators on flight variables.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 5;
-                        defaultCode = "let range = 2 * 2;\nmoveForward();\nmoveForward();\nmoveForward();\nmoveForward();";
-                    } else if (i === 19) {
-                        title = "Grid Segment Division";
-                        desc = "Divide variables using the slash (/) symbol to half navigational spaces.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 3;
-                        defaultCode = "let result = 4 / 2;\nmoveForward();\nmoveForward();";
-                    } else {
-                        title = "Modulo Orbit Check";
-                        desc = "Solve coordinate steps with modular remainder division (%) operations.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "let steps = 7 % 4;\nmoveForward();\nmoveForward();\nmoveForward();";
-                    }
-                    api = [
-                        { code: "let val = 2 + 3;", desc: "Arithmetic operator." },
-                        { code: "let calc = 10 % 3;", desc: "Modulo operator." }
-                    ];
-
-                } else if (i >= 21 && i <= 25) {
-                    concept = "System Logs";
-                    blocks = ['move_forward', 'console_log', 'text'];
-                    if (i === 21) {
-                        title = "Launch Announcements";
-                        desc = "Send an ignition message directly to the real-time Console panel via 'console.log()'.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "console.log('Igniting starship booster engines!');\nmoveForward();\nmoveForward();\nmoveForward();";
-                    } else if (i === 22) {
-                        title = "Concatenation Signals";
-                        desc = "Link strings using addition (+) symbols inside log outputs.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 3;
-                        defaultCode = "console.log('Orbiting ' + 'Earth');\nmoveForward();\nmoveForward();";
-                    } else if (i === 23) {
-                        title = "Logging Numbers";
-                        desc = "Console log values of variables to inspect and verify telemetry calculations.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "let x = 3;\nconsole.log(x);\nmoveForward();\nmoveForward();\nmoveForward();";
-                    } else if (i === 24) {
-                        title = "Dynamic Status Logs";
-                        desc = "Join strings and variables inside log statements for clear dynamic feedback.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 3;
-                        defaultCode = "let power = 100;\nconsole.log('Current energy level: ' + power);\nmoveForward();\nmoveForward();";
-                    } else {
-                        title = "System Graduation Log";
-                        desc = "Confirm diagnostic variables output prior to warping through the dimensional sector.";
-                        grid[3] = [1, 1, 1, 1, 1, 1];
-                        startX = 0; goalX = 5;
-                        defaultCode = "console.log('Telemetry completely clear!');\nmoveForward();\nmoveForward();\nmoveForward();\nmoveForward();\nmoveForward();";
-                    }
-                    api = [
-                        { code: "console.log('Text');", desc: "Print information logs." },
-                        { code: "console.log('Speed: ' + s);", desc: "Print values with strings." }
-                    ];
-
-                } else if (i >= 26 && i <= 30) {
-                    concept = "Conditionals";
-                    blocks = ['move_forward', 'turn_left', 'turn_right', 'controls_if', 'is_path_ahead'];
-                    if (i === 26) {
-                        title = "Basic Scanner Checks";
-                        desc = "Examine structural paths using 'if (isPathAhead())' to protect ship routes.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "if (isPathAhead()) {\n    moveForward();\n    moveForward();\n    moveForward();\n}";
-                    } else if (i === 27) {
-                        title = "If / Else Alternatives";
-                        desc = "Declare alternative instructions via 'else' scopes if path check blocks are false.";
-                        grid[2] = [0, 0, 1, 0, 0, 0];
-                        grid[3] = [0, 1, 1, 0, 0, 0];
-                        startX = 1; startY = 3; goalX = 2; goalY = 2;
-                        defaultCode = "moveForward();\nif (isPathAhead()) {\n    moveForward();\n} else {\n    turnLeft();\n    moveForward();\n}";
-                    } else if (i === 28) {
-                        title = "Nested Decision Paths";
-                        desc = "Run nested logic arrays to solve grid obstacles safely.";
-                        grid[2] = [0, 0, 1, 1, 0, 0];
-                        grid[3] = [0, 1, 1, 0, 0, 0];
-                        startX = 1; startY = 3; goalX = 3; goalY = 2;
-                        defaultCode = "moveForward();\nturnLeft();\nif (isPathAhead()) {\n    moveForward();\n    turnRight();\n    moveForward();\n}";
-                    } else if (i === 29) {
-                        title = "Comparison Controls";
-                        desc = "Trigger path moves using numerical inequality validations (> or <).";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 3;
-                        defaultCode = "let shield = 80;\nif (shield > 50) {\n    moveForward();\n    moveForward();\n}";
-                    } else {
-                        title = "Logical AND Integrations";
-                        desc = "Check two rules together inside decision systems using double ampersand (&&) formats.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "let fuel = 90;\nlet offline = false;\nif (fuel > 50 && !offline) {\n    moveForward();\n    moveForward();\n    moveForward();\n}";
-                    }
-                    api = [
-                        { code: "if (isPathAhead()) { }", desc: "Execute only if true." },
-                        { code: "else { }", desc: "Execute if condition fails." }
-                    ];
-
-                } else if (i >= 31 && i <= 35) {
-                    concept = "Loops";
-                    blocks = ['move_forward', 'controls_repeat_ext', 'math_number'];
-                    if (i === 31) {
-                        title = "Standard For Loops";
-                        desc = "Save script bytes! Execute recurring commands using JavaScript 'for' loop declarations.";
-                        grid[3] = [1, 1, 1, 1, 1, 1];
-                        startX = 0; goalX = 5;
-                        defaultCode = "for (let i = 0; i < 5; i++) {\n    moveForward();\n}";
-                    } else if (i === 32) {
-                        title = "Dynamically Bound Loops";
-                        desc = "Configure dynamic variables to restrict loop increments during operations.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "let steps = 3;\nfor (let i = 0; i < steps; i++) {\n    moveForward();\n}";
-                    } else if (i === 33) {
-                        title = "Nebula While Loops";
-                        desc = "Keep flying forward while the coordinate pathway directly ahead reports clear.";
-                        grid[3] = [1, 1, 1, 1, 1, 1];
-                        startX = 0; goalX = 5;
-                        defaultCode = "while (isPathAhead()) {\n    moveForward();\n}";
-                    } else if (i === 34) {
-                        title = "Grid Maze Solver Loop";
-                        desc = "Build loops that scan and turn automatically to escape grid patterns.";
-                        grid[1] = [0, 1, 1, 1, 0, 0];
-                        grid[2] = [0, 1, 0, 1, 0, 0];
-                        grid[3] = [0, 1, 1, 1, 0, 0];
-                        startX = 1; startY = 3; goalX = 3; goalY = 1;
-                        defaultCode = "for (let i = 0; i < 8; i++) {\n    if (isPathAhead()) {\n        moveForward();\n    } else {\n        turnLeft();\n    }\n}";
-                    } else {
-                        title = "Infinite Loop Prevention";
-                        desc = "Prevent infinite executions with precise boundary settings inside nested loops.";
-                        grid[1] = [0, 0, 0, 1, 1, 1];
-                        grid[2] = [0, 0, 0, 1, 0, 0];
-                        grid[3] = [0, 1, 1, 1, 0, 0];
-                        startX = 1; startY = 3; goalX = 5; goalY = 1;
-                        defaultCode = "for (let i = 0; i < 3; i++) {\n    moveForward();\n}\nturnLeft();\nfor (let i = 0; i < 2; i++) {\n    moveForward();\n}\nturnRight();\nfor (let i = 0; i < 2; i++) {\n    moveForward();\n}";
-                    }
-                    api = [
-                        { code: "for (let i=0; i<N; i++) { }", desc: "Repeat N times." },
-                        { code: "while (isPathAhead()) { }", desc: "Repeat until blocked." }
-                    ];
-
-                } else if (i >= 36 && i <= 40) {
-                    concept = "Arrays";
-                    blocks = ['move_forward', 'declare_variable', 'lists_create_with'];
-                    if (i === 36) {
-                        title = "Array Indexes";
-                        desc = "Construct dynamic lists. Index references in JavaScript are zero-based ([0]).";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "let flightPlan = [1, 1, 1];\nmoveForward();\nmoveForward();\nmoveForward();";
-                    } else if (i === 37) {
-                        title = "Array Length Properties";
-                        desc = "Inspect sizes of arrays dynamically using the 'length' property attribute.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "let directions = ['UP', 'UP', 'UP'];\nfor (let i = 0; i < directions.length; i++) {\n    moveForward();\n}";
-                    } else if (i === 38) {
-                        title = "Sequential Read Lists";
-                        desc = "Pull index-specific values from lists to command directional changes.";
-                        grid[2] = [0, 0, 1, 0, 0, 0];
-                        grid[3] = [0, 1, 1, 0, 0, 0];
-                        startX = 1; startY = 3; goalX = 2; goalY = 2;
-                        defaultCode = "let turns = ['FORWARD', 'LEFT', 'FORWARD'];\nmoveForward();\nturnLeft();\nmoveForward();";
-                    } else if (i === 39) {
-                        title = "Dynamic Array Insertion";
-                        desc = "Manipulate arrays using the 'push()' modifier statement.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "let plan = [];\nplan.push('GO');\nmoveForward();\nmoveForward();\nmoveForward();";
-                    } else {
-                        title = "Wormhole Matrix Array";
-                        desc = "Navigate coordinates with dimensional matrix arrays.";
-                        grid[3] = [1, 1, 1, 1, 1, 1];
-                        startX = 0; goalX = 5;
-                        defaultCode = "let checkpoints = [[0,3], [5,3]];\nfor (let i = 0; i < 5; i++) {\n    moveForward();\n}";
-                    }
-                    api = [
-                        { code: "let arr = [1, 2];", desc: "Create an array list." },
-                        { code: "arr.length", desc: "Get array size." },
-                        { code: "arr.push(val);", desc: "Append to end of list." }
-                    ];
-
-                } else if (i >= 41 && i <= 45) {
-                    concept = "Objects";
-                    blocks = ['move_forward', 'declare_variable'];
-                    if (i === 41) {
-                        title = "Telemetry Data Objects";
-                        desc = "Gather data groups inside curly braces as structural objects containing keys and values.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "let shipState = {\n    engine: 'ONLINE',\n    speed: 3\n};\nmoveForward();\nmoveForward();\nmoveForward();";
-                    } else if (i === 42) {
-                        title = "Dot Notation Accessors";
-                        desc = "Read parameters inside objects using dots (obj.key).";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 3;
-                        defaultCode = "let mission = { steps: 2 };\nconsole.log(mission.steps);\nmoveForward();\nmoveForward();";
-                    } else if (i === 43) {
-                        title = "Object Value Reassignment";
-                        desc = "Update and override parameters inside objects using assignment operators.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "let config = { route: 1 };\nconfig.route = 3;\nmoveForward();\nmoveForward();\nmoveForward();";
-                    } else if (i === 44) {
-                        title = "Destructuring States";
-                        desc = "Pull individual properties from state objects into direct variables.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 3;
-                        defaultCode = "let config = { steps: 2 };\nlet { steps } = config;\nmoveForward();\nmoveForward();";
-                    } else {
-                        title = "Navigation Target Objects";
-                        desc = "Reference nested coordinates objects to complete complex flight routing paths.";
-                        grid[2] = [0, 0, 1, 1, 1, 0];
-                        grid[3] = [0, 1, 1, 0, 0, 0];
-                        startX = 1; startY = 3; goalX = 4; goalY = 2;
-                        defaultCode = "let route = { x: 3, y: 1 };\nmoveForward();\nturnLeft();\nmoveForward();\nmoveForward();";
-                    }
-                    api = [
-                        { code: "let obj = { x: 1 };", desc: "Declare dictionary object." },
-                        { code: "obj.x", desc: "Access property." }
-                    ];
-
-                } else if (i >= 46 && i <= 50) {
-                    concept = "Functions";
-                    blocks = ['move_forward', 'procedures_defnoreturn', 'procedures_callnoreturn'];
-                    if (i === 46) {
-                        title = "Modularizing Functions";
-                        desc = "Declare reusable sub-routines using 'function' scopes to organize navigation algorithms.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "function travel() {\n    moveForward();\n    moveForward();\n    moveForward();\n}\ntravel();";
-                    } else if (i === 47) {
-                        title = "Function Parameters";
-                        desc = "Pass parameters inside functions to adjust routing rules dynamically.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 4;
-                        defaultCode = "function navigate(count) {\n    for (let i = 0; i < count; i++) {\n        moveForward();\n    }\n}\nnavigate(3);";
-                    } else if (i === 48) {
-                        title = "Functions Returning Value";
-                        desc = "Retrieve calculations out of scoped systems using standard 'return' logic.";
-                        grid[3] = [0, 1, 1, 1, 1, 0];
-                        startX = 1; goalX = 3;
-                        defaultCode = "function getDistance() {\n    return 2;\n}\nlet d = getDistance();\nmoveForward();\nmoveForward();";
-                    } else if (i === 49) {
-                        title = "Logical Function Pivots";
-                        desc = "Build helper systems inside functions to rotate and align coordinates automatically.";
-                        grid[2] = [0, 0, 1, 0, 0, 0];
-                        grid[3] = [0, 1, 1, 0, 0, 0];
-                        startX = 1; startY = 3; goalX = 2; goalY = 2;
-                        defaultCode = "function pivotLeft() {\n    turnLeft();\n    moveForward();\n}\nmoveForward();\npivotLeft();";
-                    } else {
-                        title = "The Graduation Orbit";
-                        desc = "Commander! Combine variables, functions, logs, loops, and conditional state structures to pass the Academy final exam!";
-                        grid[1] = [0, 0, 0, 1, 1, 1];
-                        grid[2] = [0, 0, 0, 1, 0, 0];
-                        grid[3] = [0, 1, 1, 1, 0, 0];
-                        startX = 1; startY = 3; goalX = 5; goalY = 1;
-                        defaultCode = "function mainTask() {\n    console.log('Final warp sequences online.');\n    for (let i = 0; i < 3; i++) {\n        moveForward();\n    }\n    turnLeft();\n    moveForward();\n    moveForward();\n    turnRight();\n    moveForward();\n    moveForward();\n}\nmainTask();";
-                    }
-                    api = [
-                        { code: "function name() { }", desc: "Declare routine." },
-                        { code: "name();", desc: "Execute function." }
-                    ];
-                }
-
-                LEVELS.push({
-                    number: i,
-                    title: title,
-                    concept: concept,
-                    description: desc,
-                    allowedBlocks: blocks,
-                    allowedApi: api,
-                    grid: grid,
-                    startX: startX,
-                    startY: startY,
-                    startDir: startDir,
-                    goalX: goalX,
-                    goalY: goalY,
-                    defaultCode: defaultCode,
-                    debugTask: debugTask
-                });
-            }
-        }
-
-        buildFullAcademyCurriculum();
-
-        // Global State System
-        let currentLevelIndex = 0;
-        let isRunningSimulation = false;
-        let isSteppingSimulation = false;
-        let blocklyWorkspace = null;
-        let aceEditor = null;
-        let isSyncing = false;
-        let editorSyncTimeout = null;
-
-        // --- 4. JavaScript Code to Blockly Blocks Bidirectional Parser ---
-        function translateJsToBlocklyXml(jsCode) {
-            let lines = jsCode
-                .replace(/\{/g, '{\n')
-                .replace(/\}/g, '\n}\n')
-                .replace(/\;/g, ';\n')
-                .split('\n')
-                .map(l => l.trim())
-                .filter(l => l.length > 0 && !l.startsWith('//'));
-
-            let xmlHeader = '<xml xmlns="https://developers.google.com/blockly/xml">';
-            
-            function parseNestedLines(tokens) {
-                if (tokens.length === 0) return '';
-                
-                let current = tokens[0];
-                let rest = tokens.slice(1);
-                let currentBlock = '';
-
-                if (current.includes('moveForward()')) {
-                    currentBlock = '<block type="move_forward">';
-                } else if (current.includes('jump(')) {
-                    let jumpMatch = current.match(/jump\((.*)\)/);
-                    let jumpVal = jumpMatch ? jumpMatch[1] : '0';
-                    currentBlock = `<block type="jump"><value name="VALUE"><block type="variables_get"><field name="VAR">${jumpVal}</field></block></value>`;         
-                } else if (current.includes('turnLeft()')) {
-                    currentBlock = '<block type="turn_left">';
-                } else if (current.includes('turnRight()')) {
-                    currentBlock = '<block type="turn_right">';
-                } else if (current.includes('console.log')) {
-                    let logMatch = current.match(/console\.log\((.*)\)/);
-                    let loggedVal = logMatch ? logMatch[1] : '"Space Academy"';
-                    currentBlock = `<block type="console_log"><value name="VALUE"><block type="text"><field name="TEXT">${loggedVal.replace(/['"]/g, '')}</field></block></value>`;
-                } else if ((current.startsWith('let ') || current.startsWith('const ')) && current.includes('=')) {
-                    let varParts = current.substring(4).split('=');
-                    let varName = varParts[0].trim();
-                    let val = varParts[1].replace(';', '').trim();
-                    if (current.startsWith('let ')) {
-                        currentBlock = `<block type="declare_variable"><field name="VAR_NAME">${varName}</field><value name="VALUE"><block type="math_number"><field name="NUM">${val}</field></block></value>`;
-                    } else {
-                        currentBlock = `<block type="declare_const"><field name="VAR_NAME">${varName}</field><value name="VALUE"><block type="math_number"><field name="NUM">${val}</field></block></value>`;
-                    }
-                } else if (current.startsWith('for') && current.includes('{')) {
-                    let iterations = 3;
-                    let countMatch = current.match(/<\s*(\d+)/);
-                    if (countMatch && countMatch[1]) {
-                        iterations = parseInt(countMatch[1]);
-                    }
-                    
-                    currentBlock = `<block type="controls_repeat_ext"><value name="TIMES"><block type="math_number"><field name="NUM">${iterations}</field></block></value><statement name="DO">`;
-                    
-                    let body = [];
-                    let depth = 1;
-                    let cursor = 0;
-                    while (cursor < rest.length && depth > 0) {
-                        let innerLine = rest[cursor];
-                        if (innerLine.includes('{')) depth++;
-                        if (innerLine.includes('}')) depth--;
-                        if (depth > 0) body.push(innerLine);
-                        cursor++;
-                    }
-                    currentBlock += parseNestedLines(body);
-                    currentBlock += '</statement>';
-                    rest = rest.slice(cursor);
-                } else if (current.startsWith('if') && current.includes('{')) {
-                    currentBlock = `<block type="controls_if"><value name="IF0"><block type="is_path_ahead"></block></value><statement name="DO0">`;
-                    
-                    let body = [];
-                    let depth = 1;
-                    let cursor = 0;
-                    while (cursor < rest.length && depth > 0) {
-                        let innerLine = rest[cursor];
-                        if (innerLine.includes('{')) depth++;
-                        if (innerLine.includes('}')) depth--;
-                        if (depth > 0) body.push(innerLine);
-                        cursor++;
-                    }
-                    currentBlock += parseNestedLines(body);
-                    currentBlock += '</statement>';
-                    rest = rest.slice(cursor);
-                } else {
-                    return parseNestedLines(rest);
-                }
-
-                if (currentBlock) {
-                    let nextPortion = parseNestedLines(rest);
-                    if (nextPortion) {
-                        return currentBlock + '<next>' + nextPortion + '</next></block>';
-                    } else {
-                        return currentBlock + '</block>';
-                    }
-                }
-                return '';
-            }
-
-            let parsedBlocks = parseNestedLines(lines);
-            return xmlHeader + parsedBlocks + '</xml>';
-        }
-
-        // --- 5. Workspace Framework Configurations ---
-        function initWorkspaces() {
-            aceEditor = ace.edit("editor");
-            aceEditor.setTheme("ace/theme/monokai");
-            aceEditor.session.setMode("ace/mode/javascript");
-            aceEditor.setShowPrintMargin(false);
-            
-            updateLevelWorkspaces();
-
-            blocklyWorkspace.addChangeListener(function(event) {
-                if (isSyncing || isRunningSimulation) return;
-                
-                if (event.type === Blockly.Events.BLOCK_MOVE || 
-                    event.type === Blockly.Events.BLOCK_CHANGE || 
-                    event.type === Blockly.Events.BLOCK_DELETE || 
-                    event.type === Blockly.Events.BLOCK_CREATE) {
-                    
-                    isSyncing = true;
-                    let code = generateCodeFromWorkspace(blocklyWorkspace);
-                    aceEditor.setValue(code, -1);
-                    isSyncing = false;
-                }
-            });
-
-            aceEditor.getSession().on('change', function() {
-                if (isSyncing || isRunningSimulation) return;
-                
-                clearTimeout(editorSyncTimeout);
-                editorSyncTimeout = setTimeout(() => {
-                    isSyncing = true;
-                    let code = aceEditor.getValue();
-                    let xmlStr = translateJsToBlocklyXml(code);
-                    
-                    try {
-                        blocklyWorkspace.clear();
-                        let dom = textToDomSafe(xmlStr);
-                        Blockly.Xml.domToWorkspace(dom, blocklyWorkspace);
-                    } catch (e) {
-                        // Suppress incomplete block sync syntax warnings
-                    }
-                    isSyncing = false;
-                }, 500);
-            });
-        }
-
-        function buildToolboxXml(allowedBlocks) {
-            let xml = '<xml>';
-            if (allowedBlocks.includes('move_forward')) {
-                xml += '<block type="move_forward"></block>';
-            }
-            if (allowedBlocks.includes('jump')) {
-                xml += `
-                <block type="jump">
-                    <value name="VALUE">
-                        <block type="math_number">
-                            <field name="NUM">5</field>
-                        </block>
-                    </value>
-                </block>`;                
-            }            
-            if (allowedBlocks.includes('turn_left')) {
-                xml += '<block type="turn_left"></block>';
-            }
-            if (allowedBlocks.includes('turn_right')) {
-                xml += '<block type="turn_right"></block>';
-            }
-            if (allowedBlocks.includes('controls_repeat_ext')) {
-                xml += `
-                <block type="controls_repeat_ext">
-                    <value name="TIMES">
-                        <block type="math_number">
-                            <field name="NUM">3</field>
-                        </block>
-                    </value>
-                </block>`;
-            }
-            if (allowedBlocks.includes('controls_if')) {
-                xml += '<block type="controls_if"></block>';
-            }
-            if (allowedBlocks.includes('is_path_ahead')) {
-                xml += '<block type="is_path_ahead"></block>';
-            }
-            if (allowedBlocks.includes('console_log')) {
-                xml += `
-                <block type="console_log">
-                    <value name="VALUE">
-                        <block type="text">
-                            <field name="TEXT">Systems clear!</field>
-                        </block>
-                    </value>
-                </block>`;
-            }
-            if (allowedBlocks.includes('declare_variable')) {
-                xml += `
-                <block type="declare_variable">
-                    <value name="VALUE">
-                        <block type="math_number">
-                            <field name="NUM">1</field>
-                        </block>
-                    </value>
-                </block>`;
-            }
-            if (allowedBlocks.includes('declare_const')) {
-                xml += `
-                <block type="declare_const">
-                    <value name="VALUE">
-                        <block type="math_number">
-                            <field name="NUM">3</field>
-                        </block>
-                    </value>
-                </block>`;
-            }            
-            xml += '</xml>';
-            return xml;
-        }
-
-        function updateLevelWorkspaces() {
-            let activeLevel = LEVELS[currentLevelIndex];
-            let xmlToolbox = buildToolboxXml(activeLevel.allowedBlocks);
-
-            if (blocklyWorkspace) {
-                blocklyWorkspace.dispose();
-            }
-            
-            blocklyWorkspace = Blockly.inject('blocklyDiv', {
-                toolbox: xmlToolbox,
-                scrollbars: true,
-                trashcan: true,
-                sounds: false,
-                grid: {
-                    spacing: 20,
-                    length: 3,
-                    colour: '#1E293B',
-                    snap: true
-                },
-                zoom: {
-                    controls: false,
-                    wheel: false,
-                    startScale: 0.9
-                }
-            });
-
+        // Sync Ace -> Blockly
+        aceEditor.getSession().on("change", function () {
+          if (isSyncing || isSimulationRunning) return;
+          clearTimeout(editorSyncTimeout);
+          editorSyncTimeout = setTimeout(() => {
             isSyncing = true;
-            //aceEditor.setValue(activeLevel.defaultCode, -1);
-            //let initialXml = translateJsToBlocklyXml(activeLevel.defaultCode);
-            aceEditor.setValue('', -1);
-            let initialXml = translateJsToBlocklyXml('');            
+            let code = aceEditor.getValue();
+            let xmlStr = translateJsToBlocklyXml(code);
             try {
-                blocklyWorkspace.clear();
-                let dom = textToDomSafe(initialXml);
-                Blockly.Xml.domToWorkspace(dom, blocklyWorkspace);
-            } catch (e) {
-                console.error(e);
-            }
+              blocklyWorkspace.clear();
+              let dom = textToDomSafe(xmlStr);
+              window.Blockly.Xml.domToWorkspace(dom, blocklyWorkspace);
+            } catch (e) {}
             isSyncing = false;
+          }, 600);
+        });
+      }
 
-            // setTimeout(()=>{aceEditor.setValue("", -1)}, 300)
-            
+      function buildToolboxXml(allowedBlocks) {
+        let xml = "<xml>";
+        if (allowedBlocks.includes("move_forward"))
+          xml += '<block type="move_forward"></block>';
+        if (allowedBlocks.includes("turn_left"))
+          xml += '<block type="turn_left"></block>';
+        if (allowedBlocks.includes("turn_right"))
+          xml += '<block type="turn_right"></block>';
+        if (allowedBlocks.includes("controls_repeat_ext"))
+          xml += `<block type="controls_repeat_ext"><value name="TIMES"><block type="math_number"><field name="NUM">3</field></block></value></block>`;
+        if (allowedBlocks.includes("controls_if"))
+          xml += '<block type="controls_if"></block>';
+        if (allowedBlocks.includes("is_path_ahead"))
+          xml += '<block type="is_path_ahead"></block>';
+        if (allowedBlocks.includes("console_log"))
+          xml += `<block type="console_log"><value name="VALUE"><block type="text"><field name="TEXT">Systems clear!</field></block></value></block>`;
+        if (allowedBlocks.includes("declare_variable"))
+          xml += `<block type="declare_variable"><value name="VALUE"><block type="math_number"><field name="NUM">1</field></block></value></block>`;
+        if (allowedBlocks.includes("declare_const"))
+          xml += `<block type="declare_const"><value name="VALUE"><block type="math_number"><field name="NUM">3</field></block></value></block>`;
+        xml += "</xml>";
+        return xml;
+      }
+
+      function updateWorkspaces() {
+        let level = LEVELS[currentLevelIndex];
+        let xmlToolbox = buildToolboxXml(level.allowedBlocks);
+
+        if (blocklyWorkspace) {
+          blocklyWorkspace.dispose();
         }
 
-        // --- 6. Physics Game Simulator Arena (Canvas Renderer) ---
-        const canvas = document.getElementById('game-canvas');
-        const ctx = canvas.getContext('2d');
-        let animationFrameId = null;
+        blocklyWorkspace = window.Blockly.inject("blocklyDiv", {
+          toolbox: xmlToolbox,
+          scrollbars: true,
+          trashcan: true,
+          sounds: false,
+          grid: { spacing: 20, length: 3, colour: "#1E293B", snap: true },
+          zoom: { controls: false, wheel: false, startScale: 0.85 },
+        });
 
-        let spacecraft = {
-            gridX: 0,
-            gridY: 0,
-            dir: 0,
-            drawX: 0,
-            drawY: 0,
-            drawAngle: 0,
-            trailEnergy: 0
+        // Sync Blockly -> Ace
+        blocklyWorkspace.addChangeListener(function (event) {
+          if (isSyncing || isSimulationRunning || true) return;
+          if (
+            event.type === window.Blockly.Events.BLOCK_MOVE ||
+            event.type === window.Blockly.Events.BLOCK_CHANGE ||
+            event.type === window.Blockly.Events.BLOCK_DELETE ||
+            event.type === window.Blockly.Events.BLOCK_CREATE
+          ) {
+            isSyncing = true;
+            let code = "";
+            if (activeGenerator)
+              code = activeGenerator.workspaceToCode(blocklyWorkspace);
+            aceEditor.setValue(code, 1);
+            isSyncing = false;
+          }
+        });
+
+        isSyncing = true;
+        let initialCode = level.debugTask
+          ? level.debugTask.buggyCode
+          : level.defaultCode;
+        aceEditor.setValue(initialCode, -1);
+        try {
+          blocklyWorkspace.clear();
+          let dom = textToDomSafe(translateJsToBlocklyXml(initialCode));
+          window.Blockly.Xml.domToWorkspace(dom, blocklyWorkspace);
+        } catch (e) {}
+        isSyncing = false;
+      }
+
+      function highlightAceLine(lineNum) {
+        clearHighlight();
+        if (lineNum > 0 && lineNum <= aceEditor.session.getLength()) {
+          activeLineMarker = aceEditor.session.addMarker(
+            new Range(lineNum - 1, 0, lineNum - 1, 1),
+            "ace_debug-line",
+            "fullLine",
+          );
+          aceEditor.scrollToLine(lineNum - 1, true, true, function () {});
+        }
+      }
+
+      function clearHighlight() {
+        if (activeLineMarker) {
+          aceEditor.session.removeMarker(activeLineMarker);
+          activeLineMarker = null;
+        }
+      }
+
+      // --- 5. GAME ENGINE & RENDERER ---
+      const canvas = document.getElementById("game-canvas");
+      const ctx = canvas.getContext("2d");
+      let animationFrameId;
+
+      let currentLevelIndex = 0;
+      let spacecraft = {
+        x: 0,
+        y: 0,
+        drawX: 0,
+        drawY: 0,
+        dir: 0,
+        drawAngle: 0,
+        trail: 0,
+      };
+      let commandQueue = [];
+      let executionPointer = 0;
+      let isSimulationRunning = false;
+      let isSimulationStepping = false;
+
+      const stars = Array.from({ length: 50 }, () => ({
+        x: Math.random() * 500,
+        y: Math.random() * 500,
+        r: Math.random() * 1.5 + 0.5,
+        p: Math.random() * Math.PI,
+      }));
+
+      function resizeCanvas() {
+        canvas.width = 500;
+        canvas.height = 500;
+        if (blocklyWorkspace) window.Blockly.svgResize(blocklyWorkspace);
+      }
+
+      function drawHexagon(x, y, size) {
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = ((2 * Math.PI) / 6) * i;
+          ctx.lineTo(x + size * Math.cos(angle), y + size * Math.sin(angle));
+        }
+        ctx.closePath();
+      }
+
+      function renderArena() {
+        const level = LEVELS[currentLevelIndex];
+        const grid = level.grid;
+        const rows = grid.length;
+        const cols = grid[0].length;
+        const cellSize = canvas.width / cols;
+
+        const bgGrad = ctx.createRadialGradient(250, 250, 50, 250, 250, 350);
+        bgGrad.addColorStop(0, "#0a0d1c");
+        bgGrad.addColorStop(1, "#020308");
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#fff";
+        stars.forEach((s) => {
+          s.p += 0.03;
+          ctx.globalAlpha = Math.abs(Math.sin(s.p)) * 0.8;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1.0;
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            let tx = c * cellSize;
+            let ty = r * cellSize;
+
+            if (grid[r][c] === 1) {
+              ctx.strokeStyle = "rgba(6, 182, 212, 0.15)";
+              ctx.lineWidth = 1;
+              ctx.strokeRect(tx, ty, cellSize, cellSize);
+              ctx.fillStyle = "rgba(6, 182, 212, 0.3)";
+              ctx.fillRect(tx + cellSize / 2 - 1, ty + cellSize / 2 - 1, 2, 2);
+            } else {
+              ctx.fillStyle = "#1e293b";
+              ctx.strokeStyle = "#0f172a";
+              ctx.lineWidth = 2;
+              ctx.save();
+              ctx.translate(tx + cellSize / 2, ty + cellSize / 2);
+              ctx.rotate(r * c * 0.5);
+              drawHexagon(0, 0, cellSize * 0.35);
+              ctx.fill();
+              ctx.stroke();
+              ctx.fillStyle = "#0f172a";
+              ctx.beginPath();
+              ctx.arc(
+                -cellSize * 0.1,
+                -cellSize * 0.1,
+                cellSize * 0.08,
+                0,
+                Math.PI * 2,
+              );
+              ctx.fill();
+              ctx.restore();
+            }
+          }
+        }
+
+        const gx = level.goalX * cellSize + cellSize / 2;
+        const gy = level.goalY * cellSize + cellSize / 2;
+        const time = Date.now() / 200;
+
+        ctx.save();
+        ctx.translate(gx, gy);
+        ctx.rotate(time);
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "#8B5CF6";
+        const portalGrad = ctx.createRadialGradient(
+          0,
+          0,
+          0,
+          0,
+          0,
+          cellSize * 0.4,
+        );
+        portalGrad.addColorStop(0, "#FFFFFF");
+        portalGrad.addColorStop(0.3, "#A78BFA");
+        portalGrad.addColorStop(1, "transparent");
+        ctx.fillStyle = portalGrad;
+        ctx.beginPath();
+        ctx.arc(0, 0, cellSize * 0.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.restore();
+
+        const sx = spacecraft.drawX * cellSize + cellSize / 2;
+        const sy = spacecraft.drawY * cellSize + cellSize / 2;
+        ctx.save();
+        ctx.translate(sx, sy);
+        ctx.rotate(spacecraft.drawAngle);
+
+        if (spacecraft.trail > 0) {
+          ctx.fillStyle = `rgba(14, 165, 233, ${spacecraft.trail})`;
+          ctx.beginPath();
+          ctx.moveTo(-cellSize * 0.2, 0);
+          ctx.lineTo(-cellSize * 0.6 - Math.random() * 10, -cellSize * 0.1);
+          ctx.lineTo(-cellSize * 0.3, 0);
+          ctx.lineTo(-cellSize * 0.6 - Math.random() * 10, cellSize * 0.1);
+          ctx.fill();
+        }
+
+        ctx.fillStyle = "#F8FAFC";
+        ctx.beginPath();
+        ctx.moveTo(cellSize * 0.3, 0);
+        ctx.lineTo(-cellSize * 0.2, cellSize * 0.2);
+        ctx.lineTo(-cellSize * 0.1, 0);
+        ctx.lineTo(-cellSize * 0.2, -cellSize * 0.2);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = "#06B6D4";
+        ctx.beginPath();
+        ctx.arc(cellSize * 0.05, 0, cellSize * 0.06, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function gameLoop() {
+        renderArena();
+        animationFrameId = requestAnimationFrame(gameLoop);
+      }
+
+      // --- 6. EXECUTION & TRANSPILER ENGINE ---
+      function validateOneStatementPerLine(code) {
+        const lines = code.split("\n");
+        for (let i = 0; i < lines.length; i++) {
+          let line = lines[i].trim();
+          if (!line || line.startsWith("//") || line.startsWith("for"))
+            continue;
+          let stripped = line.replace(/(".*?"|'.*?'|`.*?`)/g, '""');
+          let statements = stripped
+            .split(";")
+            .filter((s) => s.trim().length > 0);
+          if (statements.length > 1)
+            return {
+              valid: false,
+              line: i + 1,
+              error:
+                "STRICT MODE: Multiple statements on line " +
+                (i + 1) +
+                " are forbidden. Use one command per line.",
+            };
+        }
+        return { valid: true };
+      }
+
+      function compileToQueue(rawCode) {
+        let validation = validateOneStatementPerLine(rawCode);
+        if (!validation.valid) {
+          logTerminal(validation.error, "error");
+          return false;
+        }
+
+        commandQueue = [];
+        let localVars = {};
+        let activePos = {
+          x: LEVELS[currentLevelIndex].startX,
+          y: LEVELS[currentLevelIndex].startY,
+          dir: LEVELS[currentLevelIndex].startDir,
         };
 
-        let stars = [];
-        function initStars() {
-            stars = [];
-            for (let i = 0; i < 40; i++) {
-                stars.push({
-                    x: Math.random() * 420,
-                    y: Math.random() * 420,
-                    r: Math.random() * 1.5 + 0.5,
-                    pulse: Math.random() * Math.PI
-                });
-            }
-        }
+        const getOffset = (dir) => {
+          if (dir === 0) return { dx: 0, dy: -1 };
+          if (dir === 1) return { dx: 1, dy: 0 };
+          if (dir === 2) return { dx: 0, dy: 1 };
+          if (dir === 3) return { dx: -1, dy: 0 };
+        };
 
-        function setupCanvasSize() {
-            canvas.width = 420;
-            canvas.height = 420;
-        }
-
-        function drawSimulator() {
-            let activeLevel = LEVELS[currentLevelIndex];
-            let grid = activeLevel.grid;
-            let rows = grid.length;
-            let cols = grid[0].length;
-            let cellSize = canvas.width / cols;
-
-            // Clear Screen
-            let spaceGrad = ctx.createRadialGradient(210, 210, 50, 210, 210, 280);
-            spaceGrad.addColorStop(0, '#0F1226');
-            spaceGrad.addColorStop(1, '#04050D');
-            ctx.fillStyle = spaceGrad;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Background stars
-            ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
-            stars.forEach(s => {
-                s.pulse += 0.02;
-                let opacity = Math.abs(Math.sin(s.pulse));
-                ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                ctx.fill();
+        const api = {
+          _track: (lineNum) => {
+            commandQueue.push({
+              action: "highlight",
+              line: lineNum,
+              vars: { ...localVars },
             });
+          },
+          moveForward: () => {
+            let offset = getOffset(activePos.dir);
+            let prevX = activePos.x;
+            let prevY = activePos.y;
+            activePos.x += offset.dx;
+            activePos.y += offset.dy;
+            commandQueue.push({
+              action: "move",
+              fromX: prevX,
+              fromY: prevY,
+              toX: activePos.x,
+              toY: activePos.y,
+              dir: activePos.dir,
+              vars: { ...localVars },
+            });
+          },
+          turnLeft: () => {
+            let old = activePos.dir;
+            activePos.dir = (activePos.dir + 3) % 4;
+            commandQueue.push({
+              action: "turn",
+              fromDir: old,
+              toDir: activePos.dir,
+              vars: { ...localVars },
+            });
+          },
+          turnRight: () => {
+            let old = activePos.dir;
+            activePos.dir = (activePos.dir + 1) % 4;
+            commandQueue.push({
+              action: "turn",
+              fromDir: old,
+              toDir: activePos.dir,
+              vars: { ...localVars },
+            });
+          },
+          isPathAhead: () => {
+            let offset = getOffset(activePos.dir);
+            let checkX = activePos.x + offset.dx;
+            let checkY = activePos.y + offset.dy;
+            let grid = LEVELS[currentLevelIndex].grid;
+            if (
+              checkY < 0 ||
+              checkY >= grid.length ||
+              checkX < 0 ||
+              checkX >= grid[0].length
+            )
+              return false;
+            return grid[checkY][checkX] === 1;
+          },
+          console: {
+            log: (...args) => {
+              commandQueue.push({
+                action: "log",
+                message: args
+                  .map((a) => (typeof a === "object" ? JSON.stringify(a) : a))
+                  .join(" "),
+                vars: { ...localVars },
+              });
+            },
+          },
+        };
 
-            // Grid path renderer
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    let tile = grid[r][c];
-                    let tx = c * cellSize;
-                    let ty = r * cellSize;
+        let lines = rawCode.split("\n");
+        let instrumentedCode = lines
+          .map((line, idx) => {
+            let l = line.trim();
+            if (
+              !l ||
+              l.startsWith("//") ||
+              l === "}" ||
+              l === "{" ||
+              l.startsWith("else")
+            )
+              return line + "\n"; // will prevent a bug when running the code and line is a comment line
+            if (
+              l.startsWith("if") ||
+              l.startsWith("for") ||
+              l.startsWith("while")
+            )
+              return `_track(${idx + 1});\n` + line;
+            return `_track(${idx + 1}); ` + line;
+          })
+          .join("\n");
 
-                    if (tile === 1) {
-                        ctx.strokeStyle = "rgba(129, 140, 248, 0.15)";
-                        ctx.lineWidth = 4;
-                        ctx.strokeRect(tx, ty, cellSize, cellSize);
+        try {
+          let runner = new Function(
+            "moveForward",
+            "turnLeft",
+            "turnRight",
+            "isPathAhead",
+            "console",
+            "_track",
+            `try { 
+            ${instrumentedCode} 
+            } catch(e) { throw e; }`,
+          );
+          runner(
+            api.moveForward,
+            api.turnLeft,
+            api.turnRight,
+            api.isPathAhead,
+            api.console,
+            api._track,
+          );
+          return true;
+        } catch (err) {
+          logTerminal(`COMPILE ERROR: ${err.message}`, "error");
+          return false;
+        }
+      }
 
-                        ctx.fillStyle = "rgba(99, 102, 241, 0.04)";
-                        ctx.fillRect(tx + 2, ty + 2, cellSize - 4, cellSize - 4);
-                        
-                        ctx.fillStyle = "rgba(6, 182, 212, 0.4)";
-                        ctx.fillRect(tx + 2, ty + 2, 4, 1);
-                        ctx.fillRect(tx + 2, ty + 2, 1, 4);
-                    } else {
-                        ctx.fillStyle = "#0F111E";
-                        ctx.strokeStyle = "#16192B";
-                        ctx.lineWidth = 1;
-                        ctx.strokeRect(tx, ty, cellSize, cellSize);
-                        
-                        ctx.fillStyle = "rgba(30, 41, 59, 0.4)";
-                        ctx.beginPath();
-                        ctx.arc(tx + cellSize/2, ty + cellSize/2, cellSize * 0.15, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                }
-            }
+      function runNextQueueCommand() {
+        if (!isSimulationRunning) return;
 
-            // Dimensional Warp Portal
-            let pX = activeLevel.goalX * cellSize + cellSize / 2;
-            let pY = activeLevel.goalY * cellSize + cellSize / 2;
-            let portalPulse = (Date.now() / 150) % (Math.PI * 2);
-            let portalRad = cellSize * 0.35 + Math.sin(portalPulse) * 2;
-
-            ctx.save();
-            ctx.translate(pX, pY);
-            ctx.rotate(Date.now() / 350);
-            
-            let spiralColor = ctx.createRadialGradient(0, 0, 1, 0, 0, portalRad);
-            spiralColor.addColorStop(0, '#FFFFFF');
-            spiralColor.addColorStop(0.3, '#06B6D4');
-            spiralColor.addColorStop(0.7, '#6366F1');
-            spiralColor.addColorStop(1, 'transparent');
-            
-            ctx.fillStyle = spiralColor;
-            ctx.beginPath();
-            ctx.arc(0, 0, portalRad, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.strokeStyle = "#818CF8";
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.arc(0, 0, portalRad * 0.7, 0, Math.PI, false);
-            ctx.stroke();
-            ctx.restore();
-
-            // Draw Starship
-            let shipPx = spacecraft.drawX * cellSize + cellSize / 2;
-            let shipPy = spacecraft.drawY * cellSize + cellSize / 2;
-
-            ctx.save();
-            ctx.translate(shipPx, shipPy);
-            ctx.rotate(spacecraft.drawAngle);
-
-            if (spacecraft.trailEnergy > 0) {
-                ctx.fillStyle = `rgba(249, 115, 22, ${spacecraft.trailEnergy})`;
-                ctx.beginPath();
-                ctx.moveTo(-cellSize * 0.25, 0);
-                ctx.lineTo(-cellSize * 0.45 - Math.random() * 8, -cellSize * 0.08);
-                ctx.lineTo(-cellSize * 0.25, -cellSize * 0.12);
-                ctx.lineTo(-cellSize * 0.45 - Math.random() * 8, cellSize * 0.08);
-                ctx.closePath();
-                ctx.fill();
-            }
-
-            let bodyGrad = ctx.createLinearGradient(0, -cellSize*0.15, 0, cellSize*0.15);
-            bodyGrad.addColorStop(0, '#38BDF8');
-            bodyGrad.addColorStop(1, '#1D4ED8');
-
-            ctx.fillStyle = bodyGrad;
-            ctx.beginPath();
-            ctx.moveTo(cellSize * 0.25, 0);
-            ctx.lineTo(-cellSize * 0.2, cellSize * 0.18);
-            ctx.lineTo(-cellSize * 0.1, 0);
-            ctx.lineTo(-cellSize * 0.2, -cellSize * 0.18);
-            ctx.closePath();
-            ctx.fill();
-
-            ctx.fillStyle = "#E0F2FE";
-            ctx.beginPath();
-            ctx.arc(cellSize * 0.08, 0, 2.5, 0, Math.PI*2);
-            ctx.fill();
-
-            ctx.restore();
+        if (executionPointer >= commandQueue.length) {
+          finishSimulation();
+          return;
         }
 
-        function animationLoop() {
-            drawSimulator();
-            animationFrameId = requestAnimationFrame(animationLoop);
+        let cmd = commandQueue[executionPointer];
+
+        if (cmd.action === "highlight") {
+          highlightAceLine(cmd.line);
+          updateDebugger(cmd.vars);
+          executionPointer++;
+          runNextQueueCommand();
+          return;
         }
 
-        // --- 7. Execution Engine & Sandbox Virtual Console ---
-        let commandQueue = [];
-        let executionPointer = 0;
-        let activeVirtualPos = { x: 0, y: 0, dir: 0 };
-
-        function getFacingOffset(dir) {
-            switch (dir) {
-                case 0: return { dx: 0, dy: -1 }; // Up
-                case 1: return { dx: 1, dy: 0 };  // Right
-                case 2: return { dx: 0, dy: 1 };  // Down
-                case 3: return { dx: -1, dy: 0 }; // Left
-            }
+        if (cmd.action === "log") {
+          printConsoleLog(cmd.message);
+          executionPointer++;
+          runNextQueueCommand();
+          return;
         }
 
-        function getDirAngle(dir) {
-            switch (dir) {
-                case 0: return -Math.PI / 2;
-                case 1: return 0;
-                case 2: return Math.PI / 2;
-                case 3: return Math.PI;
-            }
-        }
-
-        function isTileWalkable(x, y) {
-            let activeLevel = LEVELS[currentLevelIndex]
-            let grid = activeLevel.grid;
-            let rows = grid.length;
-            let cols = grid[0].length;
-            if (x < 0 || x >= cols || y < 0 || y >= rows) return false;
-            return activeLevel.grid[y][x] === 1;
-        }
-
-        function parseTrajectoryPlan(jsCode) {
-            let activeLevel = LEVELS[currentLevelIndex];
-            commandQueue = [];
-            
-            activeVirtualPos.x = activeLevel.startX;
-            activeVirtualPos.y = activeLevel.startY;
-            activeVirtualPos.dir = activeLevel.startDir;
-
-            // Local tracking scope matching interpreter executions
-            let localVariables = {};
-
-            const moveForward = () => {
-                let moveOffset = getFacingOffset(activeVirtualPos.dir);
-                let originX = activeVirtualPos.x;
-                let originY = activeVirtualPos.y;
-                
-                activeVirtualPos.x += moveOffset.dx;
-                activeVirtualPos.y += moveOffset.dy;
-                
-                commandQueue.push({
-                    action: 'move',
-                    fromX: originX,
-                    fromY: originY,
-                    toX: activeVirtualPos.x,
-                    toY: activeVirtualPos.y,
-                    dir: activeVirtualPos.dir,
-      variablesSnapshot: { ...localVariables, shipX: activeVirtualPos.x, shipY: activeVirtualPos.y, facing: activeVirtualPos.dir }
-   
-                });
-            };
-
-            const jump = (num) => {
-                for (let i=0; i<num; i++) 
-                    moveForward()
-                const lastMove = commandQueue.pop();
-                let firstMove = null;
-                for (let i=0; i<num-1; i++) 
-                    firstMove = commandQueue.pop();
-                lastMove.fromX = firstMove.fromX;
-                lastMove.fromY = firstMove.fromY;
-                commandQueue.push(lastMove);
-            }            
-
-            const turnLeft = () => {
-                let oldDir = activeVirtualPos.dir;
-                activeVirtualPos.dir = (activeVirtualPos.dir + 3) % 4;
-                commandQueue.push({
-                    action: 'turn',
-                    fromDir: oldDir,
-                    toDir: activeVirtualPos.dir,
-                    targetAngle: getDirAngle(activeVirtualPos.dir),
-                    x: activeVirtualPos.x,
-                    y: activeVirtualPos.y,
-      variablesSnapshot: { ...localVariables, shipX: activeVirtualPos.x, shipY: activeVirtualPos.y, facing: activeVirtualPos.dir }
-   
-                });
-            };
-
-            const turnRight = () => {
-                let oldDir = activeVirtualPos.dir;
-                activeVirtualPos.dir = (activeVirtualPos.dir + 1) % 4;
-                commandQueue.push({
-                    action: 'turn',
-                    fromDir: oldDir,
-                    toDir: activeVirtualPos.dir,
-                    targetAngle: getDirAngle(activeVirtualPos.dir),
-                    x: activeVirtualPos.x,
-                    y: activeVirtualPos.y,
-      variablesSnapshot: { ...localVariables, shipX: activeVirtualPos.x, shipY: activeVirtualPos.y, facing: activeVirtualPos.dir }
-  
-                });
-            };
-
-            const isPathAhead = () => {
-                let scanOffset = getFacingOffset(activeVirtualPos.dir);
-                let checkX = activeVirtualPos.x + scanOffset.dx;
-                let checkY = activeVirtualPos.y + scanOffset.dy;
-                return isTileWalkable(checkX, checkY);
-            };
-
-            // Capture custom console.log statements to the virtual panel
-            const customConsole = {
-                log: function(...args) {
-                    let text = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(' ');
-                    printConsoleLog(text);
-                }
-            };
-
-            try {
-                // Regex parsing interceptor to extract local variable mutations out of plaintext scripts dynamically
-                let parsedCode = jsCode;
-                // Intercepts let modifications
-                parsedCode = parsedCode.replace(/(let|const)\s+(\w+)\s*=\s*(.+);/g, (match, type, name, val) => {
-                return `${match}\nupdateVariableSnapshot('${name}', ${val});`;
-                });
-
-                const updateVariableSnapshot = (name, value) => {
-                localVariables[name] = value;
-                };
-
-                let scopeRunner = new Function('moveForward', 'jump', 'turnLeft', 'turnRight', 'isPathAhead', 'console', 'updateVariableSnapshot', `
-                    try {
-                        ${parsedCode}
-                    } catch(e) { throw e; }
-                    `);
-                
-                scopeRunner(moveForward, jump, turnLeft, turnRight, isPathAhead, customConsole, updateVariableSnapshot);
-                return { success: true };
-            } catch (err) {
-                return { success: false, error: err.message };
-            }
-        }
-
-        function executeStepByStepQueue() {
-            if (!isRunningSimulation) {
-                commandQueue.length = 0; 
-                return;
-            }
-            if (executionPointer >= commandQueue.length) {
-                finalizeSimulation();
-                return;
-            }
-
-            let cmd = commandQueue[executionPointer];
-            updateDebuggerUI(cmd.variablesSnapshot); // Updates layout views at every processing frame
-            let stepDuration = 18; // animation length frames
-            let currentFrame = 0;
-
-            logTerminal(`Executing directive [${executionPointer + 1}/${commandQueue.length}]: ${cmd.action.toUpperCase()}`);
-
-            function animateTransition() {
-                if (currentFrame >= stepDuration) {
-                    if (cmd.action === 'move') {
-                        spacecraft.gridX = cmd.toX;
-                        spacecraft.gridY = cmd.toY;
-                        spacecraft.drawX = cmd.toX;
-                        spacecraft.drawY = cmd.toY;
-                        spacecraft.trailEnergy = 0;
-                        
-                        if (!isTileWalkable(cmd.toX, cmd.toY)) {
-                            playSound('crash');
-                            logTerminal("CRITICAL IMPACT: SPACESHIP COLLIDED WITH AN ASTEROID FIELD!", "error");
-                            abortSimulation();
-                            return;
-                        }
-                    } else if (cmd.action === 'turn') {
-                        spacecraft.dir = cmd.toDir;
-                        spacecraft.drawAngle = cmd.targetAngle;
-                    }
-
-                    executionPointer++;
-                    if (isSteppingSimulation) {
-                        if (executionPointer >= commandQueue.length) {
-                            finalizeSimulation();
-                            
-                        }                        
-                        document.getElementById('btn-step').disabled = false;
-                        document.getElementById('btn-step').classList.remove('opacity-50');
-                    } else {
-                        setTimeout(executeStepByStepQueue, 400);
-                    } 
-                    return;
-                }
-
-                currentFrame++;
-                let t = currentFrame / stepDuration;
-                
-                if (cmd.action === 'move') {
-                    playSound('move');
-                    spacecraft.drawX = cmd.fromX + (cmd.toX - cmd.fromX) * t;
-                    spacecraft.drawY = cmd.fromY + (cmd.toY - cmd.fromY) * t;
-                    spacecraft.trailEnergy = 1 - t;
-                } else if (cmd.action === 'turn') {
-                    playSound('turn');
-                    let startAngle = getDirAngle(cmd.fromDir);
-                    let target = cmd.targetAngle;
-                    
-                    if (target - startAngle > Math.PI) startAngle += Math.PI * 2;
-                    if (target - startAngle < -Math.PI) startAngle -= Math.PI * 2;
-                    
-                    spacecraft.drawAngle = startAngle + (target - startAngle) * t;
-                }
-
-                /*
-                const coordFeed = document.getElementById('coordinates-feed');
-                if (coordFeed) {
-                    coordFeed.textContent = `Pos: (${Math.round(spacecraft.drawX)}, ${Math.round(spacecraft.drawY)})`;
-                }
-                */
-                requestAnimationFrame(animateTransition);
-            }
-
-            animateTransition();
-        }
-
-        function updateDebuggerUI(snapshot) {
-            const inspector = document.getElementById('debugger-inspector');
-            if (!snapshot || Object.keys(snapshot).length === 0) {
-                inspector.innerHTML = '<div class="text-slate-500">&gt;&gt; No active scoped frames detected.</div>';
-                return;
-            }
-            
-            let html = '<div class="text-indigo-400 font-bold mb-1">[FRAME METRICS]:</div>';
-            for (let key in snapshot) {
-                html += `<div class="flex justify-between border-b border-slate-900/60 py-0.5">
-                        <span class="text-slate-400">let ${key}</span>
-                        <span class="text-emerald-400 font-mono">${JSON.stringify(snapshot[key])}</span>
-                        </div>`;
-            }
-            inspector.innerHTML = html;
-        }
-
-
-
-
-        function finalizeSimulation() {
-            let activeLevel = LEVELS[currentLevelIndex];
-            
-            if (spacecraft.gridX === activeLevel.goalX && spacecraft.gridY === activeLevel.goalY) {
-                playSound('win');
-                logTerminal(`SUCCESS: Transited Warp Zone Sector ${activeLevel.number} safely!`, "success");
-                setTimeout(showSuccessModal, 500);
-            } else {
-                playSound('crash');
-                logTerminal(`COORDINATE MISALIGNMENT: Flight completed, but warp terminal is at (${activeLevel.goalX}, ${activeLevel.goalY}).`, "warning");
-                logTerminal(`FAILURE: Mission failed, try again!!.`, "error");
+        let frames = 20;
+        let curr = 0;
+        function animate() {
+          if (curr >= frames) {
+            if (cmd.action === "move") {
+              spacecraft.x = cmd.toX;
+              spacecraft.y = cmd.toY;
+              spacecraft.drawX = cmd.toX;
+              spacecraft.drawY = cmd.toY;
+              spacecraft.trail = 0;
+              let grid = LEVELS[currentLevelIndex].grid;
+              if (
+                spacecraft.y < 0 ||
+                spacecraft.y >= grid.length ||
+                spacecraft.x < 0 ||
+                spacecraft.x >= grid[0].length ||
+                grid[spacecraft.y][spacecraft.x] !== 1
+              ) {
+                playSound("crash");
+                logTerminal("CRITICAL IMPACT: Collision detected!", "error");
                 abortSimulation();
-            }
-        }
-
-        function abortSimulation() {
-            isRunningSimulation = false;
-            isSteppingSimulation = false;
-            
-            document.getElementById('btn-run').disabled = false;
-            document.getElementById('btn-step').disabled = false;
-            // document.getElementById('btn-stop').disabled = true;
-            document.getElementById('btn-run').classList.remove('opacity-50');
-            document.getElementById('btn-step').classList.remove('opacity-50');
-            
-            // Safe fallback check to prevent Workspace.setEnabled is not a function TypeErrors
-            if (blocklyWorkspace) {
-                if (typeof blocklyWorkspace.setIsReadOnly === 'function') {
-                    blocklyWorkspace.setIsReadOnly(false);
-                }
-            }
-            // Remove blocking CSS overlays
-            document.getElementById('blockly-container').classList.remove('opacity-60', 'pointer-events-none');
-            
-            aceEditor.setReadOnly(false);
-        }
-
-        // Output logger structures
-        function logTerminal(message, type = "info") {
-            const logsBox = document.getElementById('terminal-logs');
-            let colorClass = "text-slate-400";
-            let prefix = "&gt; ";
-            
-            if (type === "error") {
-                colorClass = "text-rose-500 font-bold";
-                prefix = "[ALERT] ";
-            } else if (type === "success") {
-                colorClass = "text-emerald-400 font-bold";
-                prefix = "[WARP] ";
-            } else if (type === "warning") {
-                colorClass = "text-amber-500";
-                prefix = "[WARN] ";
-            }
-
-            const line = document.createElement('div');
-            line.className = colorClass;
-            line.innerHTML = prefix + message;
-            logsBox.appendChild(line);
-            logsBox.scrollTop = logsBox.scrollHeight;
-        }
-
-        function printConsoleLog(message) {
-            const consoleBox = document.getElementById('console-logs');
-            const line = document.createElement('div');
-            line.className = "text-amber-300 font-mono text-xs";
-            line.innerHTML = `<span class="text-slate-500">&gt;&gt;</span> ${message}`;
-            consoleBox.appendChild(line);
-            consoleBox.scrollTop = consoleBox.scrollHeight;
-        }
-
-        // --- 8. UI Application Controllers & Flow Managers ---
-        function selectLevel(index) {
-            playSound('click');
-            currentLevelIndex = index;
-            let activeLevel = LEVELS[currentLevelIndex];
-
-            // Logic to load Bug Hunting Mode UI components
-            const taskBanner = document.getElementById('debug-task-banner');
-            const taskText = document.getElementById('debug-task-text');
-            
-            if (activeLevel.debugTask) {
-                taskBanner.classList.remove('hidden');
-                taskText.textContent = activeLevel.debugTask.instruction;
-                // Set code viewport content to the broken configuration to test debugging limits
-                setTimeout(() => {
-                aceEditor.setValue(activeLevel.debugTask.buggyCode, -1);
-                }, 400);
-            } else {
-                taskBanner.classList.add('hidden');
-            }
-
-            // Highlight and title calculations
-            let matchedChapter = CHAPTERS.find(ch => activeLevel.number >= ch.start && activeLevel.number <= ch.end);
-            document.getElementById('current-chapter-title').textContent = matchedChapter ? matchedChapter.title : "Space Academy";
-            document.getElementById('level-display-num').textContent = `Mission ${activeLevel.number} / 50`;
-
-            // Reset description parameters
-            document.getElementById('lesson-badge').textContent = `LEVEL ${activeLevel.number}`;
-            document.getElementById('lesson-concept').textContent = activeLevel.concept;
-            document.getElementById('lesson-title').textContent = activeLevel.title;
-            document.getElementById('lesson-description').textContent = activeLevel.description;
-
-            // Render Commands cheatsheet
-            const apiContainer = document.getElementById('api-commands');
-            apiContainer.innerHTML = '';
-            activeLevel.allowedApi.forEach(item => {
-                let badge = document.createElement('span');
-                badge.className = "text-[10px] font-mono bg-slate-900 border border-slate-800 px-2 py-1 rounded cursor-pointer hover:border-cyan-500/50 hover:bg-slate-800 transition text-slate-300";
-                badge.textContent = item.code;
-                badge.title = item.desc;
-                badge.addEventListener('click', () => {
-                    playSound('click');
-                    aceEditor.insert(item.code + "\n");
-                    aceEditor.focus();
-                });
-                apiContainer.appendChild(badge);
-            });
-
-            // Re-align spacecraft coordinates on simulation board
-            spacecraft.gridX = activeLevel.startX;
-            spacecraft.gridY = activeLevel.startY;
-            spacecraft.drawX = activeLevel.startX;
-            spacecraft.drawY = activeLevel.startY;
-            spacecraft.dir = activeLevel.startDir;
-            spacecraft.drawAngle = getDirAngle(activeLevel.startDir);
-            spacecraft.trailEnergy = 0;
-
-            const coordFeed = document.getElementById('coordinates-feed');
-            if (coordFeed) {
-                coordFeed.textContent = `Pos: (${spacecraft.gridX}, ${spacecraft.gridY})`;
-            }
-
-            // Clear Log Panel
-            const terminalLogs = document.getElementById('terminal-logs');
-            if (terminalLogs) {
-                terminalLogs.innerHTML = `<div>&gt; Telemetry online. Loaded Sector ${activeLevel.number}: ${activeLevel.title}</div>`;
-            }
-            const consoleLogs = document.getElementById('console-logs');
-            if (consoleLogs) {
-                consoleLogs.innerHTML = '<div class="text-slate-600">&gt;&gt; console.log outputs printed here...</div>';
-            }
-
-            // Reload sidebar maps and options
-            populateChapterMap();
-            updateLevelWorkspaces();
-        }
-
-        // Draw dynamic chapter maps into the drawer panel
-        function populateChapterMap() {
-            const container = document.getElementById('drawer-chapters-container');
-            container.innerHTML = '';
-
-            CHAPTERS.forEach(ch => {
-                let section = document.createElement('div');
-                section.className = "mb-4 border border-slate-800/80 rounded-xl overflow-hidden bg-slate-900/40";
-                
-                let head = document.createElement('div');
-                head.className = "bg-slate-900 px-3 py-2 font-bold text-xs text-indigo-400 flex justify-between items-center";
-                head.innerHTML = `<span>${ch.title}</span> <span class="text-[9px] text-slate-500">Lvls ${ch.start}-${ch.end}</span>`;
-                section.appendChild(head);
-
-                let body = document.createElement('div');
-                body.className = "p-3 grid grid-cols-5 gap-2 bg-slate-950/40";
-
-                for (let lvl = ch.start; lvl <= ch.end; lvl++) {
-                    let lvlIdx = lvl - 1;
-                    let btn = document.createElement('button');
-                    btn.className = "h-8 rounded-lg text-xs font-mono font-bold transition flex items-center justify-center ";
-                    
-                    if (lvlIdx === currentLevelIndex) {
-                        btn.className += "bg-indigo-600 text-white ring-2 ring-indigo-500/30";
-                    } else if (lvlIdx < currentLevelIndex) {
-                        btn.className += "bg-emerald-950/40 text-emerald-400 border border-emerald-900/30 hover:bg-emerald-900/30";
-                    } else {
-                        btn.className += "bg-slate-900/80 text-slate-500 border border-slate-800 hover:bg-slate-800 hover:text-slate-300";
-                    }
-
-                    btn.textContent = lvl;
-                    btn.addEventListener('click', () => {
-                        selectLevel(lvlIdx);
-                        closeDrawer();
-                    });
-                    body.appendChild(btn);
-                }
-
-                section.appendChild(body);
-                container.appendChild(section);
-            });
-        }
-
-        // Map drawer sidebar toggles
-        const drawer = document.getElementById('level-drawer');
-        const backdrop = document.getElementById('drawer-backdrop');
-        
-        function openDrawer() {
-            playSound('click');
-            drawer.classList.remove('-translate-x-full');
-            backdrop.classList.remove('hidden');
-        }
-
-        function closeDrawer() {
-            playSound('click');
-            drawer.classList.add('-translate-x-full');
-            backdrop.classList.add('hidden');
-        }
-
-        document.getElementById('btn-toggle-map').addEventListener('click', openDrawer);
-        document.getElementById('btn-open-map').addEventListener('click', openDrawer);
-        document.getElementById('btn-close-map').addEventListener('click', closeDrawer);
-        backdrop.addEventListener('click', closeDrawer);
-
-        // Tab views log switcher
-        const tabTerminal = document.getElementById('tab-terminal');
-        const tabConsole = document.getElementById('tab-console');
-        const terminalBox = document.getElementById('terminal-logs');
-        const consoleBox = document.getElementById('console-logs');
-        // --- INTERFACE CONTROL LINK FOR DEBUG VIEWS ---
-        const tabDebugger = document.getElementById('tab-debugger');
-        const debuggerBox = document.getElementById('debugger-inspector');
-
-        tabDebugger.addEventListener('click', () => {
-        playSound('click');
-        tabDebugger.className = "text-cyan-400 border-b-2 border-cyan-400 pb-1";
-        tabTerminal.className = "text-slate-500 hover:text-slate-300 pb-1";
-        tabConsole.className = "text-slate-500 hover:text-slate-300 pb-1";
-        debuggerBox.classList.remove('hidden');
-        terminalBox.classList.add('hidden');
-        consoleBox.classList.add('hidden');
-        });
-
-
-        tabTerminal.addEventListener('click', () => {
-            playSound('click');
-            tabTerminal.className = "text-cyan-400 border-b-2 border-cyan-400 pb-1";
-            tabConsole.className = "text-slate-500 hover:text-slate-300 pb-1";
-            tabDebugger.className = "text-slate-500 hover:text-slate-300 pb-1";
-            terminalBox.classList.remove('hidden');
-            consoleBox.classList.add('hidden');
-            debuggerBox.classList.add('hidden');
-        });
-
-        tabConsole.addEventListener('click', () => {
-            playSound('click');
-            tabConsole.className = "text-amber-400 border-b-2 border-amber-400 pb-1";
-            tabTerminal.className = "text-slate-500 hover:text-slate-300 pb-1";
-            tabDebugger.className = "text-slate-500 hover:text-slate-300 pb-1";
-            consoleBox.classList.remove('hidden');
-            terminalBox.classList.add('hidden');
-            debuggerBox.classList.add('hidden');
-        });
-
-        document.getElementById('btn-clear-logs').addEventListener('click', () => {
-            playSound('click');
-            terminalBox.innerHTML = '<div>&gt; Telemetry clear.</div>';
-            consoleBox.innerHTML = '<div class="text-slate-600">&gt;&gt; console.log cleared.</div>';
-            debuggerBox.innerHTML = '<div class="text-slate-600">&gt;&gt; debug log cleared.</div>';
-        });
-
-        // Simulation Triggers
-        document.getElementById('btn-run').addEventListener('click', () => {
-            playSound('click');
-            if (isRunningSimulation) return;
-
-            let jsCode = aceEditor.getValue();
-            
-            // Clear consoles before running new compilation execution
-            document.getElementById('console-logs').innerHTML = '';
-
-            let compileResult = parseTrajectoryPlan(jsCode);
-
-            if (!compileResult.success) {
-                playSound('crash');
-                logTerminal(`COMPILE ERROR: ${compileResult.error}`, "error");
-                printConsoleLog(`Error: ${compileResult.error}`);
                 return;
+              }
+            } else if (cmd.action === "turn") {
+              spacecraft.dir = cmd.toDir;
+              spacecraft.drawAngle = getAngle(cmd.toDir);
             }
-
-            if (commandQueue.length === 0) {
-                logTerminal("LOG WARNING: Script executed successfully, but no movements were registered. Try adding move directives!", "warning");
-                return;
+            document.getElementById("coordinates-feed").textContent =
+              `Pos: (${spacecraft.x}, ${spacecraft.y})`;
+            executionPointer++;
+            if (!isSimulationStepping) setTimeout(runNextQueueCommand, 100);
+            else {
+              document.getElementById("btn-step").disabled = false;
+              document
+                .getElementById("btn-step")
+                .classList.remove("opacity-50");
             }
+            return;
+          }
 
-            // Lock input actions
-            isRunningSimulation = true;
-            isSteppingSimulation = false;
-            document.getElementById('btn-run').disabled = true;
-            document.getElementById('btn-step').disabled = true;
-            document.getElementById('btn-stop').disabled = false;
-            document.getElementById('btn-run').classList.add('opacity-50');
-            document.getElementById('btn-step').classList.add('opacity-50');
+          let t = curr / frames;
+          if (cmd.action === "move") {
+            if (curr === 0) playSound("move");
+            spacecraft.drawX = cmd.fromX + (cmd.toX - cmd.fromX) * t;
+            spacecraft.drawY = cmd.fromY + (cmd.toY - cmd.fromY) * t;
+            spacecraft.trail = 1 - t;
+          } else if (cmd.action === "turn") {
+            if (curr === 0) playSound("turn");
+            let start = getAngle(cmd.fromDir);
+            let target = getAngle(cmd.toDir);
+            if (target - start > Math.PI) start += Math.PI * 2;
+            if (target - start < -Math.PI) start -= Math.PI * 2;
+            spacecraft.drawAngle = start + (target - start) * t;
+          }
+          curr++;
+          requestAnimationFrame(animate);
+        }
+        animate();
+      }
 
+      function getAngle(dir) {
+        if (dir === 0) return -Math.PI / 2;
+        if (dir === 1) return 0;
+        if (dir === 2) return Math.PI / 2;
+        if (dir === 3) return Math.PI;
+        return 0;
+      }
 
-            // Apply read-only mode to Blockly workspace safely with standard API and CSS wrappers
-            if (blocklyWorkspace) {
-                if (typeof blocklyWorkspace.setIsReadOnly === 'function') {
-                    blocklyWorkspace.setIsReadOnly(true);
-                }
-            }
-            document.getElementById('blockly-container').classList.add('opacity-60', 'pointer-events-none');
-            
-            aceEditor.setReadOnly(true);
+      function finishSimulation() {
+        let goalX = LEVELS[currentLevelIndex].goalX;
+        let goalY = LEVELS[currentLevelIndex].goalY;
+        clearHighlight();
 
-            let activeLevel = LEVELS[currentLevelIndex];
-            spacecraft.gridX = activeLevel.startX;
-            spacecraft.gridY = activeLevel.startY;
-            spacecraft.drawX = activeLevel.startX;
-            spacecraft.drawY = activeLevel.startY;
-            spacecraft.dir = activeLevel.startDir;
-            spacecraft.drawAngle = getDirAngle(activeLevel.startDir);
+        if (spacecraft.x === goalX && spacecraft.y === goalY) {
+          state.solvedLevels[currentLevelIndex] = currentLevelIndex;
+          const currentState = structuredClone(state);
+          state.currentLevel = Math.min(49, currentLevelIndex + 1);
+          state.isRunning = false;
+          state.isStepping = false;
+          state.isSyncing = false;
+          Storage.save();
+          state = currentState;
+          playSound("win");
+          logTerminal(
+            `SUCCESS: Sector ${currentLevelIndex + 1} Cleared!`,
+            "success",
+          );
+          showModal();
+        } else {
+          playSound("crash");
+          logTerminal(
+            `FAILURE: Reached end of script but not at portal. Current pos: (${spacecraft.x}, ${spacecraft.y})`,
+            "error",
+          );
+          abortSimulation();
+        }
+      }
 
-            executionPointer = 0;
-            logTerminal("SUCCESS: Flight trajectory calculated. Engaging hyper-drives...", "success");
-            
-            setTimeout(executeStepByStepQueue, 300);
-        });
+      function abortSimulation() {
+        isSimulationRunning = false;
+        isSimulationStepping = false;
+        commandQueue.length = 0;
+        document.getElementById("btn-run").disabled = false;
+        document.getElementById("btn-step").disabled = false;
+        // document.getElementById("btn-stop").disabled = true;
+        document.getElementById("btn-run").classList.remove("opacity-50");
+        document.getElementById("btn-step").classList.remove("opacity-50");
+        aceEditor.setReadOnly(false);
+        if (blocklyWorkspace)
+          document
+            .getElementById("blockly-container")
+            .classList.remove("opacity-60", "pointer-events-none");
+        clearHighlight();
+      }
 
-        document.getElementById('btn-step').addEventListener('click', () => {
-            playSound('click');
-            if (isRunningSimulation && !isSteppingSimulation) return;
-            if (isRunningSimulation && isSteppingSimulation) {
-                document.getElementById('btn-step').disabled = true;
-                document.getElementById('btn-step').classList.add('opacity-50');
-                setTimeout(executeStepByStepQueue, 300);
-                return; 
-            }
+      // --- 7. UI CONTROLS & LOGGING ---
+      function loadLevel(index) {
+        currentLevelIndex = index;
+        const level = LEVELS[index];
 
-            let jsCode = aceEditor.getValue();
-            
-            // Clear consoles before running new compilation execution
-            document.getElementById('console-logs').innerHTML = '';
+        document.getElementById("current-chapter-title").textContent =
+          level.concept;
+        document.getElementById("level-display-num").textContent =
+          `Mission ${index + 1}/50`;
+        document.getElementById("lesson-badge").textContent =
+          `LEVEL ${index + 1}`;
+        document.getElementById("lesson-title").textContent = level.title;
+        document.getElementById("lesson-description").textContent =
+          level.description;
 
-            let compileResult = parseTrajectoryPlan(jsCode);
-
-            if (!compileResult.success) {
-                playSound('crash');
-                logTerminal(`COMPILE ERROR: ${compileResult.error}`, "error");
-                printConsoleLog(`Error: ${compileResult.error}`);
-                return;
-            }
-
-            if (commandQueue.length === 0) {
-                logTerminal("LOG WARNING: Script executed successfully, but no movements were registered. Try adding move directives!", "warning");
-                return;
-            }
-
-            // Lock input actions
-            isRunningSimulation = true;
-            isSteppingSimulation = true;
-            document.getElementById('btn-run').disabled = true;
-            document.getElementById('btn-step').disabled = true;
-            document.getElementById('btn-stop').disabled = false;
-            document.getElementById('btn-run').classList.add('opacity-50');
-            document.getElementById('btn-step').classList.add('opacity-50');
-
-
-            // Apply read-only mode to Blockly workspace safely with standard API and CSS wrappers
-            if (blocklyWorkspace) {
-                if (typeof blocklyWorkspace.setIsReadOnly === 'function') {
-                    blocklyWorkspace.setIsReadOnly(true);
-                }
-            }
-            document.getElementById('blockly-container').classList.add('opacity-60', 'pointer-events-none');
-            
-            aceEditor.setReadOnly(true);
-
-            let activeLevel = LEVELS[currentLevelIndex];
-            spacecraft.gridX = activeLevel.startX;
-            spacecraft.gridY = activeLevel.startY;
-            spacecraft.drawX = activeLevel.startX;
-            spacecraft.drawY = activeLevel.startY;
-            spacecraft.dir = activeLevel.startDir;
-            spacecraft.drawAngle = getDirAngle(activeLevel.startDir);
-
-            executionPointer = 0;
-            logTerminal("SUCCESS: Flight trajectory calculated. Engaging hyper-drives...", "success");
-            
-            setTimeout(executeStepByStepQueue, 300);
-        });        
-
-        document.getElementById('btn-stop').addEventListener('click', () => {
-            playSound('click');
-            logTerminal("Emergency navigation overrides triggered. Re-docking rocket.", "warning");
-            abortSimulation();
-            
-            let activeLevel = LEVELS[currentLevelIndex];
-            spacecraft.gridX = activeLevel.startX;
-            spacecraft.gridY = activeLevel.startY;
-            spacecraft.drawX = activeLevel.startX;
-            spacecraft.drawY = activeLevel.startY;
-            spacecraft.dir = activeLevel.startDir;
-            spacecraft.drawAngle = getDirAngle(activeLevel.startDir);
-        });
-
-        document.getElementById('btn-reset-level').addEventListener('click', () => {
-            playSound('click');
-            selectLevel(currentLevelIndex);
-        });
-
-        // Overlay modals managers
-        function showSuccessModal() {
-            const modal = document.getElementById('success-modal');
-            const preview = document.getElementById('modal-code-preview');
-            const titleMsg = document.getElementById('modal-success-title');
-            
-            preview.textContent = aceEditor.getValue();
-            
-            if (currentLevelIndex === LEVELS.length - 1) {
-                titleMsg.textContent = "GRADUATION SUCCESS!";
-            } else {
-                titleMsg.textContent = "MISSION CLEARED!";
-            }
-
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.querySelector('div').classList.remove('scale-95');
-            }, 50);
+        const banner = document.getElementById("debug-task-banner");
+        if (level.debugTask) {
+          banner.classList.remove("hidden");
+          document.getElementById("debug-task-text").textContent =
+            level.debugTask.instruction;
+        } else {
+          banner.classList.add("hidden");
         }
 
-        function hideSuccessModal() {
-            const modal = document.getElementById('success-modal');
-            modal.classList.add('opacity-0');
-            modal.querySelector('div').classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
-
-        document.getElementById('modal-btn-replay').addEventListener('click', () => {
-            playSound('click');
-            hideSuccessModal();
-            abortSimulation();
+        const apiBox = document.getElementById("api-commands");
+        apiBox.innerHTML = "";
+        level.allowedApi.forEach((api) => {
+          let span = document.createElement("span");
+          span.className =
+            "text-[10px] font-mono bg-slate-900 border border-slate-700 px-2 py-1 rounded cursor-pointer hover:border-cyan-500/50 hover:bg-slate-800 transition text-slate-300";
+          span.textContent = api.code;
+          span.title = api.desc;
+          span.onclick = () => {
+            playSound("click");
+            aceEditor.insert(api.code + "\n");
+            aceEditor.focus();
+          };
+          apiBox.appendChild(span);
         });
 
-        document.getElementById('modal-btn-next').addEventListener('click', () => {
-            playSound('click');
-            hideSuccessModal();
-            abortSimulation();
-            if (currentLevelIndex < LEVELS.length - 1) {
-                selectLevel(currentLevelIndex + 1);
-            } else {
-                selectLevel(0);
-                logTerminal("ACADEMY MASTERED! Welcome home Orbit Graduate! Rebooting systems...", "success");
-            }
-        });
-
-        // Window load starter integrations
-        window.onload = function() {
-            setupCanvasSize();
-            initStars();
-            initWorkspaces();
-            
-            // Boot first level
-            selectLevel(0);
-            
-            // Kickstart visual physics loop
-            animationLoop();
+        spacecraft = {
+          x: level.startX,
+          y: level.startY,
+          drawX: level.startX,
+          drawY: level.startY,
+          dir: level.startDir,
+          drawAngle: getAngle(level.startDir),
+          trail: 0,
         };
+        document.getElementById("coordinates-feed").textContent =
+          `Pos: (${spacecraft.x}, ${spacecraft.y})`;
+        document.getElementById("terminal-logs").innerHTML =
+          `<div>&gt; Telemetry loaded for Sector ${index + 1}.</div>`;
+        document.getElementById("debugger-inspector").innerHTML =
+          `<div class="text-slate-600">&gt;&gt; Variables will display here during stepping.</div>`;
 
-        window.addEventListener('resize', () => {
-            setupCanvasSize();
-            if (blocklyWorkspace) {
-                Blockly.svgResize(blocklyWorkspace);
-            }
+        abortSimulation();
+        updateWorkspaces();
+        populateMap();
+      }
+
+      function startExecution(stepMode) {
+        playSound("click");
+        if (isSimulationRunning && !stepMode) return;
+        if (isSimulationRunning && stepMode) {
+          document.getElementById("btn-step").disabled = true;
+          document.getElementById("btn-step").classList.add("opacity-50");
+          runNextQueueCommand();
+          return;
+        }
+
+        let code = aceEditor.getValue();
+        document.getElementById("terminal-logs").innerHTML = "";
+
+        if (!compileToQueue(code)) return;
+        if (commandQueue.length === 0) {
+          logTerminal("Script executed, but no logic found.", "warning");
+          return;
+        }
+
+        isSimulationRunning = true;
+        isSimulationStepping = stepMode;
+        executionPointer = 0;
+
+        spacecraft.x = LEVELS[currentLevelIndex].startX;
+        spacecraft.y = LEVELS[currentLevelIndex].startY;
+        spacecraft.drawX = spacecraft.x;
+        spacecraft.drawY = spacecraft.y;
+        spacecraft.dir = LEVELS[currentLevelIndex].startDir;
+        spacecraft.drawAngle = getAngle(spacecraft.dir);
+
+        document.getElementById("btn-run").disabled = true;
+        document.getElementById("btn-step").disabled = true;
+        // document.getElementById("btn-stop").disabled = false;
+        document.getElementById("btn-run").classList.add("opacity-50");
+        document.getElementById("btn-step").classList.add("opacity-50");
+        aceEditor.setReadOnly(true);
+        if (blocklyWorkspace)
+          document
+            .getElementById("blockly-container")
+            .classList.add("opacity-60", "pointer-events-none");
+
+        if (stepMode) {
+          //document.getElementById("btn-run").disabled = true;
+          //document.getElementById("btn-step").disabled = true;
+          document.getElementById("tab-debugger").click();
+        }
+
+        logTerminal("Engine engaged...", "success");
+        runNextQueueCommand();
+      }
+
+      document
+        .getElementById("btn-run")
+        .addEventListener("click", () => startExecution(false));
+      document
+        .getElementById("btn-step")
+        .addEventListener("click", () => startExecution(true));
+      document.getElementById("btn-stop").addEventListener("click", () => {
+        playSound("click");
+        logTerminal("Emergency Stop.", "warning");
+        // loadLevel(currentLevelIndex);
+        abortSimulation();
+        let activeLevel = LEVELS[currentLevelIndex];
+        spacecraft.x = activeLevel.startX;
+        spacecraft.y = activeLevel.startY;
+        spacecraft.drawX = activeLevel.startX;
+        spacecraft.drawY = activeLevel.startY;
+        spacecraft.dir = activeLevel.startDir;
+        spacecraft.drawAngle = getAngle(activeLevel.startDir);
+      });
+      document
+        .getElementById("btn-reset-level")
+        .addEventListener("click", () => {
+          playSound("click");
+          loadLevel(currentLevelIndex);
         });
+      document
+        .getElementById("btn-delete-data")
+        .addEventListener("click", () => {
+          Storage.reset;
+        });
+
+      function logTerminal(msg, type = "info") {
+        if (type === "error" || type === "success")
+          document.getElementById("tab-terminal").click();
+        const box = document.getElementById("terminal-logs");
+        const line = document.createElement("div");
+        if (type === "error") line.className = "text-rose-500 font-bold";
+        else if (type === "success")
+          line.className = "text-emerald-400 font-bold";
+        else if (type === "warning") line.className = "text-amber-400";
+        else line.className = "text-slate-400";
+        line.innerHTML = `> ${msg}`;
+        box.appendChild(line);
+        box.scrollTop = box.scrollHeight;
+      }
+      function printConsoleLog(msg) {
+        document.getElementById("tab-terminal").click();
+        logTerminal(`[APP LOG]: ${msg}`, "info");
+      }
+      function updateDebugger(vars) {
+        const box = document.getElementById("debugger-inspector");
+        if (!vars || Object.keys(vars).length === 0) return;
+        let html =
+          '<div class="text-indigo-400 font-bold mb-1">[LOCAL VARIABLES]:</div>';
+        for (let key in vars)
+          html += `<div class="flex justify-between border-b border-slate-800/60 py-1"><span class="text-slate-400">let ${key}</span><span class="text-emerald-400 font-mono">${JSON.stringify(vars[key])}</span></div>`;
+        box.innerHTML = html;
+      }
+
+      document.getElementById("tab-terminal").onclick = (e) => {
+        e.target.className =
+          "text-[10px] font-bold text-cyan-400 uppercase tracking-wider border-b-2 border-cyan-400 pb-1";
+        document.getElementById("tab-debugger").className =
+          "text-[10px] font-bold text-slate-500 hover:text-slate-300 uppercase tracking-wider pb-1 transition";
+        document.getElementById("terminal-logs").classList.remove("hidden");
+        document.getElementById("debugger-inspector").classList.add("hidden");
+      };
+      document.getElementById("tab-debugger").onclick = (e) => {
+        e.target.className =
+          "text-[10px] font-bold text-cyan-400 uppercase tracking-wider border-b-2 border-cyan-400 pb-1";
+        document.getElementById("tab-terminal").className =
+          "text-[10px] font-bold text-slate-500 hover:text-slate-300 uppercase tracking-wider pb-1 transition";
+        document
+          .getElementById("debugger-inspector")
+          .classList.remove("hidden");
+        document.getElementById("terminal-logs").classList.add("hidden");
+      };
+      document.getElementById("btn-clear-logs").onclick = () => {
+        document.getElementById("terminal-logs").innerHTML = "";
+        document.getElementById("debugger-inspector").innerHTML =
+          '<div class="text-slate-600">&gt;&gt; Variables cleared.</div>';
+      };
+
+      const drawer = document.getElementById("level-drawer");
+      const backdrop = document.getElementById("drawer-backdrop");
+      function toggleMap() {
+        playSound("click");
+        if (drawer.classList.contains("-translate-x-full")) {
+          drawer.classList.remove("-translate-x-full");
+          backdrop.classList.remove("hidden");
+        } else {
+          drawer.classList.add("-translate-x-full");
+          backdrop.classList.add("hidden");
+        }
+      }
+      document.getElementById("btn-toggle-map").onclick = toggleMap;
+      document.getElementById("btn-open-map").onclick = toggleMap;
+      document.getElementById("btn-close-map").onclick = toggleMap;
+      backdrop.onclick = toggleMap;
+
+      function populateMap() {
+        const container = document.getElementById("drawer-chapters-container");
+        container.innerHTML = "";
+        CHAPTERS.forEach((ch) => {
+          let section = document.createElement("div");
+          section.className =
+            "border border-slate-800 rounded-xl overflow-hidden";
+          section.innerHTML = `<div class="bg-slate-900 px-3 py-2 text-xs font-bold text-indigo-400 flex justify-between"><span>${ch.title}</span><span class="text-[9px] text-slate-500">${ch.start}-${ch.end}</span></div>`;
+          let grid = document.createElement("div");
+          grid.className = "p-2 grid grid-cols-5 gap-2 bg-slate-950";
+          for (let lvl = ch.start; lvl <= ch.end; lvl++) {
+            let btn = document.createElement("button");
+            let isCurrent = lvl - 1 === currentLevelIndex;
+            let isDebug = lvl === ch.start || lvl === ch.start + 1;
+            btn.className = `h-8 rounded flex items-center justify-center text-xs font-mono font-bold transition ${isCurrent ? "bg-indigo-600 text-white ring-2 ring-indigo-500/50" : state.solvedLevels[lvl - 1] == lvl - 1 ? "bg-green-600 text-white ring-2 ring-green-500/50" : isDebug ? "bg-rose-950/40 text-rose-400 border border-rose-900/30 hover:bg-rose-900/30" : "bg-slate-800 text-slate-400 hover:bg-slate-700"}`;
+            btn.innerHTML =
+              isDebug && !isCurrent
+                ? `<i class="fa-solid fa-bug text-[9px] mr-1"></i>${lvl}`
+                : lvl;
+            btn.onclick = () => {
+              loadLevel(lvl - 1);
+              toggleMap();
+            };
+            grid.appendChild(btn);
+          }
+          section.appendChild(grid);
+          container.appendChild(section);
+        });
+      }
+
+      function showModal() {
+        const modal = document.getElementById("success-modal");
+        modal.classList.remove("hidden");
+        setTimeout(() => {
+          modal.classList.remove("opacity-0");
+          modal.querySelector("div").classList.remove("scale-95");
+        }, 10);
+      }
+      function hideModal() {
+        const modal = document.getElementById("success-modal");
+        modal.classList.add("opacity-0");
+        modal.querySelector("div").classList.add("scale-95");
+        setTimeout(() => {
+          modal.classList.add("hidden");
+        }, 300);
+      }
+      document.getElementById("modal-btn-replay").onclick = () => {
+        playSound("click");
+        hideModal();
+        abortSimulation();
+      };
+      document.getElementById("modal-btn-next").onclick = () => {
+        playSound("click");
+        hideModal();
+        if (currentLevelIndex < 49) loadLevel(currentLevelIndex + 1);
+      };
+
+      window.onload = () => {
+        resizeCanvas();
+        initEditor();
+        Storage.load();
+        loadLevel(state.currentLevel);
+        requestAnimationFrame(gameLoop);
+      };
+      window.addEventListener("resize", resizeCanvas);
     </script>
-</body>
+  </body>
 </html>
