@@ -160,11 +160,19 @@
 
       <div class="flex items-center space-x-2">
         <button
+          id="btn-cheat-sheet"
+          class="bg-blue-800 hover:bg-blue-700 text-white w-10 h-10 rounded-xl transition flex items-center justify-center shadow-md shadow-blue-800/30"
+          title="Cheat Sheet"
+        >
+          <i class="fa-solid fa-circle-info text-lg"></i>
+        </button>
+        <button
           id="btn-mute"
           class="bg-slate-800 hover:bg-slate-700 text-slate-300 w-10 h-10 rounded-xl transition flex items-center justify-center border border-slate-700"
         >
           <i class="fa-solid fa-volume-high" id="mute-icon"></i>
         </button>
+
         <button
           id="btn-reset-level"
           class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 h-10 rounded-xl transition flex items-center space-x-2 text-xs border border-slate-700"
@@ -488,6 +496,215 @@
         </div>
       </section>
     </main>
+
+    <!-- CHEAT SHEET MODAL -->
+    <div
+      id="cheat-sheet-modal"
+      class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300"
+    >
+      <!-- Modal Card Window (Updated with transition and initial scale classes) -->
+      <div
+        class="bg-slate-900 border border-slate-800 w-full max-w-4xl h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden transform transition-all duration-300 scale-95"
+      >
+        <!-- Modal Header -->
+        <div
+          class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/50"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400"
+            >
+              <i class="fa-solid fa-book-bookmark"></i>
+            </div>
+            <div>
+              <h2 id="modal-title" class="text-base font-bold text-slate-100">
+                JavaScript Cheat Sheet
+              </h2>
+              <p class="text-xs text-slate-400">
+                Printable foundational reference guide
+              </p>
+            </div>
+          </div>
+          <!-- Close Button -->
+          <button
+            id="btn-close-cheat-sheet"
+            class="text-slate-400 hover:text-slate-200 hover:bg-slate-800 p-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            aria-label="Close Cheat Sheet"
+          >
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <!-- Modal Scrollable Grid Body -->
+        <div
+          class="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-950/40 text-slate-300 scrollbar-thin"
+        >
+          <!-- Week 1 & 2 Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Week 1 -->
+            <div
+              class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-between"
+            >
+              <div>
+                <h3
+                  class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-2"
+                >
+                  Week 1: Variables & Data Types
+                </h3>
+                <pre
+                  class="font-mono text-xs text-slate-300 space-y-1 bg-slate-950 p-3 rounded-lg overflow-x-auto select-all"
+                ><span class="text-emerald-400">// Declarations</span>
+<span class="text-indigo-400">let</span> spriteX = <span class="text-amber-400">0</span>; <span class="text-emerald-500">// Int</span>
+<span class="text-indigo-400">const</span> SPEED = <span class="text-amber-400">1.5</span>; <span class="text-emerald-500">// Float</span>
+<span class="text-indigo-400">let</span> name = <span class="text-amber-400">"NavBot"</span>; <span class="text-emerald-500">// String</span>
+<span class="text-indigo-400">const</span> IsActive = <span class="text-indigo-400">true</span>; <span class="text-emerald-500">// Boolean</span>
+
+<span class="text-emerald-400">// Operations & Properties</span>
+spriteX++; <span class="text-emerald-500">// Increment</span>
+<span class="text-indigo-400">let</span> dub = speed * <span class="text-amber-400">2</span>; <span class="text-emerald-500">// Mult</span>
+<span class="text-indigo-400">let</span> len = name.<span class="text-sky-400">length</span>; <span class="text-emerald-500">// 6</span></pre>
+              </div>
+            </div>
+
+            <!-- Week 2 -->
+            <div
+              class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-between"
+            >
+              <div>
+                <h3
+                  class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-2"
+                >
+                  Week 2: Conditionals & Logic
+                </h3>
+                <pre
+                  class="font-mono text-xs text-slate-300 space-y-1 bg-slate-950 p-3 rounded-lg overflow-x-auto select-all"
+                ><span class="text-emerald-400">// Ops: ===, !==, &amp;&amp;, ||, !</span>
+<span class="text-indigo-400">if</span> (sensorType === <span class="text-amber-400">"ice"</span>) {
+    speed = <span class="text-amber-400">4</span>;
+} <span class="text-indigo-400">else if</span> (sensorType === <span class="text-amber-400">"mud"</span>) {
+    speed = <span class="text-amber-400">0</span>;
+} <span class="text-indigo-400">else</span> {
+    speed = <span class="text-amber-400">1</span>; <span class="text-emerald-500">// Fallback</span>
+}
+
+<span class="text-indigo-400">if</span> (!laserActive || hasPasscard) {
+    spriteX = <span class="text-amber-400">4</span>; <span class="text-emerald-500">// Safe to pass</span>
+}</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Week 3 & 4 Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Week 3 -->
+            <div
+              class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-between"
+            >
+              <div>
+                <h3
+                  class="text-xs font-bold uppercase tracking-wider text-purple-400 mb-2"
+                >
+                  Week 3: Loops & Control Flags
+                </h3>
+                <pre
+                  class="font-mono text-xs text-slate-300 space-y-1 bg-slate-950 p-3 rounded-lg overflow-x-auto select-all"
+                ><span class="text-emerald-400">// For Loop (Fixed iterations)</span>
+<span class="text-indigo-400">for</span> (<span class="text-indigo-400">let</span> i = <span class="text-amber-400">0</span>; i &lt; <span class="text-amber-400">4</span>; i++) {
+    moveRight(); <span class="text-emerald-500">// Runs 4x</span>
+}
+
+<span class="text-emerald-400">// While Loop &amp; Break Flag</span>
+<span class="text-indigo-400">while</span> (<span class="text-indigo-400">true</span>) {
+    <span class="text-indigo-400">if</span> (checkHazard()) <span class="text-indigo-400">break</span>;
+    moveRight();
+}</pre>
+              </div>
+            </div>
+
+            <!-- Week 4 -->
+            <div
+              class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-between"
+            >
+              <div>
+                <h3
+                  class="text-xs font-bold uppercase tracking-wider text-purple-400 mb-2"
+                >
+                  Week 4: Arrays (Lists)
+                </h3>
+                <pre
+                  class="font-mono text-xs text-slate-300 space-y-1 bg-slate-950 p-3 rounded-lg overflow-x-auto select-all"
+                ><span class="text-indigo-400">let</span> safeRow = [<span class="text-amber-400">0</span>, <span class="text-amber-400">2</span>, <span class="text-amber-400">4</span>];
+<span class="text-indigo-400">let</span> first = safeRow[<span class="text-amber-400">0</span>]; <span class="text-emerald-500">// 0</span>
+
+<span class="text-emerald-400">// 2D Grid Array Matrix</span>
+<span class="text-indigo-400">let</span> path = [[<span class="text-amber-400">0</span>,<span class="text-amber-400">0</span>], [<span class="text-amber-400">1</span>,<span class="text-amber-400">0</span>], [<span class="text-amber-400">1</span>,<span class="text-amber-400">1</span>]];
+<span class="text-indigo-400">let</span> nextY = path[<span class="text-amber-400">2</span>][<span class="text-amber-400">1</span>]; <span class="text-emerald-500">// Returns 1</span>
+
+<span class="text-emerald-400">// Methods</span>
+safeRow.push(<span class="text-amber-400">5</span>); <span class="text-emerald-500">// Append item</span>
+<span class="text-indigo-400">let</span> hasTwo = safeRow.includes(<span class="text-amber-400">2</span>);</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Week 5 & 6 Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Week 5 -->
+            <div
+              class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-between"
+            >
+              <div>
+                <h3
+                  class="text-xs font-bold uppercase tracking-wider text-pink-400 mb-2"
+                >
+                  Week 5: Objects &amp; Sets
+                </h3>
+                <pre
+                  class="font-mono text-xs text-slate-300 space-y-1 bg-slate-950 p-3 rounded-lg overflow-x-auto select-all"
+                ><span class="text-emerald-400">// Object Key-Value Pairs</span>
+<span class="text-indigo-400">let</span> itemMap = { portal: <span class="text-amber-400">"4,4"</span>, gem: <span class="text-amber-400">"1,2"</span> };
+<span class="text-indigo-400">let</span> target = itemMap.gem; <span class="text-emerald-500">// Dot syntax</span>
+
+<span class="text-indigo-400">for</span> (<span class="text-indigo-400">let</span> key <span class="text-indigo-400">in</span> itemMap) { <span class="text-emerald-500">// Iterate</span>
+    console.log(key);
+}
+
+<span class="text-emerald-400">// Sets (Unique Collection)</span>
+<span class="text-indigo-400">let</span> seen = <span class="text-indigo-400">new</span> <span class="text-sky-400">Set</span>();
+seen.add(<span class="text-amber-400">"0,0"</span>); seen.add(<span class="text-amber-400">"0,0"</span>); <span class="text-emerald-500">// Deduplicated</span></pre>
+              </div>
+            </div>
+
+            <!-- Week 6 -->
+            <div
+              class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 flex flex-col justify-between"
+            >
+              <div>
+                <h3
+                  class="text-xs font-bold uppercase tracking-wider text-pink-400 mb-2"
+                >
+                  Week 6: Functions &amp; Architecture
+                </h3>
+                <pre
+                  class="font-mono text-xs text-slate-300 space-y-1 bg-slate-950 p-3 rounded-lg overflow-x-auto select-all"
+                ><span class="text-emerald-400">// Inputs &amp; Outputs</span>
+<span class="text-indigo-400">function</span> calculateDistance(curr, dest) {
+    <span class="text-indigo-400">return</span> dest - curr;
+}
+
+<span class="text-emerald-400">// Void / Action Execution</span>
+<span class="text-indigo-400">function</span> jumpObstacle(steps) {
+    <span class="text-indigo-400">for</span>(<span class="text-indigo-400">let</span> i=<span class="text-amber-400">0</span>; i&lt;steps; i++) moveRight();
+}
+
+<span class="text-indigo-400">let</span> remX = calculateDistance(spriteX, <span class="text-amber-400">4</span>);
+jumpObstacle(remX);</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- SUCCESS MODAL -->
     <div
@@ -1010,6 +1227,11 @@
       }
 
       function buildCurriculum() {
+        // create all levels.
+        // each level should know its id/number, chapter, theme, title,
+        //    description, grid, startX, startY, startDir, goalX, goalY,
+        //    allowedApi, allowedBlocks, isDebugTask,
+        //    debugTask (instruction and buggycode)
         for (let i = 1; i <= 50; i++) {
           let chIndex = Math.floor((i - 1) / 5);
           let lvlInCh = ((i - 1) % 5) + 1;
@@ -2013,7 +2235,7 @@
       document
         .getElementById("btn-delete-data")
         .addEventListener("click", () => {
-          Storage.reset;
+          Storage.reset();
         });
 
       function logTerminal(msg, type = "info") {
@@ -2150,6 +2372,65 @@
         requestAnimationFrame(gameLoop);
       };
       window.addEventListener("resize", resizeCanvas);
+
+      // Cheat Sheet Modal Logic
+      const cheatSheetModal = document.getElementById("cheat-sheet-modal");
+      const btnCheatSheet = document.getElementById("btn-cheat-sheet");
+      const btnCloseCheatSheet = document.getElementById(
+        "btn-close-cheat-sheet",
+      );
+      // Cache the inner modal card to prevent querying the DOM on every click
+      const modalInnerCard = cheatSheetModal.querySelector("div");
+
+      function showCheatSheet() {
+        if (typeof playSound === "function") playSound("click");
+
+        document.body.style.overflow = "hidden";
+        cheatSheetModal.classList.remove("hidden");
+        void cheatSheetModal.offsetWidth;
+
+        // Explicitly push target states on and clear resting states off
+        cheatSheetModal.classList.remove("opacity-0");
+        cheatSheetModal.classList.add("opacity-100");
+
+        modalInnerCard.classList.remove("scale-95");
+        modalInnerCard.classList.add("scale-100");
+      }
+
+      function hideCheatSheet() {
+        // Explicitly reverse target states down before hiding
+        cheatSheetModal.classList.remove("opacity-100");
+        cheatSheetModal.classList.add("opacity-0");
+
+        modalInnerCard.classList.remove("scale-100");
+        modalInnerCard.classList.add("scale-95");
+
+        setTimeout(() => {
+          cheatSheetModal.classList.add("hidden");
+          document.body.style.overflow = "";
+        }, 300);
+      }
+
+      // UI Event Binding Triggers
+      btnCheatSheet.addEventListener("click", showCheatSheet);
+      btnCloseCheatSheet.addEventListener("click", hideCheatSheet);
+
+      // UX Polish: Close the window instantly if the user clicks the dark backdrop area
+      cheatSheetModal.addEventListener("click", (e) => {
+        if (e.target === cheatSheetModal) {
+          hideCheatSheet();
+        }
+      });
+
+      // A11y Polish: Close the window if the user hits the Escape key
+      window.addEventListener("keydown", (e) => {
+        if (
+          e.key === "Escape" &&
+          !cheatSheetModal.classList.contains("hidden")
+        ) {
+          hideCheatSheet();
+        }
+      });
     </script>
   </body>
 </html>
