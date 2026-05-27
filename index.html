@@ -240,18 +240,30 @@
               class="absolute -right-8 -top-8 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"
             ></div>
 
-            <!-- Header Controls -->
-            <div class="flex items-center space-x-2 mb-3 flex-shrink-0">
-              <span
-                id="lesson-badge"
-                class="bg-cyan-500/10 text-cyan-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-cyan-500/20 uppercase tracking-wider"
-                >Level 1</span
+            <!-- Header Controls (Updated with Interactive Info Icon) -->
+            <div
+              class="flex items-center justify-between mb-3 flex-shrink-0 relative z-10"
+            >
+              <div class="flex items-center space-x-2">
+                <span
+                  id="lesson-badge"
+                  class="bg-cyan-500/10 text-cyan-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-cyan-500/20 uppercase tracking-wider"
+                  >Level 1</span
+                >
+                <span
+                  id="lesson-concept"
+                  class="text-[10px] text-indigo-400 font-semibold tracking-wide uppercase"
+                  >Sequencing</span
+                >
+              </div>
+              <!-- Interactive Trigger Icon Element -->
+              <button
+                id="btn-trigger-instruction-modal"
+                class="text-slate-500 hover:text-cyan-400 transition-colors duration-200 p-1 rounded-md hover:bg-slate-800/50 flex items-center justify-center"
+                title="View Level Objectives"
               >
-              <span
-                id="lesson-concept"
-                class="text-[10px] text-indigo-400 font-semibold tracking-wide uppercase"
-                >Sequencing</span
-              >
+                <i class="fa-solid fa-circle-question text-sm"></i>
+              </button>
             </div>
 
             <!-- Scrollable Content Body -->
@@ -496,6 +508,93 @@
         </div>
       </section>
     </main>
+
+    <!-- LEVEL INSTRUCTIONS MODAL -->
+    <div
+      id="instruction-modal"
+      class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300"
+    >
+      <!-- Modal Card Window -->
+      <div
+        class="bg-slate-900 border border-slate-800 w-full max-w-lg h-auto max-h-[80vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden transform transition-all duration-300 scale-95"
+      >
+        <!-- Modal Header -->
+        <div
+          class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/50"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400"
+            >
+              <i class="fa-solid fa-satellite"></i>
+            </div>
+            <div>
+              <h2
+                id="instruction-modal-title"
+                class="text-base font-bold text-slate-100 uppercase tracking-wide"
+              >
+                Mission Briefing
+              </h2>
+              <p
+                id="instruction-modal-concept"
+                class="text-xs text-indigo-400 font-mono tracking-wider"
+              >
+                Loading System Parameters...
+              </p>
+            </div>
+          </div>
+          <!-- Close Button -->
+          <button
+            id="btn-close-instructions"
+            class="text-slate-400 hover:text-slate-200 hover:bg-slate-800 p-2 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+            aria-label="Close Mission Briefing"
+          >
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+        <!-- Modal Dynamic Body Content -->
+        <div
+          class="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-950/40 text-slate-300 scrollbar-thin"
+        >
+          <p
+            id="instruction-modal-desc"
+            class="text-sm text-slate-300 leading-relaxed"
+          >
+            Mission initialization details...
+          </p>
+
+          <!-- Populated Contextual Debug Panel (Shown only when applicable) -->
+          <div
+            id="instruction-modal-debug"
+            class="bg-rose-950/40 border border-rose-900/50 p-4 rounded-xl text-xs text-rose-300 hidden shadow-inner"
+          >
+            <div class="flex items-start gap-2.5">
+              <i class="fa-solid fa-bug text-rose-400 mt-0.5 animate-pulse"></i>
+              <div>
+                <strong
+                  class="block text-rose-400 mb-1 uppercase tracking-wide text-[10px]"
+                  >Debug Objectives</strong
+                >
+                <span id="instruction-modal-debug-text"
+                  >Rectify logic compilation issues.</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal Footer Action Control -->
+        <div
+          class="px-6 py-4 border-t border-slate-800/60 bg-slate-900/30 flex justify-end"
+        >
+          <button
+            id="btn-instruction-dismiss"
+            class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-5 py-2 rounded-xl transition text-xs shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-2"
+          >
+            Start <i class="fa-solid fa-bolt text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- CHEAT SHEET MODAL -->
     <div
@@ -992,6 +1091,21 @@ jumpObstacle(remX);</pre>
           );
         },
       };
+      Blockly.Blocks["zoom"] = {
+        init: function () {
+          this.appendValueInput("VALUE")
+            //.setCheck("Number") // Ensures only number-returning blocks can connect
+            .appendField("zoom(");
+          this.appendDummyInput().appendField(");");
+          this.setInputsInline(true);
+          this.setPreviousStatement(true, null);
+          this.setNextStatement(true, null);
+          this.setColour(160);
+          this.setTooltip(
+            "Command spaceship to zoom over a specific number of grid quadrants.",
+          );
+        },
+      };
       Blockly.Blocks["turn_left"] = {
         init: function () {
           this.appendDummyInput().appendField("turnLeft();");
@@ -1072,6 +1186,19 @@ jumpObstacle(remX);</pre>
         activeGenerator.forBlock["move_forward"] = function () {
           return "moveForward();\n";
         };
+        activeGenerator.forBlock["zoom"] = function (block) {
+          // Fetch the block connected to the "VALUE" input socket
+          // Fallback to '1' if the socket is left empty
+          var value_steps =
+            Blockly.JavaScript.valueToCode(
+              block,
+              "VALUE",
+              Blockly.JavaScript.ORDER_ATOMIC,
+            ) || "1";
+          // Wrap the value in Math.max to enforce a minimum runtime value of 1
+          var code = "zoom(Math.max(1, " + value_steps + "));\n";
+          return code;
+        };
         activeGenerator.forBlock["turn_left"] = function () {
           return "turnLeft();\n";
         };
@@ -1135,7 +1262,11 @@ jumpObstacle(remX);</pre>
 
           if (current.includes("moveForward()"))
             currentBlock = '<block type="move_forward">';
-          else if (current.includes("turnLeft()"))
+          else if (current.includes("zoom(")) {
+            let zoomMatch = current.match(/zoom\((.*)\)/);
+            let zoomVal = zoomMatch ? zoomMatch[1] : "0";
+            currentBlock = `<block type="zoom"><value name="VALUE"><block type="variables_get"><field name="VAR">${zoomVal}</field></block></value>`;
+          } else if (current.includes("turnLeft()"))
             currentBlock = '<block type="turn_left">';
           else if (current.includes("turnRight()"))
             currentBlock = '<block type="turn_right">';
@@ -1149,7 +1280,9 @@ jumpObstacle(remX);</pre>
             (current.startsWith("let ") || current.startsWith("const ")) &&
             current.includes("=")
           ) {
-            let varParts = current.substring(4).split("=");
+            let varParts = current
+              .substring(current.startsWith("let ") ? 4 : 6)
+              .split("=");
             let varName = varParts[0].trim();
             let val = varParts[1].replace(";", "").trim();
             if (current.startsWith("let ")) {
@@ -1158,11 +1291,13 @@ jumpObstacle(remX);</pre>
               currentBlock = `<block type="declare_const"><field name="VAR_NAME">${varName}</field><value name="VALUE"><block type="math_number"><field name="NUM">${val}</field></block></value>`;
             }
           } else if (current.startsWith("for") && current.includes("{")) {
-            let iterations = 3;
-            let countMatch = current.match(/<\s*(\d+)/);
-            if (countMatch && countMatch[1])
-              iterations = parseInt(countMatch[1]);
-            currentBlock = `<block type="controls_repeat_ext"><value name="TIMES"><block type="math_number"><field name="NUM">${iterations}</field></block></value><statement name="DO">`;
+            const regex =
+              /=(\d+).*?<=?\s*(\d+).*?(?:\+\+|(?:\+=\s*|\+\s*)(\d+))/;
+            const match = current.match(regex);
+
+            if (match && match[1] && match[2])
+              // If Group 3 is missing, it was an "i++", so the step defaults to 1
+              currentBlock = `<block type="controls_for"><value name="FROM"><block type="math_number"><field name="NUM">${parseInt(match[1], 10)}</field></block></value><value name="TO"><block type="math_number"><field name="NUM">${parseInt(match[2], 10)}</field></block></value><value name="BY"><block type="math_number"><field name="NUM">${match[3] ? parseInt(match[3], 10) : 1}</field></block></value></block>`;
 
             let body = [];
             let depth = 1;
@@ -1206,6 +1341,7 @@ jumpObstacle(remX);</pre>
         return xmlHeader + parseNestedLines(lines) + "</xml>";
       }
 
+      /*
       // --- 3. CURRICULUM GENERATOR (50 LEVELS) ---
       const CHAPTERS = [
         { id: 1, title: "Sequencing & Logic", start: 1, end: 5 },
@@ -1231,7 +1367,7 @@ jumpObstacle(remX);</pre>
         // each level should know its id/number, chapter, theme, title,
         //    description, grid, startX, startY, startDir, goalX, goalY,
         //    allowedApi, allowedBlocks, isDebugTask,
-        //    debugTask (instruction and buggycode)
+        //    debugTask (instruction and buggycode), instruction, summarized instruction, etc
         for (let i = 1; i <= 50; i++) {
           let chIndex = Math.floor((i - 1) / 5);
           let lvlInCh = ((i - 1) % 5) + 1;
@@ -1501,6 +1637,409 @@ jumpObstacle(remX);</pre>
       }
       buildCurriculum();
 
+      */
+
+      // --- 3. CURRICULUM GENERATOR ---
+      const CHAPTERS = [
+        { id: 1, title: "Variables & Data Types", start: 0, end: 0 },
+        { id: 2, title: "Branching & Conditionals", start: 0, end: 0 },
+        { id: 3, title: "Loops & Iterations", start: 0, end: 0 },
+        { id: 4, title: "Arrays, Sets & Objects", start: 0, end: 0 },
+        { id: 5, title: "Functions", start: 0, end: 0 },
+      ];
+
+      const LEVELS = [];
+
+      function parseGrid(arr) {
+        return arr.map((row) => row.split("").map(Number));
+      }
+
+      const apiFunctions = {
+        move_forward: { code: "moveForward();", desc: "Advance 1 step." },
+        zoom: { code: "zoom(9);", desc: "Advance 9 steps." },
+        turn_left: { code: "turnLeft();", desc: "Turn counterclockwise" },
+        turn_right: { code: "turnRight();", desc: "Turn clockwise" },
+        is_path_ahead: {
+          code: "isPathAhead();",
+          desc: "Checks if there is an obstacle in front and returns true or false",
+        },
+        console_log: {
+          code: "console.log('The winner is: ', name);",
+          desc: "Prints the string or variable to the console",
+        },
+        declare_variable: {
+          code: "let steps = 3;",
+          desc: "Declare variable to represent a value",
+        },
+        declare_const: {
+          code: "const MAX = 0.4;",
+          desc: "Declare constant value that never changes",
+        },
+        controls_if: { code: "if (isPathAhead()) { }", desc: "Check path" },
+        controls_for: {
+          code: "for(let i=0; i<3; i++){ }",
+          desc: "Repeat the code a number of times",
+        },
+        controls_whileUntil: {
+          code: "while(isPathAhead()){ }",
+          desc: "Repeat until the condition is no longer true",
+        },
+      };
+
+      function buildCurriculum() {
+        // create all levels.
+        // each level should know its id/number, chapter, theme, title,
+        //    concept, description, grid, startX, startY, startDir, goalX, goalY,
+        //    allowedApi, allowedBlocks, isDebugTask,
+        //    debugTask (instruction and buggycode), instruction, summarized instruction, etc
+
+        let levelID = 0;
+        let chapterIndex = 0;
+
+        // Level 1 - Sequencing
+        levelID++;
+        chapterIndex = 0;
+        if (CHAPTERS[chapterIndex].start == 0) {
+          CHAPTERS[chapterIndex].start = levelID;
+        }
+        CHAPTERS[chapterIndex].end = levelID;
+        LEVELS.push({
+          number: levelID,
+          chapter: chapterIndex,
+          theme: 0,
+          concept: "SEQUENCING",
+          title: "Find a Path",
+          description:
+            "Programming requires logical and sequential thinking.\nUse the available API functions to reach the target.",
+          instruction: "Go step by step and guide the rocket to the target",
+          grid: parseGrid([
+            "00000000",
+            "00000000",
+            "00111000",
+            "00101110",
+            "00100010",
+            "01111010",
+            "00011110",
+            "00000000",
+          ]),
+          startX: 1,
+          startY: 5,
+          startDir: 1,
+          goalX: 5,
+          goalY: 3,
+          allowedCode: ["move_forward", "turn_left", "turn_right"],
+          debugTask: {
+            instruction:
+              "The rocket turns the wrong way! Fix the code and get to the target.",
+            buggyCode:
+              "moveForward();\nturnLeft();\nmoveForward();\nturnRight();\nmoveForward();",
+          },
+        });
+
+        // Level 2 - Creating Variables
+        levelID++;
+        chapterIndex = 0;
+        if (CHAPTERS[chapterIndex].start == 0) {
+          CHAPTERS[chapterIndex].start = levelID;
+        }
+        CHAPTERS[chapterIndex].end = levelID;
+        LEVELS.push({
+          number: levelID,
+          chapter: chapterIndex,
+          theme: 0,
+          concept: "VARAIBLES",
+          title: "Zoom several times",
+          description:
+            "Use 'let' or 'const' to store values that can help the rocket zoom to the target.",
+          instruction:
+            "When you need to use a value several times, you can store it in a variable.\nUse let (e.g. let speed = 5;) for values that may change and const (e.g. const name = 'JOE';) for values that never change.  See how you can use this to guide the rocket to the target",
+          grid: parseGrid([
+            "10000000",
+            "10011110",
+            "10000010",
+            "10011110",
+            "10010000",
+            "10010000",
+            "10010000",
+            "11110000",
+          ]),
+          startX: 3,
+          startY: 1,
+          startDir: 1,
+          goalX: 0,
+          goalY: 1,
+          allowedCode: ["zoom", "turn_left", "turn_right"],
+          debugTask: {
+            instruction:
+              "The rocket is not getting to the target! Fix the code and get to the target.",
+            buggyCode: `// The value of tripleSteps cannot change because it is a CONSTANT\nconst tripleSteps = 3;\n// The value of manySteps can change because it is a variable\nlet manySteps = 2;\nzoom(tripleSteps);\n${Math.random() <= 0.5 ? "turnLeft();\n" : Math.random() <= 0.5 ? "turnRight();\n" : ""}zoom(manySteps);\n${Math.random() <= 0.5 ? "turnLeft();\n" : Math.random() <= 0.5 ? "turnRight();\n" : ""}zoom(tripleSteps);\n${Math.random() <= 0.5 ? "turnLeft();\n" : Math.random() <= 0.5 ? "turnRight();\n" : ""}${Math.random() <= 0.5 ? "manySteps = manySteps + 2;\n" : Math.random() <= 0.5 ? "manySteps += 2;\n" : Math.random() <= 0.5 ? "// WRONG: tripleSteps cannot change\ntripleSteps = 4;\n" : "// WRONG: tripleSteps cannot change\ntripleSteps += 1;\n"}zoom(manySteps);\n${Math.random() <= 0.5 ? "turnLeft();\n" : Math.random() <= 0.5 ? "turnRight();\n" : ""}zoom(tripleSteps);\n${Math.random() <= 0.5 ? "turnLeft();\n" : Math.random() <= 0.5 ? "turnRight();\n" : ""}${Math.random() <= 0.5 ? "manySteps = manySteps + 2;\n" : Math.random() <= 0.5 ? "manySteps += 2;\n" : Math.random() <= 0.5 ? "// WRONG: tripleSteps cannot change\ntripleSteps = 5;\n" : Math.random() <= 0.5 ? "// WRONG: tripleSteps cannot change\ntripleSteps += 3;\n" : ""}zoom(manySteps);\n`,
+          },
+        });
+
+        let i = 1;
+        let chIndex = Math.floor((i - 1) / 5);
+        let lvlInCh = ((i - 1) % 5) + 1;
+        let isDebug = lvlInCh === 1 || lvlInCh === 2;
+        let level = {
+          number: i,
+          concept: CHAPTERS[chIndex].title,
+          title: `Sector ${i} Operations`,
+          description: "Navigate to the portal.",
+          debugTask: null,
+          grid: parseGrid([
+            "00000000",
+            "00000000",
+            "00000000",
+            "01111100",
+            "00000000",
+            "00000000",
+            "00000000",
+            "00000000",
+          ]),
+          startX: 1,
+          startY: 3,
+          startDir: 1,
+          goalX: 5,
+          goalY: 3,
+          defaultCode: "moveForward();\n",
+          allowedApi: [{ code: "moveForward();", desc: "Advance 1 space." }],
+          allowedBlocks: ["move_forward"], // Basic set
+        };
+
+        // Populate Blocks based on Chapter Progress
+        if (chIndex >= 0) level.allowedBlocks.push("turn_left", "turn_right");
+        if (chIndex >= 1)
+          level.allowedBlocks.push(
+            "declare_variable",
+            "declare_const",
+            "math_number",
+          );
+        if (chIndex >= 4) level.allowedBlocks.push("console_log", "text");
+        if (chIndex >= 5)
+          level.allowedBlocks.push("controls_if", "is_path_ahead");
+        if (chIndex >= 6) level.allowedBlocks.push("controls_repeat_ext");
+
+        // Level Configs
+        if (chIndex === 0) {
+          // Chapter 1: Basics
+          level.allowedApi.push(
+            { code: "turnLeft();", desc: "Turn CCW" },
+            { code: "turnRight();", desc: "Turn CW" },
+          );
+          if (i === 1) {
+            level.title = "Broken Thrusters";
+            level.description =
+              "The launch sequence is incomplete. We need to reach the portal directly ahead.";
+            level.debugTask = {
+              instruction:
+                "Add the missing commands so the ship moves exactly 4 spaces forward.",
+              buggyCode: "moveForward();\nmoveForward();\n// Fix me!",
+            };
+          } else if (i === 2) {
+            level.title = "Faulty Navigation";
+            level.grid = parseGrid([
+              "0000000",
+              "0000000",
+              "0001110",
+              "0001000",
+              "0001000",
+              "0000000",
+              "0000000",
+            ]);
+            level.startX = 3;
+            level.startY = 4;
+            level.startDir = 0;
+            level.goalX = 5;
+            level.goalY = 2;
+            level.debugTask = {
+              instruction:
+                "The ship turns the wrong way! Fix the rotation direction.",
+              buggyCode:
+                "moveForward();\nmoveForward();\nturnLeft(); // Is this right?\nmoveForward();\nmoveForward();",
+            };
+          } else if (i === 3) {
+            level.title = "The S-Curve";
+            level.description =
+              "Navigate through the asteroid debris using turns.";
+            level.grid = parseGrid([
+              "0000000",
+              "0001110",
+              "0001000",
+              "0111000",
+              "0000000",
+              "0000000",
+              "0000000",
+            ]);
+            level.startX = 1;
+            level.startY = 3;
+            level.startDir = 1;
+            level.goalX = 5;
+            level.goalY = 1;
+            level.defaultCode = "// Write your path here\n";
+          } else if (i === 4) {
+            level.title = "U-Turn Maneuver";
+            level.grid = parseGrid([
+              "0000000",
+              "0111110",
+              "0100010",
+              "0111010",
+              "0000000",
+              "0000000",
+              "0000000",
+            ]);
+            level.startX = 3;
+            level.startY = 3;
+            level.startDir = 3;
+            level.goalX = 3;
+            level.goalY = 1;
+            level.defaultCode = "// Turn around entirely!\n";
+          } else if (i === 5) {
+            level.title = "Zig-Zag Escape";
+            level.grid = parseGrid([
+              "0000000",
+              "0000010",
+              "0000110",
+              "0001100",
+              "0011000",
+              "0110000",
+              "0000000",
+            ]);
+            level.startX = 1;
+            level.startY = 5;
+            level.startDir = 1;
+            level.goalX = 5;
+            level.goalY = 1;
+            level.defaultCode = "moveForward();\n";
+          }
+        } else if (chIndex === 1) {
+          // Chapter 2: Variables
+          level.allowedApi.push(
+            { code: "turnLeft();", desc: "Turn CCW" },
+            { code: "turnRight();", desc: "Turn CW" },
+            { code: "let steps = 3;", desc: "Declare var" },
+          );
+          if (i === 6) {
+            level.title = "Unassigned Memory";
+            level.grid = parseGrid([
+              "0000000",
+              "0011110",
+              "0010000",
+              "0010000",
+              "0000000",
+              "0000000",
+              "0000000",
+            ]);
+            level.startX = 2;
+            level.startY = 3;
+            level.startDir = 0;
+            level.goalX = 5;
+            level.goalY = 1;
+            level.debugTask = {
+              instruction:
+                "The variable 'dist' is wrong. Set it to the correct distance.",
+              buggyCode:
+                "let dist = 1;\nmoveForward();\nmoveForward();\nturnRight();\n// move dist times\nmoveForward();",
+            };
+          } else if (i === 7) {
+            level.title = "Constant Drift";
+            level.debugTask = {
+              instruction:
+                "You cannot change a 'const' variable after setting it!",
+              buggyCode:
+                "const speed = 2;\nspeed = 4; // This will crash!\nmoveForward();\nmoveForward();",
+            };
+          } else {
+            level.defaultCode = "let distance = 2;\n// Use your variable\n";
+          }
+        } else if (chIndex === 5) {
+          // Chapter 6: Conditionals
+          level.allowedApi.push(
+            { code: "if (isPathAhead()) { }", desc: "Check path" },
+            { code: "moveForward();", desc: "Move" },
+          );
+          if (i === 26) {
+            level.title = "Blind Sensors";
+            level.debugTask = {
+              instruction: "Fix the if-statement so it only moves when safe.",
+              buggyCode: "if (false) {\n  moveForward();\n}\nmoveForward();",
+            };
+          } else if (i === 27) {
+            level.title = "Logic Reversal";
+            level.debugTask = {
+              instruction: "Use an else block to turn if the path is blocked.",
+              buggyCode:
+                "if (isPathAhead()) {\n  moveForward();\n}\n// missing else logic to turnLeft!",
+            };
+          } else {
+            level.defaultCode = "if (isPathAhead()) {\n  moveForward();\n}\n";
+          }
+        } else if (chIndex === 6) {
+          // Chapter 7: Loops
+          level.allowedApi.push(
+            { code: "for(let i=0; i<3; i++){ }", desc: "Repeat code" },
+            { code: "while(isPathAhead()){ }", desc: "Repeat until blocked" },
+          );
+          if (i === 31) {
+            level.title = "Infinite Loop Danger";
+            level.grid = parseGrid([
+              "0000000",
+              "0000000",
+              "0000000",
+              "0111110",
+              "0000000",
+              "0000000",
+              "0000000",
+            ]);
+            level.startX = 1;
+            level.startY = 3;
+            level.startDir = 1;
+            level.goalX = 5;
+            level.goalY = 3;
+            level.debugTask = {
+              instruction:
+                "The loop iterates too many times and crashes into the void! Fix the limit.",
+              buggyCode: "for (let i = 0; i < 10; i++) {\n  moveForward();\n}",
+            };
+          } else if (i === 32) {
+            level.title = "Broken While";
+            level.grid = parseGrid([
+              "0000000",
+              "0000000",
+              "0000000",
+              "0111110",
+              "0000000",
+              "0000000",
+              "0000000",
+            ]);
+            level.startX = 1;
+            level.startY = 3;
+            level.startDir = 1;
+            level.goalX = 5;
+            level.goalY = 3;
+            level.debugTask = {
+              instruction: "Fix the condition so the ship doesn't stop early.",
+              buggyCode:
+                "let fuel = 0;\nwhile (fuel < 2) {\n  moveForward();\n  fuel = fuel + 1;\n}",
+            };
+          } else {
+            level.defaultCode =
+              "for(let i=0; i<4; i++) {\n  moveForward();\n}\n";
+          }
+        } else {
+          if (isDebug) {
+            level.title = `Logic Debug ${i}`;
+            level.debugTask = {
+              instruction: `Find and fix the logical error for Chapter ${chIndex + 1}.`,
+              buggyCode: "// Code is broken!\nmoveForward();",
+            };
+          } else {
+            level.defaultCode = `// Sector ${i} Logic\nmoveForward();\n`;
+          }
+        }
+        // LEVELS.push(level);
+      }
+      buildCurriculum();
+
       // --- 4. EDITOR & BLOCKLY WORKSPACE SETUP ---
       let aceEditor;
       let activeLineMarker = null;
@@ -1538,14 +2077,12 @@ jumpObstacle(remX);</pre>
         let xml = "<xml>";
         if (allowedBlocks.includes("move_forward"))
           xml += '<block type="move_forward"></block>';
+        if (allowedBlocks.includes("zoom"))
+          xml += `<block type="zoom"><value name="VALUE"><block type="math_number"><field name="NUM">9</field></block></value></block>`;
         if (allowedBlocks.includes("turn_left"))
           xml += '<block type="turn_left"></block>';
         if (allowedBlocks.includes("turn_right"))
           xml += '<block type="turn_right"></block>';
-        if (allowedBlocks.includes("controls_repeat_ext"))
-          xml += `<block type="controls_repeat_ext"><value name="TIMES"><block type="math_number"><field name="NUM">3</field></block></value></block>`;
-        if (allowedBlocks.includes("controls_if"))
-          xml += '<block type="controls_if"></block>';
         if (allowedBlocks.includes("is_path_ahead"))
           xml += '<block type="is_path_ahead"></block>';
         if (allowedBlocks.includes("console_log"))
@@ -1554,13 +2091,21 @@ jumpObstacle(remX);</pre>
           xml += `<block type="declare_variable"><value name="VALUE"><block type="math_number"><field name="NUM">1</field></block></value></block>`;
         if (allowedBlocks.includes("declare_const"))
           xml += `<block type="declare_const"><value name="VALUE"><block type="math_number"><field name="NUM">3</field></block></value></block>`;
+        if (allowedBlocks.includes("controls_if"))
+          xml += '<block type="controls_if"></block>';
+        if (allowedBlocks.includes("controls_for"))
+          xml += `<block type="controls_for"><value name="FROM"><block type="math_number"><field name="NUM">2</field></block></value><value name="TO"><block type="math_number"><field name="NUM">16</field></block></value><value name="BY"><block type="math_number"><field name="NUM">4</field></block></value></block>`;
+        if (allowedBlocks.includes("controls_whileUntil"))
+          xml += '<block type="controls_whileUntil"></block>';
+
         xml += "</xml>";
         return xml;
       }
 
       function updateWorkspaces() {
         let level = LEVELS[currentLevelIndex];
-        let xmlToolbox = buildToolboxXml(level.allowedBlocks);
+        const allowedBlocks = level.allowedCode;
+        let xmlToolbox = buildToolboxXml(allowedBlocks);
 
         if (blocklyWorkspace) {
           blocklyWorkspace.dispose();
@@ -1859,6 +2404,15 @@ jumpObstacle(remX);</pre>
               vars: { ...localVars },
             });
           },
+          zoom: (num) => {
+            for (let i = 0; i < num; i++) api.moveForward();
+            const lastMove = commandQueue.pop();
+            let firstMove = null;
+            for (let i = 0; i < num - 1; i++) firstMove = commandQueue.pop();
+            lastMove.fromX = firstMove.fromX;
+            lastMove.fromY = firstMove.fromY;
+            commandQueue.push(lastMove);
+          },
           turnLeft: () => {
             let old = activePos.dir;
             activePos.dir = (activePos.dir + 3) % 4;
@@ -1931,17 +2485,19 @@ jumpObstacle(remX);</pre>
         try {
           let runner = new Function(
             "moveForward",
+            "zoom",
             "turnLeft",
             "turnRight",
             "isPathAhead",
             "console",
             "_track",
-            `try { 
-            ${instrumentedCode} 
+            `try {
+            ${instrumentedCode}
             } catch(e) { throw e; }`,
           );
           runner(
             api.moveForward,
+            api.zoom,
             api.turnLeft,
             api.turnRight,
             api.isPathAhead,
@@ -2099,13 +2655,15 @@ jumpObstacle(remX);</pre>
       function loadLevel(index) {
         currentLevelIndex = index;
         const level = LEVELS[index];
+        const levelChapter = CHAPTERS[level.chapter];
 
         document.getElementById("current-chapter-title").textContent =
-          level.concept;
+          levelChapter.title;
         document.getElementById("level-display-num").textContent =
           `Mission ${index + 1}/50`;
         document.getElementById("lesson-badge").textContent =
           `LEVEL ${index + 1}`;
+        document.getElementById("lesson-concept").textContent = level.concept;
         document.getElementById("lesson-title").textContent = level.title;
         document.getElementById("lesson-description").textContent =
           level.description;
@@ -2121,7 +2679,8 @@ jumpObstacle(remX);</pre>
 
         const apiBox = document.getElementById("api-commands");
         apiBox.innerHTML = "";
-        level.allowedApi.forEach((api) => {
+        const allowedApi = level.allowedCode.map((api) => apiFunctions[api]);
+        allowedApi.forEach((api) => {
           let span = document.createElement("span");
           span.className =
             "text-[10px] font-mono bg-slate-900 border border-slate-700 px-2 py-1 rounded cursor-pointer hover:border-cyan-500/50 hover:bg-slate-800 transition text-slate-300";
@@ -2154,6 +2713,9 @@ jumpObstacle(remX);</pre>
         abortSimulation();
         updateWorkspaces();
         populateMap();
+
+        // Launches the modal briefing overlay smoothly when initialization lifecycle triggers
+        showInstructionModal();
       }
 
       function startExecution(stepMode) {
@@ -2320,7 +2882,9 @@ jumpObstacle(remX);</pre>
           for (let lvl = ch.start; lvl <= ch.end; lvl++) {
             let btn = document.createElement("button");
             let isCurrent = lvl - 1 === currentLevelIndex;
-            let isDebug = lvl === ch.start || lvl === ch.start + 1;
+            let isDebug = LEVELS[lvl - 1]
+              ? "debugTask" in LEVELS[lvl - 1]
+              : false;
             btn.className = `h-8 rounded flex items-center justify-center text-xs font-mono font-bold transition ${isCurrent ? "bg-indigo-600 text-white ring-2 ring-indigo-500/50" : state.solvedLevels[lvl - 1] == lvl - 1 ? "bg-green-600 text-white ring-2 ring-green-500/50" : isDebug ? "bg-rose-950/40 text-rose-400 border border-rose-900/30 hover:bg-rose-900/30" : "bg-slate-800 text-slate-400 hover:bg-slate-700"}`;
             btn.innerHTML =
               isDebug && !isCurrent
@@ -2429,6 +2993,90 @@ jumpObstacle(remX);</pre>
           !cheatSheetModal.classList.contains("hidden")
         ) {
           hideCheatSheet();
+        }
+      });
+
+      // --- LEVEL INSTRUCTION MODAL INTERACTION ENGINE ---
+      const instructionModal = document.getElementById("instruction-modal");
+      const instructionInnerCard = instructionModal.querySelector("div");
+      const btnTriggerInstructions = document.getElementById(
+        "btn-trigger-instruction-modal",
+      );
+      const btnCloseInstructions = document.getElementById(
+        "btn-close-instructions",
+      );
+      const btnDismissInstructions = document.getElementById(
+        "btn-instruction-dismiss",
+      );
+
+      function showInstructionModal() {
+        if (typeof playSound === "function") playSound("click");
+
+        // Inject reactive dataset parameters directly from your global level collection data matrix
+        const levelData = LEVELS[currentLevelIndex];
+        document.getElementById("instruction-modal-title").textContent =
+          levelData.title;
+        document.getElementById("instruction-modal-concept").textContent =
+          levelData.concept;
+        document.getElementById("instruction-modal-desc").textContent =
+          levelData.description;
+
+        // Conditionally process systemic layout flags based on Debug Task existence
+        const debugPanel = document.getElementById("instruction-modal-debug");
+        if (levelData.debugTask) {
+          debugPanel.classList.remove("hidden");
+          document.getElementById("instruction-modal-debug-text").textContent =
+            levelData.debugTask.instruction;
+        } else {
+          debugPanel.classList.add("hidden");
+        }
+
+        // Orchestrate hardware-accelerated presentation sequence transforms
+        document.body.style.overflow = "hidden";
+        instructionModal.classList.remove("hidden");
+        void instructionModal.offsetWidth; // Force Layout reflow parsing boundary
+
+        instructionModal.classList.remove("opacity-0");
+        instructionModal.classList.add("opacity-100");
+        instructionInnerCard.classList.remove("scale-95");
+        instructionInnerCard.classList.add("scale-100");
+      }
+
+      function hideInstructionModal() {
+        instructionModal.classList.remove("opacity-100");
+        instructionModal.classList.add("opacity-0");
+        instructionInnerCard.classList.remove("scale-100");
+        instructionInnerCard.classList.add("scale-95");
+
+        setTimeout(() => {
+          instructionModal.classList.add("hidden");
+          document.body.style.overflow = "";
+        }, 300);
+      }
+
+      // Bind Standard Declarative Event Listeners
+      btnTriggerInstructions.addEventListener("click", showInstructionModal);
+      btnCloseInstructions.addEventListener("click", () => {
+        playSound("click");
+        hideInstructionModal();
+      });
+      btnDismissInstructions.addEventListener("click", () => {
+        playSound("click");
+        hideInstructionModal();
+      });
+
+      // Capture Backplane Click Bounds Event Delegation
+      instructionModal.addEventListener("click", (e) => {
+        if (e.target === instructionModal) hideInstructionModal();
+      });
+
+      // Structural Keydown Window Listener tracking a11y compliance rules
+      window.addEventListener("keydown", (e) => {
+        if (
+          e.key === "Escape" &&
+          !instructionModal.classList.contains("hidden")
+        ) {
+          hideInstructionModal();
         }
       });
     </script>
