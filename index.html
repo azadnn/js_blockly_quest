@@ -1686,6 +1686,10 @@ jumpObstacle(remX);</pre>
         },
       };
 
+      function getRandomChoice(array) {
+        return array[Math.floor(Math.random() * array.length)];
+      }
+
       function buildCurriculum() {
         // create all levels.
         // each level should know its id/number, chapter, theme, title,
@@ -1695,6 +1699,7 @@ jumpObstacle(remX);</pre>
 
         let levelID = 0;
         let chapterIndex = 0;
+        let startX = (startY = goalX = goalY = 0);
 
         // Level 1 - Sequencing
         levelID++;
@@ -1703,6 +1708,19 @@ jumpObstacle(remX);</pre>
           CHAPTERS[chapterIndex].start = levelID;
         }
         CHAPTERS[chapterIndex].end = levelID;
+        possibleStartPositions = [
+          [1, 5],
+          [3, 5],
+          [4, 5],
+        ];
+        possibleGoalPositions = [
+          [3, 2],
+          [4, 2],
+          [4, 3],
+          [5, 3],
+        ];
+        [startX, startY] = getRandomChoice(possibleStartPositions);
+        [goalX, goalY] = getRandomChoice(possibleGoalPositions);
         LEVELS.push({
           number: levelID,
           chapter: chapterIndex,
@@ -1722,11 +1740,11 @@ jumpObstacle(remX);</pre>
             "00011110",
             "00000000",
           ]),
-          startX: 1,
-          startY: 5,
+          startX: startX,
+          startY: startY,
           startDir: 1,
-          goalX: 5,
-          goalY: 3,
+          goalX: goalX,
+          goalY: goalY,
           allowedCode: ["move_forward", "turn_left", "turn_right"],
           debugTask: {
             instruction:
@@ -1743,6 +1761,22 @@ jumpObstacle(remX);</pre>
           CHAPTERS[chapterIndex].start = levelID;
         }
         CHAPTERS[chapterIndex].end = levelID;
+        possibleStartPositions = [
+          [2, 0],
+          [3, 0],
+          [3, 1],
+          [6, 0],
+          [6, 1],
+        ];
+        possibleGoalPositions = [
+          [0, 0],
+          [0, 1],
+          [0, 2],
+          [0, 3],
+          [0, 4],
+        ];
+        [startX, startY] = getRandomChoice(possibleStartPositions);
+        [goalX, goalY] = getRandomChoice(possibleGoalPositions);
         LEVELS.push({
           number: levelID,
           chapter: chapterIndex,
@@ -1754,26 +1788,126 @@ jumpObstacle(remX);</pre>
           instruction:
             "When you need to use a value several times, you can store it in a variable.\nUse let (e.g. let speed = 5;) for values that may change and const (e.g. const name = 'JOE';) for values that never change.  See how you can use this to guide the rocket to the target",
           grid: parseGrid([
-            "10000000",
+            "10111110",
             "10011110",
             "10000010",
             "10011110",
-            "10010000",
-            "10010000",
-            "10010000",
+            "10010100",
+            "10010100",
+            "10011100",
             "11110000",
           ]),
-          startX: 3,
-          startY: 1,
+          startX: startX,
+          startY: startY,
           startDir: 1,
-          goalX: 0,
-          goalY: 1,
+          goalX: goalX,
+          goalY: goalY,
           allowedCode: ["zoom", "turn_left", "turn_right"],
           debugTask: {
             instruction:
               "The rocket is not getting to the target! Fix the code and get to the target.",
             buggyCode: `// The value of tripleSteps cannot change because it is a CONSTANT\nconst tripleSteps = 3;\n// The value of manySteps can change because it is a variable\nlet manySteps = 2;\nzoom(tripleSteps);\n${Math.random() <= 0.5 ? "turnLeft();\n" : Math.random() <= 0.5 ? "turnRight();\n" : ""}zoom(manySteps);\n${Math.random() <= 0.5 ? "turnLeft();\n" : Math.random() <= 0.5 ? "turnRight();\n" : ""}zoom(tripleSteps);\n${Math.random() <= 0.5 ? "turnLeft();\n" : Math.random() <= 0.5 ? "turnRight();\n" : ""}${Math.random() <= 0.5 ? "manySteps = manySteps + 2;\n" : Math.random() <= 0.5 ? "manySteps += 2;\n" : Math.random() <= 0.5 ? "// WRONG: tripleSteps cannot change\ntripleSteps = 4;\n" : "// WRONG: tripleSteps cannot change\ntripleSteps += 1;\n"}zoom(manySteps);\n${Math.random() <= 0.5 ? "turnLeft();\n" : Math.random() <= 0.5 ? "turnRight();\n" : ""}zoom(tripleSteps);\n${Math.random() <= 0.5 ? "turnLeft();\n" : Math.random() <= 0.5 ? "turnRight();\n" : ""}${Math.random() <= 0.5 ? "manySteps = manySteps + 2;\n" : Math.random() <= 0.5 ? "manySteps += 2;\n" : Math.random() <= 0.5 ? "// WRONG: tripleSteps cannot change\ntripleSteps = 5;\n" : Math.random() <= 0.5 ? "// WRONG: tripleSteps cannot change\ntripleSteps += 3;\n" : ""}zoom(manySteps);\n`,
           },
+        });
+
+        // Level 3 - Creative Problem Solving
+        levelID++;
+        chapterIndex = 0;
+        if (CHAPTERS[chapterIndex].start == 0) {
+          CHAPTERS[chapterIndex].start = levelID;
+        }
+        CHAPTERS[chapterIndex].end = levelID;
+        possibleStartPositions = [
+          [3, 2],
+          [3, 3],
+          [4, 3],
+          [6, 2],
+          [6, 3],
+        ];
+        possibleGoalPositions = [
+          [0, 1],
+          [0, 2],
+          [0, 7],
+          [6, 7],
+        ];
+        [startX, startY] = getRandomChoice(possibleStartPositions);
+        [goalX, goalY] = getRandomChoice(possibleGoalPositions);
+        LEVELS.push({
+          number: levelID,
+          chapter: chapterIndex,
+          theme: 0,
+          concept: "PUZZLE",
+          title: "Creative problem solving",
+          description:
+            "Combine the available functions to guide the rocket to the target.",
+          instruction:
+            "You can use all that you have learned to solve this puzzle. Use 'let' and 'const' to create variables which you can use with 'zoom()'.\n When you need to use a value several times, you can store it in a variable.\nTake the correct right or left turns.\nGuide the rocket to the target",
+          grid: parseGrid([
+            "11111110",
+            "10010010",
+            "10010010",
+            "10011111",
+            "10010001",
+            "11110001",
+            "10010001",
+            "11111111",
+          ]),
+          startX: startX,
+          startY: startY,
+          startDir: 3,
+          goalX: goalX,
+          goalY: goalY,
+          allowedCode: ["zoom", "turn_left", "turn_right"],
+        });
+
+        // Level 4 - String and Boolean Data Types
+        levelID++;
+        chapterIndex = 0;
+        if (CHAPTERS[chapterIndex].start == 0) {
+          CHAPTERS[chapterIndex].start = levelID;
+        }
+        CHAPTERS[chapterIndex].end = levelID;
+        possibleStartPositions = [
+          [3, 2],
+          [3, 3],
+          [4, 3],
+          [6, 2],
+          [6, 3],
+        ];
+        possibleGoalPositions = [
+          [0, 1],
+          [0, 2],
+          [0, 7],
+          [6, 7],
+        ];
+        [startX, startY] = getRandomChoice(possibleStartPositions);
+        [goalX, goalY] = getRandomChoice(possibleGoalPositions);
+        LEVELS.push({
+          number: levelID,
+          chapter: chapterIndex,
+          theme: 0,
+          concept: "PUZZLE",
+          title: "Creative problem solving",
+          description:
+            "Combine the available functions to guide the rocket to the target.",
+          instruction:
+            "You can use all that you have learned to solve this puzzle. Use 'let' and 'const' to create variables which you can use with 'zoom()'.\n When you need to use a value several times, you can store it in a variable.\nTake the correct right or left turns.\nGuide the rocket to the target",
+          grid: parseGrid([
+            "11111110",
+            "10010010",
+            "10010010",
+            "10011111",
+            "10010001",
+            "11110001",
+            "10010001",
+            "11111111",
+          ]),
+          startX: startX,
+          startY: startY,
+          startDir: 3,
+          goalX: goalX,
+          goalY: goalY,
+          allowedCode: ["zoom", "turn_left", "turn_right"],
         });
 
         let i = 1;
@@ -2612,7 +2746,10 @@ jumpObstacle(remX);</pre>
         if (spacecraft.x === goalX && spacecraft.y === goalY) {
           state.solvedLevels[currentLevelIndex] = currentLevelIndex;
           const currentState = structuredClone(state);
-          state.currentLevel = Math.min(49, currentLevelIndex + 1);
+          state.currentLevel = Math.min(
+            LEVELS.length - 1,
+            currentLevelIndex + 1,
+          );
           state.isRunning = false;
           state.isStepping = false;
           state.isSyncing = false;
@@ -2653,6 +2790,7 @@ jumpObstacle(remX);</pre>
 
       // --- 7. UI CONTROLS & LOGGING ---
       function loadLevel(index) {
+        if (index >= LEVELS.length) return;
         currentLevelIndex = index;
         const level = LEVELS[index];
         const levelChapter = CHAPTERS[level.chapter];
@@ -2925,7 +3063,8 @@ jumpObstacle(remX);</pre>
       document.getElementById("modal-btn-next").onclick = () => {
         playSound("click");
         hideModal();
-        if (currentLevelIndex < 49) loadLevel(currentLevelIndex + 1);
+        if (currentLevelIndex < LEVELS.length - 1)
+          loadLevel(currentLevelIndex + 1);
       };
 
       window.onload = () => {
