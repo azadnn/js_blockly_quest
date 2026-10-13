@@ -190,7 +190,7 @@ function initEditor() {
   editor.session.setTabSize(4);
   editor.session.setUseSoftTabs(true);
   editor.setShowPrintMargin(false);
-  editor.setOptions({ fontSize: window.innerHeight < 760 ? "13px" : "14px", fontFamily: "Fira Code, monospace", enableBasicAutocompletion: true, enableLiveAutocompletion: true, showFoldWidgets: false, highlightActiveLine: true, scrollPastEnd: 0.3 });
+  editor.setOptions({ fontSize: "14px", fontFamily: "Fira Code, monospace", enableBasicAutocompletion: true, enableLiveAutocompletion: true, showFoldWidgets: false, highlightActiveLine: true, scrollPastEnd: 0.3 });
 
   // Autocomplete: game API + Python essentials
   const langTools = ace.require("ace/ext/language_tools");
@@ -286,7 +286,7 @@ function initBlockly() {
   ws = Blockly.inject("blocklyDiv", {
     readOnly: true, renderer: "zelos", theme, sounds: false, trashcan: false,
     move: { scrollbars: true, drag: true, wheel: true },
-    zoom: { controls: true, wheel: false, startScale: window.innerHeight < 760 ? 0.55 : 0.62, maxScale: 1.4, minScale: 0.3, scaleSpeed: 1.15 },
+    zoom: { controls: true, wheel: false, startScale: 0.62, maxScale: 1.4, minScale: 0.3, scaleSpeed: 1.15 },
   });
   new ResizeObserver(() => Blockly.svgResize(ws)).observe($("blocklyDiv"));
 }
@@ -377,7 +377,7 @@ const Arena = {
     this.resize();
   },
   resize() {
-    const wrap = $("canvas-wrap"), size = Math.max(160, Math.min(wrap.clientWidth - 12, wrap.clientHeight - 12));
+    const wrap = $("canvas-wrap"), size = Math.max(200, Math.min(wrap.clientWidth - 24, wrap.clientHeight - 24));
     this.dpr = window.devicePixelRatio || 1;
     this.canvas.style.width = this.canvas.style.height = size + "px";
     this.canvas.width = this.canvas.height = Math.round(size * this.dpr);
