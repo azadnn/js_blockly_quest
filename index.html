@@ -22,9 +22,9 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 
-<body class="cyber-grid flex flex-col min-h-screen xl:h-screen xl:overflow-hidden">
+<body class="app-shell cyber-grid flex flex-col min-h-screen">
   <!-- ════════════════ HEADER ════════════════ -->
-  <header class="border-b border-slate-800 bg-slate-950/90 backdrop-blur px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3 z-30">
+  <header id="app-header" class="border-b border-slate-800 bg-slate-950/90 backdrop-blur px-4 md:px-6 py-3 flex flex-wrap items-center justify-between gap-3 z-30">
     <div class="flex items-center gap-3">
       <button id="btn-map" class="btn bg-indigo-600 hover:bg-indigo-500 text-white w-10 h-10 rounded-xl shadow-md shadow-indigo-500/20" title="Mission map"><i class="fa-solid fa-map"></i></button>
       <div>
@@ -51,10 +51,10 @@
   </header>
 
   <!-- ════════════════ MAIN ════════════════ -->
-  <main class="flex-1 min-h-0 grid grid-cols-1 xl:grid-cols-12 gap-3 p-3 md:p-4 max-w-[1900px] w-full mx-auto">
+  <main id="app-main" class="flex-1 min-h-0 grid grid-cols-1 xl:grid-cols-12 gap-3 p-3 md:p-4 max-w-[1900px] w-full mx-auto">
     <!-- LEFT: mission, terminal, arena -->
     <section class="xl:col-span-7 flex flex-col gap-3 min-h-0">
-      <div class="flex flex-col md:flex-row gap-3 md:h-48 flex-shrink-0">
+      <div id="top-row" class="flex flex-col md:flex-row gap-3 md:h-48 flex-shrink-0">
         <!-- Mission card -->
         <div class="panel md:w-7/12 p-4 flex flex-col min-h-0 relative overflow-hidden">
           <div class="absolute -right-10 -top-10 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
@@ -93,7 +93,7 @@
       </div>
 
       <!-- Arena -->
-      <div class="panel flex-1 min-h-[360px] flex flex-col overflow-hidden">
+      <div id="arena-panel" class="panel flex-1 min-h-[360px] flex flex-col overflow-hidden">
         <div class="panel-head px-3 py-2 flex flex-wrap items-center gap-3 justify-between">
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
@@ -117,7 +117,7 @@
             <div class="border-t border-slate-800 my-1"></div>
             <button id="btn-stop" class="btn h-10 bg-rose-950/60 hover:bg-rose-900 border border-rose-800/60 text-rose-200 rounded-xl text-[11px] font-bold uppercase tracking-wide flex items-center justify-center gap-1.5" title="Stop and reset the rocket"><i class="fa-solid fa-stop"></i><span>Stop</span></button>
             <div class="flex-1"></div>
-            <div class="text-[9px] text-slate-500 leading-snug space-y-1.5">
+            <div id="kbd-hints" class="text-[9px] text-slate-500 leading-snug space-y-1.5">
               <p><span class="kbd">Ctrl</span>+<span class="kbd">↵</span> run</p>
               <p><span class="kbd">F10</span> step</p>
               <p>Click a line number to set a <span class="text-rose-400 font-bold">breakpoint</span></p>
@@ -129,7 +129,7 @@
 
     <!-- RIGHT: editor + blocks -->
     <section class="xl:col-span-5 flex flex-col gap-3 min-h-0">
-      <div class="panel flex-1 min-h-[300px] flex flex-col overflow-hidden">
+      <div id="editor-panel" class="panel flex-1 min-h-[300px] flex flex-col overflow-hidden">
         <div class="panel-head px-4 py-2.5 flex items-center justify-between">
           <div class="flex items-center gap-2">
             <i class="fa-brands fa-python text-sky-400"></i>
